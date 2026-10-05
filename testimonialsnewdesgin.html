@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JASIMEDIA - Testimonials</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background-color: rgba(255,255,255,0.95);
+            padding: 0 50px;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { display: flex; align-items: center; min-height: 44px; text-decoration: none; }
+        .logo:focus-visible { outline: 2px solid #5f6368; outline-offset: 2px; }
+        .logo-wordmark {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 1px;
+            color: #000;
+        }
+
+        nav { display: flex; gap: 28px; align-items: center; }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: color 0.3s;
+        }
+
+        header nav a:not(.cta-button),
+        .mobile-menu a:not(.cta-button) {
+            text-decoration-line: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 6px;
+            transition: color .25s, text-decoration-color .25s, background-color .25s;
+        }
+
+        header nav a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]),
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) {
+            color: #5f6368;
+            text-decoration-color: #c0c0c0;
+        }
+
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) {
+            background-color: #f8f8f8;
+        }
+
+        .cta-button {
+            background-color: #000;
+            color: #fff !important;
+            padding: 6px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover { background-color: #333 !important; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 200;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 1.5px;
+            width: 100%;
+            background-color: #000;
+            border-radius: 2px;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            transform-origin: center;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255,255,255,0.98);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .mobile-menu.open { max-height: 500px; opacity: 1; }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 1px;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s, color 0.2s;
+            display: block;
+        }
+
+        .mobile-menu a:last-child { border-bottom: none; }
+
+        .mobile-menu .cta-button {
+            margin: 16px 24px;
+            text-align: center;
+            border-radius: 20px;
+            padding: 10px 24px;
+            background-color: #000;
+            color: #fff !important;
+            border-bottom: none;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            background-color: #c0c0c0;
+            text-align: center;
+            padding: 70px 50px 50px;
+        }
+
+        .page-header h1 {
+            font-size: 64px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: rgba(0,0,0,0.68);
+            letter-spacing: 1px;
+        }
+
+        /* ── LOGO MARQUEE ── */
+        .logos-section {
+            background: #fff;
+            padding: 50px 0;
+            overflow: hidden;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logos-label {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: #aaa;
+            margin-bottom: 36px;
+            text-transform: uppercase;
+        }
+
+        .marquee-outer { overflow: hidden; }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 180px;
+            flex-shrink: 0;
+            height: 126px;
+            margin: 0 10px;
+            padding: 18px 14px;
+            border: 1px solid #dedfe1;
+            border-radius: 28px;
+            background: #f5f5f5;
+            box-shadow: inset 0 1px 0 #fff;
+        }
+
+        .logo-item img {
+            height: 88px;
+            width: 150px;
+            object-fit: contain;
+            opacity: 1;
+        }
+
+        .logo-item span {
+            display: none;
+        }
+
+        /* ── TESTIMONIALS GRID ── */
+        .testimonials-section {
+            padding: 80px 60px 100px;
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .testimonials-section { align-items: stretch; }
+        .testimonial-column { min-width: 0; display: flex; flex-direction: column; }
+        .column-label {
+            margin-bottom: 18px;
+            font: 500 12px/1.5 'Segoe UI', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            color: #666;
+        }
+        .testimonial-card {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .testimonial-slide[hidden] { display: none; }
+        .testimonial-photo {
+            height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #e1e2e3;
+            color: #686c70;
+        }
+        .testimonial-photo > span { font: 400 48px/1 Georgia, serif; }
+        .testimonial-photo small { font-size: 12px; }
+        .testimonial-copy { padding: 28px 32px 0; }
+        .testimonial-heading { min-height: 104px; }
+        .testimonial-card h2 {
+            font-size: 24px;
+            line-height: 1.3;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+        .testimonial-role, .testimonial-brands {
+            margin-top: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #656565;
+        }
+        .testimonial-brands { margin-top: 2px; }
+        .quote-text {
+            border-top: 1px solid #e5e5e5;
+            padding-top: 20px;
+            height: 215.25px;
+            overflow: hidden;
+            font-size: 15px;
+            line-height: 1.85;
+            color: #444;
+            overflow-wrap: anywhere;
+        }
+        .quote-text p + p { margin-top: 18px; }
+        .quote-text.expanded { height: auto; min-height: 215.25px; }
+        .quote-toggle {
+            display: block;
+            min-height: 44px;
+            margin-top: 12px;
+            border: 0;
+            background: none;
+            color: #444;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font: 500 13px 'Segoe UI', sans-serif;
+            cursor: pointer;
+        }
+        .quote-toggle.unneeded { visibility: hidden; }
+        .testimonial-controls {
+            min-height: 84px;
+            margin: auto 32px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .testimonial-dots, .testimonial-arrows { display: flex; align-items: center; gap: 4px; }
+        .testimonial-dot {
+            width: 24px;
+            height: 44px;
+            border: 0;
+            background: none;
+            cursor: pointer;
+        }
+        .testimonial-dot::before {
+            content: '';
+            display: block;
+            margin: auto;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #d0d0d0;
+        }
+        .testimonial-dot[aria-current="true"]::before { background: #111; }
+        .slide-count { font-size: 12px; color: #666; }
+        .testimonial-arrow {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            font: 26px/1 Georgia, serif;
+            cursor: pointer;
+        }
+        .testimonial-arrow:hover { background: #c0c0c0; border-color: #c0c0c0; }
+        .testimonial-card button:focus-visible { outline: 2px solid #5f6368; outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-track { animation-play-state: paused; }
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background-color: #c0c0c0;
+            padding: 24px 50px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #000;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin: 0;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover { opacity: 1; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            header { padding: 0 20px; height: 44px; position: sticky; }
+            nav { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+
+            .page-header { padding: 50px 24px 40px; }
+            .page-header h1 { font-size: 40px; }
+
+            .testimonials-section {
+                grid-template-columns: 1fr;
+                padding: 50px 24px 60px;
+                gap: 40px;
+            }
+
+            .testimonial-photo { height: 220px; }
+            .testimonial-copy { padding: 24px 24px 0; }
+            .testimonial-controls { margin-left: 24px; margin-right: 24px; }
+        }
+        .cta-button,
+        .mobile-menu .cta-button {
+            border: 1px solid #000;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.2s ease;
+        }
+
+        .cta-button:hover,
+        .cta-button:focus-visible,
+        .cta-button:active {
+            background-color: #fff !important;
+            color: #000 !important;
+            border-color: #000;
+            transform: translateY(-1px);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        header .cta-button,
+        header .mobile-menu .cta-button {
+            position: relative;
+            isolation: isolate;
+            transition: background-color .25s, color .25s, border-color .25s, box-shadow .25s, transform .2s ease;
+        }
+
+        header .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(125deg, #eceeef 0%, #c0c0c0 28%, #d5d7da 51%, #b4b7ba 75%, #e4e6e8 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 2px rgba(95,99,104,.35);
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+
+        header .cta-button:is(:hover, :focus-visible, :active) {
+            background-color: #c0c0c0 !important;
+            color: #000 !important;
+            border-color: #b4b7ba;
+            box-shadow: 0 0 0 1px rgba(235,237,239,.8), 0 3px 10px rgba(95,99,104,.16);
+        }
+
+        header .cta-button:is(:hover, :focus-visible, :active)::before { opacity: 1; }
+        header .cta-button:focus-visible { outline: 2px solid #5f6368; outline-offset: 3px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            header .cta-button,
+            header .mobile-menu .cta-button,
+            header .cta-button::before { transition: none; }
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .logo-wordmark {
+            font-family: "Gloock", Georgia, "Times New Roman", serif;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo logo-wordmark" href="index.html" aria-label="JASIMEDIA home">JASIMEDIA</a>
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="portfolionewdesign.html">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html" aria-current="page">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button">CONTACT</a>
+        </nav>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <a href="index.html" class="mobile-link">HOME</a>
+            <a href="about.html" class="mobile-link">ABOUT</a>
+            <a href="portfolionewdesign.html" class="mobile-link">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html" class="mobile-link" aria-current="page">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html" class="mobile-link">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button mobile-link">CONTACT</a>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Testimonials</h1>
+        <p>Kind words from the people and brands I've had the privilege of working with</p>
+    </div>
+
+    <!-- LOGO MARQUEE — replace logo img src values with real logos -->
+    <section class="logos-section">
+        <p class="logos-label">Trusted by</p>
+        <div class="marquee-outer">
+            <div class="marquee-track">
+                <!-- Add future logos to this single set only. The page duplicates them for the infinite loop. -->
+                <div class="logo-item"><img src="jasimtestimonialsHOHlogo.webp" alt="House of Highlights logo"><span>House of Highlights</span></div>
+                <div class="logo-item"><img src="jasimtestimonialscarbonelogo.webp" alt="Carbone logo"><span>Carbone</span></div>
+                <div class="logo-item"><img src="jasimtestimonilaslincolnlogo.webp" alt="Lincoln logo"><span>Lincoln</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilassheamoisturelogo.webp" alt="Shea Moisture logo"><span>Shea Moisture</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilasgymsharklogo.webp" alt="Gymshark logo"><span>Gymshark</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilasolympialogo.webp" alt="Olympia logo"><span>Olympia</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilaswwelogo.webp" alt="WWE logo"><span>WWE</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilasnikelogo.webp" alt="Nike logo"><span>Nike</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilaschampsportslogo.webp" alt="Champs Sports logo"><span>Champs Sports</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilaspalmtreelogo.webp" alt="Palm Tree Music Festival logo"><span>Palm Tree Music Festival</span></div>
+                <div class="logo-item"><img src="jasimedistestimonilasbestbuddieslogo.webp" alt="Best Buddies logo"><span>Best Buddies</span></div>
+                <div class="logo-item"><img src="jasimediatestimonialsbumenergylogo.webp" alt="Bum Energy logo"><span>Bum Energy</span></div>
+                <div class="logo-item"><img src="jasimediatestimonialslogooreo.webp" alt="Oreo logo"><span>Oreo</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials-section" aria-label="Client testimonials">
+        <section class="testimonial-column" aria-labelledby="people-heading">
+            <h2 class="column-label" id="people-heading">People</h2>
+            <div class="testimonial-card">
+                <article class="testimonial-slide" aria-labelledby="mark-name">
+                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Mark Henry">
+                        <span aria-hidden="true">MH</span>
+                        <small aria-hidden="true">Photo coming soon</small>
+                    </div>
+                    <div class="testimonial-copy">
+                        <div class="testimonial-heading">
+            <h2 id="mark-name">Mark Henry</h2>
+            <p class="testimonial-role">WWE Hall of Famer + Media Host</p>
+                        </div>
+            <blockquote class="quote-text" id="mark-quote">
+                <p>“Having someone that understands how to embrace all of the emotions that fans go through at our events and experiences is like finding a unicorn. I'm very thankful we have been able to work with Jasim on a number of projects to date and I look forward to many more in the future.”</p>
+            </blockquote>
+                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="mark-quote">Read more</button>
+                    </div>
+                </article>
+                <div class="testimonial-controls testimonial-controls-static" aria-hidden="true"></div>
+            </div>
+        </section>
+        <section class="testimonial-column" aria-labelledby="brands-heading">
+            <h2 class="column-label" id="brands-heading">Companies &amp; Brands</h2>
+            <div class="testimonial-card" id="company-testimonials" aria-roledescription="carousel" aria-label="Companies and brands testimonials">
+                <article class="testimonial-slide" aria-labelledby="deniz-name">
+                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Deniz">
+                        <span aria-hidden="true">D</span>
+                        <small aria-hidden="true">Photo coming soon</small>
+                    </div>
+                    <div class="testimonial-copy">
+                        <div class="testimonial-heading">
+            <h2 id="deniz-name">Deniz</h2>
+            <p class="testimonial-role">Broken Sound Records</p>
+                        </div>
+            <blockquote class="quote-text" id="deniz-quote">
+                <p>“Jasim is seriously one of the most talented photographers and videographers we’ve worked with. His creativity, attention to detail, and ability to capture the energy of our events is incredible, and the final content always looks extremely professional. Beyond his talent, he’s reliable, easy to work with, and has become a great friend. Couldn’t recommend him enough!”</p>
+            </blockquote>
+                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="deniz-quote">Read more</button>
+                    </div>
+                </article>
+                <article class="testimonial-slide" aria-labelledby="chrissy-name" hidden>
+                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Chrissy Bueno">
+                        <span aria-hidden="true">CB</span>
+                        <small aria-hidden="true">Photo coming soon</small>
+                    </div>
+                    <div class="testimonial-copy">
+                        <div class="testimonial-heading">
+            <h2 id="chrissy-name">Chrissy Bueno</h2>
+            <p class="testimonial-role">Account Director | Episode 1 Agency</p>
+            <p class="testimonial-brands"><em>Espolòn &amp; Nike</em></p>
+                        </div>
+            <blockquote class="quote-text" id="chrissy-quote">
+                <p>“I’ve had the pleasure of working with Jas across several programs, and he is truly such a talented artist and an incredible creative partner. Beyond consistently delivering beautiful, high-quality photo and video work, he brings the best energy to every shoot and is an absolute pleasure to have on site. He’s collaborative, flexible, and always willing to jump in and do whatever it takes to get the job done, even in the fast-moving environment of live events. I’ve always been impressed by his ability to capture the energy and spirit of an experience while still delivering against the needs of the brand. I would recommend him in a heartbeat and always look forward to the opportunity to work together again.”</p>
+            </blockquote>
+                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="chrissy-quote">Read more</button>
+                    </div>
+                </article>
+                <article class="testimonial-slide" aria-labelledby="andrew-name" hidden>
+                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Andrew Stallings">
+                        <span aria-hidden="true">AS</span>
+                        <small aria-hidden="true">Photo coming soon</small>
+                    </div>
+                    <div class="testimonial-copy">
+                        <div class="testimonial-heading">
+            <h2 id="andrew-name">Andrew Stallings</h2>
+            <p class="testimonial-role">President | Athelo Group</p>
+                        </div>
+            <blockquote class="quote-text" id="andrew-quote">
+                <p>“Content is the lifeblood of any major event activation—especially when working with talent like WWE Hall of Famer Mark Henry. When we needed someone who could capture the full scope of our activations throughout WrestleMania weekend in Las Vegas, Jasim was the first person we called.</p>
+                <p>Having worked with Jasim and his team on a number of projects over the years, I know we have a creative, efficient, and dependable partner we can count on when the stakes are high. He understands how to capture content that not only elevates Mark’s brand, but also reflects the broader network of celebrities, entertainers, brands, and personalities that come together during major cultural moments like WrestleMania.</p>
+                <p>Jasim brings creativity, professionalism, and an ability to execute in fast-moving environments where there are rarely second chances to get the shot. I can’t recommend him highly enough for any brand, talent, or organization looking for a trusted creative partner across virtually any vertical.”</p>
+            </blockquote>
+                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="andrew-quote">Read more</button>
+                    </div>
+                </article>
+                <div class="testimonial-controls">
+                    <div class="testimonial-dots" aria-label="Choose a testimonial">
+                        <button type="button" class="testimonial-dot" aria-label="Show Deniz testimonial" aria-current="true" data-slide="0"></button>
+                        <button type="button" class="testimonial-dot" aria-label="Show Chrissy Bueno testimonial" data-slide="1"></button>
+                        <button type="button" class="testimonial-dot" aria-label="Show Andrew Stallings testimonial" data-slide="2"></button>
+                    </div>
+                    <span class="slide-count" aria-live="polite" aria-atomic="true">1 / 3</span>
+                    <div class="testimonial-arrows">
+                        <button type="button" class="testimonial-arrow" data-direction="-1" aria-label="Previous company testimonial" title="Previous testimonial">&#8249;</button>
+                        <button type="button" class="testimonial-arrow" data-direction="1" aria-label="Next company testimonial" title="Next testimonial">&#8250;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <footer>
+        <p>© 2026 JASIMEDIA. All rights reserved. All images are copyrighted. Unauthorized use is prohibited.</p>
+    </footer>
+
+    <script>
+        const marqueeTrack = document.querySelector('.marquee-track');
+        const marqueeLogoItems = marqueeTrack
+            ? Array.from(marqueeTrack.children).map(item => item.cloneNode(true))
+            : [];
+
+        function buildLogoMarquee() {
+            if (!marqueeTrack || marqueeLogoItems.length === 0) {
+                return;
+            }
+
+            const logoWidth = 200;
+            const setWidth = marqueeLogoItems.length * logoWidth;
+            const repeatCount = Math.max(2, Math.ceil((window.innerWidth * 1.25) / setWidth));
+            const loopItems = [];
+
+            for (let i = 0; i < repeatCount; i++) {
+                marqueeLogoItems.forEach(item => loopItems.push(item.cloneNode(true)));
+            }
+
+            marqueeTrack.innerHTML = '';
+
+            [false, true].forEach(isDuplicateSet => {
+                loopItems.forEach(item => {
+                    const clone = item.cloneNode(true);
+                    if (isDuplicateSet) {
+                        clone.setAttribute('aria-hidden', 'true');
+                    }
+                    marqueeTrack.appendChild(clone);
+                });
+            });
+
+            marqueeTrack.style.animationDuration = `${Math.max(24, loopItems.length * 3)}s`;
+        }
+
+        buildLogoMarquee();
+
+        let marqueeResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(marqueeResizeTimer);
+            marqueeResizeTimer = setTimeout(buildLogoMarquee, 150);
+        });
+
+
+        const companyCard = document.getElementById('company-testimonials');
+        const companySlides = Array.from(companyCard.querySelectorAll('.testimonial-slide'));
+        const companyDots = Array.from(companyCard.querySelectorAll('[data-slide]'));
+        let companyIndex = 0;
+
+        function updateQuoteToggles() {
+            document.querySelectorAll('.testimonial-slide:not([hidden])').forEach(slide => {
+                const quote = slide.querySelector('.quote-text');
+                const toggle = slide.querySelector('.quote-toggle');
+                if (!quote.classList.contains('expanded')) {
+                    toggle.classList.toggle('unneeded', quote.scrollHeight <= quote.clientHeight + 1);
+                }
+            });
+        }
+
+        document.querySelectorAll('.quote-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const quote = document.getElementById(toggle.getAttribute('aria-controls'));
+                const expanded = quote.classList.toggle('expanded');
+                toggle.setAttribute('aria-expanded', String(expanded));
+                toggle.textContent = expanded ? 'Read less' : 'Read more';
+                updateQuoteToggles();
+            });
+        });
+
+        function showCompany(index) {
+            companyIndex = (index + companySlides.length) % companySlides.length;
+            companySlides.forEach((slide, i) => {
+                slide.hidden = i !== companyIndex;
+                const quote = slide.querySelector('.quote-text');
+                const toggle = slide.querySelector('.quote-toggle');
+                quote.classList.remove('expanded');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.textContent = 'Read more';
+            });
+            companyDots.forEach((dot, i) => {
+                if (i === companyIndex) dot.setAttribute('aria-current', 'true');
+                else dot.removeAttribute('aria-current');
+            });
+            companyCard.querySelector('.slide-count').textContent = (companyIndex + 1) + ' / ' + companySlides.length;
+            updateQuoteToggles();
+        }
+
+        companyDots.forEach(dot => dot.addEventListener('click', () => showCompany(Number(dot.dataset.slide))));
+        companyCard.querySelectorAll('[data-direction]').forEach(button => {
+            button.addEventListener('click', () => showCompany(companyIndex + Number(button.dataset.direction)));
+        });
+        window.addEventListener('resize', updateQuoteToggles);
+        document.fonts.ready.then(updateQuoteToggles);
+        updateQuoteToggles();
+
+        // ── Hamburger ──
+        const btn  = document.getElementById('hamburgerBtn');
+        const menu = document.getElementById('mobileMenu');
+
+        btn.addEventListener('click', () => {
+            const isOpen = menu.classList.toggle('open');
+            btn.classList.toggle('open', isOpen);
+            btn.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', false);
+                menu.setAttribute('aria-hidden', true);
+            });
+        });
+    </script>
+
+</body>
+</html>

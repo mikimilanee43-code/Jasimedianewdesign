@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>JASIMEDIA - Portfolio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background-color: rgba(255,255,255,0.95);
+            padding: 0 50px;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { display: flex; align-items: center; min-height: 44px; text-decoration: none; }
+        .logo:focus-visible { outline: 2px solid #5f6368; outline-offset: 2px; }
+        .logo img { height: 22px; }
+
+        .logo-wordmark {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 1px;
+            color: #000;
+        }
+
+        nav { display: flex; gap: 28px; align-items: center; }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: color 0.3s;
+        }
+
+        header nav a:not(.cta-button),
+        .mobile-menu a:not(.cta-button) {
+            text-decoration-line: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 6px;
+            transition: color 0.25s, text-decoration-color 0.25s, background-color 0.25s;
+        }
+
+        header nav a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]),
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) {
+            color: #5f6368;
+            text-decoration-color: #c0c0c0;
+        }
+
+        .cta-button {
+            background-color: #000;
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: background-color 0.3s;
+        }
+
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 200;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 1.5px;
+            width: 100%;
+            background-color: #000;
+            border-radius: 2px;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            transform-origin: center;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255,255,255,0.98);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .mobile-menu.open { max-height: 500px; opacity: 1; }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 1px;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s, color 0.2s;
+            display: block;
+        }
+
+        .mobile-menu a:last-child { border-bottom: none; }
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) { background-color: #f8f8f8; }
+
+        .mobile-menu .cta-button {
+            margin: 16px 24px;
+            text-align: center;
+            border-radius: 20px;
+            padding: 10px 24px;
+            background-color: #000;
+            color: #fff;
+            border-bottom: none;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            background-color: #6b6b6b;
+            text-align: center;
+            padding: 70px 50px 50px;
+        }
+
+        .page-title {
+            font-size: 64px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        /* ── PORTFOLIO ROWS ── */
+        .portfolio-section {
+            padding: 70px 60px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .portfolio-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .portfolio-row.img-left  { direction: ltr; }
+        .portfolio-row.img-right { direction: rtl; }
+        .portfolio-row.img-right > * { direction: ltr; }
+
+        .portfolio-img-wrap {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .portfolio-row:hover .portfolio-img-wrap {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.2);
+        }
+
+        .portfolio-img-wrap img,
+        .portfolio-img-wrap video {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-row:hover .portfolio-img-wrap img,
+        .portfolio-row:hover .portfolio-img-wrap video {
+            transform: scale(1.04);
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.18);
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            transition: background 0.3s;
+        }
+
+        .portfolio-row:hover .play-icon { background: rgba(255,255,255,0.32); }
+        .play-icon svg { margin-left: 4px; }
+
+        .portfolio-text { padding: 20px 10px; }
+
+        .portfolio-text .category-tag {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .portfolio-text h3 {
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #222;
+            margin-bottom: 18px;
+            line-height: 1.1;
+        }
+
+        .portfolio-text p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .portfolio-text h3 + p + p {
+            display: none;
+        }
+
+        .explore-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #000;
+            color: #fff;
+            padding: 13px 28px;
+            border-radius: 25px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .explore-btn:hover { background: #333; }
+
+        .card-hint {
+            display: block;
+            font-size: 11px;
+            color: #bbb;
+            letter-spacing: 1px;
+            margin-top: 14px;
+        }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 90px 50px;
+        }
+
+        .cta-section h2 {
+            font-size: 52px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            opacity: 0.65;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+        }
+
+        .cta-section a {
+            display: inline-block;
+            border: 2px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            padding: 16px 44px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .cta-section a:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            transition: background 0.3s;
+        }
+
+        .portfolio-card:hover .play-icon {
+            background: rgba(255,255,255,0.35);
+        }
+
+        .play-icon svg {
+            margin-left: 4px;
+        }
+
+        /* ── LIGHTBOX MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            position: relative;
+            width: 90%;
+            max-width: 1180px;
+            height: min(88vh, 800px);
+            height: min(88dvh, 800px);
+            display: grid;
+            grid-template-rows: minmax(0, 1fr) auto auto;
+            padding-top: 52px;
+            padding-bottom: 8px;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal:fullscreen {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            border-radius: 0;
+            padding-top: calc(52px + env(safe-area-inset-top, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        .modal-overlay {
+            overscroll-behavior: contain;
+        }
+
+        .arrow[hidden],
+        .modal-dots[hidden],
+        .carousel-arrow[hidden],
+        .carousel-dots[hidden] {
+            display: none;
+        }
+
+        /* Close button */
+        .modal-close {
+            position: absolute;
+            top: calc(4px + env(safe-area-inset-top, 0px));
+            right: calc(8px + env(safe-area-inset-right, 0px));
+            width: 44px;
+            height: 44px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+            z-index: 10;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close:hover { opacity: 1; }
+
+        /* Slides wrapper */
+        .slides-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            background: #000;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide.active { display: block; }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide.image-slide.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide.image-slide > img {
+            object-fit: contain;
+            background: #000;
+        }
+
+        .photo-track {
+            height: 100%;
+        }
+
+        .slides-wrapper.photo-carousel {
+            overflow: hidden;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        .photo-carousel .photo-track {
+            display: flex;
+        }
+
+        .photo-carousel .image-slide {
+            display: flex;
+            flex: 0 0 100%;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-carousel .image-slide img {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .slide iframe,
+        .slide video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .slide video {
+            display: block;
+            background: #000;
+            object-fit: contain;
+        }
+
+        .slide.video-slide {
+            background: #111;
+        }
+
+        /* Arrow buttons */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .arrow:hover { background: rgba(255,255,255,0.3); }
+        .arrow.prev { left: 14px; }
+        .arrow.next { right: 14px; }
+
+        /* Dots */
+        .modal-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            padding: 0 12px;
+            background: #111;
+        }
+
+        .dot {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #555;
+            transition: background 0.2s;
+        }
+
+        .dot.active::after { background: #fff; }
+
+        /* Modal title */
+        .modal-title {
+            text-align: center;
+            color: #fff;
+            font-size: 13px;
+            letter-spacing: 0;
+            line-height: 1.4;
+            opacity: 0.72;
+            padding: 8px 24px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background-color: #c0c0c0;
+            padding: 24px 50px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #000;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin: 0;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover { opacity: 1; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            header { padding: 0 20px; height: 44px; position: sticky; }
+            nav { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+
+            .page-header { padding: 50px 24px 40px; }
+            .page-title { font-size: 40px; }
+
+            .portfolio-section { padding: 40px 24px 60px; gap: 50px; }
+
+            .portfolio-row {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                direction: ltr !important;
+            }
+
+            .portfolio-row > * { direction: ltr !important; }
+
+            .portfolio-img-wrap img,
+            .portfolio-img-wrap video { height: 240px; }
+
+            .portfolio-text h3 { font-size: 30px; }
+
+            .arrow { width: 38px; height: 38px; font-size: 18px; }
+
+            .cta-section { padding: 60px 24px; }
+            .cta-section h2 { font-size: 36px; }
+
+        }
+
+        @media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+            .modal {
+                width: 100%;
+                max-width: none;
+                height: 100vh;
+                height: 100dvh;
+                border-radius: 0;
+                padding-top: calc(52px + env(safe-area-inset-top, 0px));
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+
+            .modal-overlay {
+                background: #000;
+            }
+
+            .modal .arrow {
+                display: none;
+            }
+
+            .modal[data-media-type="image"] .slides-wrapper {
+                touch-action: pan-y pinch-zoom;
+            }
+
+            .modal[data-media-type="video"] .modal-title {
+                display: none;
+            }
+        }
+
+        /* Apple-inspired portfolio showcase */
+        .page-header {
+            background: #1d1d1f;
+            text-align: left;
+            padding: 96px 50px 78px;
+        }
+
+        .page-title,
+        .page-subtitle {
+            max-width: 1120px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-title {
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: 1.02;
+            letter-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        .page-subtitle {
+            max-width: 760px;
+            margin-left: max(0px, calc((100% - 1120px) / 2));
+            color: rgba(255,255,255,0.64);
+            line-height: 1.75;
+        }
+
+        .portfolio-showcases {
+            background: #fff;
+        }
+
+        .portfolio-showcase {
+            position: relative;
+            overflow: hidden;
+            padding: 86px 0 96px;
+            scroll-margin-top: 62px;
+        }
+
+        .showcase-dark {
+            background: #090909;
+            color: #fff;
+        }
+
+        .showcase-grey {
+            background: #dedede;
+            color: #111;
+        }
+
+        .showcase-white {
+            background: #fff;
+            color: #111;
+        }
+
+        .showcase-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+
+        .showcase-intro {
+            max-width: 760px;
+            margin-bottom: 34px;
+        }
+
+        .showcase-kicker {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8f8f8f;
+            margin-bottom: 14px;
+        }
+
+        .showcase-dark .showcase-kicker { color: rgba(255,255,255,0.46); }
+
+        .showcase-kicker a,
+        .showcase-intro h2 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .showcase-kicker a:hover,
+        .showcase-kicker a:focus-visible,
+        .showcase-intro h2 a:hover,
+        .showcase-intro h2 a:focus-visible {
+            text-decoration: underline;
+            text-underline-offset: 0.18em;
+        }
+
+        .showcase-intro h2 {
+            font-size: clamp(38px, 5vw, 64px);
+            font-weight: 300;
+            line-height: 1.04;
+            letter-spacing: 0;
+            margin-bottom: 18px;
+        }
+
+        .showcase-description {
+            font-size: 17px;
+            line-height: 1.78;
+            color: #5f5f5f;
+            max-width: 660px;
+        }
+
+        .showcase-dark .showcase-description {
+            color: rgba(255,255,255,0.66);
+        }
+
+        .showcase-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .showcase-actions .explore-btn {
+            border-radius: 28px;
+        }
+
+        .showcase-dark .explore-btn {
+            background: #fff;
+            color: #000;
+        }
+
+        .showcase-dark .explore-btn:hover {
+            background: #e4e4e4;
+        }
+
+        .showcase-count {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .showcase-dark .showcase-count { color: rgba(255,255,255,0.42); }
+
+        .carousel-wrap {
+            position: relative;
+            margin-top: 36px;
+        }
+
+        .sample-carousel {
+            display: flex;
+            gap: 22px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 0 max(50px, calc((100vw - 1120px) / 2)) 20px;
+            scrollbar-width: none;
+        }
+
+        .sample-carousel::-webkit-scrollbar { display: none; }
+
+        .sample-card {
+            flex: 0 0 min(76vw, 820px);
+            min-width: 320px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f6f6f6;
+            color: #111;
+            box-shadow: 0 20px 55px rgba(0,0,0,0.18);
+            scroll-snap-align: center;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            transform: translateZ(0);
+            transition: transform 0.24s ease, box-shadow 0.24s ease;
+        }
+
+        .showcase-grey .sample-card,
+        .showcase-white .sample-card {
+            box-shadow: 0 18px 44px rgba(0,0,0,0.14);
+        }
+
+        .sample-card:hover,
+        .sample-card:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 26px 70px rgba(0,0,0,0.24);
+        }
+
+        .sample-media {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #111;
+            overflow: hidden;
+        }
+
+        .sample-media img,
+        .sample-media video,
+        .sample-media iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .sample-media iframe {
+            border: 0;
+            pointer-events: none;
+        }
+
+        .sample-meta {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 46px 26px 24px;
+            color: #fff;
+            background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .sample-label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.72);
+            margin-bottom: 8px;
+        }
+
+        .sample-title {
+            font-size: 26px;
+            font-weight: 500;
+            letter-spacing: 0;
+            line-height: 1.15;
+        }
+
+        .card-play-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            border: 1px solid rgba(255,255,255,0.58);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            backdrop-filter: blur(7px);
+        }
+
+        .card-play-icon svg {
+            margin-left: 3px;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.84);
+            color: #111;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+            cursor: pointer;
+            z-index: 4;
+            font-size: 28px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .carousel-arrow:hover {
+            transform: translateY(-50%) scale(1.05);
+            background: #fff;
+        }
+
+        .carousel-arrow.prev { left: max(18px, calc((100vw - 1220px) / 2)); }
+        .carousel-arrow.next { right: max(18px, calc((100vw - 1220px) / 2)); }
+
+        .carousel-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 12px;
+        }
+
+        .carousel-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.25);
+            cursor: pointer;
+            padding: 0;
+            transition: width 0.2s ease, border-radius 0.2s ease, background 0.2s ease;
+        }
+
+        .showcase-dark .carousel-dot { background: rgba(255,255,255,0.34); }
+
+        .carousel-dot.active {
+            width: 28px;
+            border-radius: 999px;
+            background: #111;
+        }
+
+        .showcase-dark .carousel-dot.active { background: #fff; }
+
+        .event-gallery {
+            background: #fff;
+            color: #111;
+            padding: 84px 0 96px;
+        }
+
+        .event-gallery-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+
+        .event-gallery-header {
+            max-width: 680px;
+            margin-bottom: 34px;
+        }
+
+        .event-gallery-kicker {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8f8f8f;
+            margin-bottom: 12px;
+        }
+
+        .event-gallery h2 {
+            font-size: clamp(34px, 4.5vw, 56px);
+            font-weight: 300;
+            line-height: 1.06;
+            letter-spacing: 0;
+            margin-bottom: 16px;
+        }
+
+        .event-gallery p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .event-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .event-photo {
+            position: relative;
+            display: block;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #f1f1f1;
+            color: #111;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .event-photo:nth-child(3n + 1) {
+            aspect-ratio: 1 / 1;
+        }
+
+        .event-photo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
+
+        .event-photo:hover img,
+        .event-photo:focus-visible img {
+            transform: scale(1.035);
+        }
+
+        .photo-fallback {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: #555;
+            background: #f6f6f6;
+        }
+
+        .event-photo.image-missing .photo-fallback {
+            display: flex;
+        }
+
+        @media (max-width: 900px) {
+            .page-header {
+                padding: 58px 24px 48px;
+            }
+
+            .page-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .portfolio-showcase {
+                padding: 60px 0 70px;
+            }
+
+            .showcase-inner {
+                padding: 0 24px;
+            }
+
+            .showcase-intro {
+                margin-bottom: 28px;
+            }
+
+            .showcase-description {
+                font-size: 15px;
+            }
+
+            .sample-carousel {
+                padding: 0 24px 18px;
+                gap: 16px;
+            }
+
+            .sample-card {
+                flex-basis: 84vw;
+                min-width: 280px;
+            }
+
+            .sample-media {
+                aspect-ratio: 4 / 3;
+            }
+
+            .sample-title {
+                font-size: 21px;
+            }
+
+            .carousel-arrow {
+                display: none;
+            }
+
+            .event-gallery {
+                padding: 58px 0 70px;
+            }
+
+            .event-gallery-inner {
+                padding: 0 24px;
+            }
+
+            .event-gallery p {
+                font-size: 15px;
+            }
+
+            .event-photo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+        }
+        .cta-button,
+        .mobile-menu .cta-button {
+            position: relative;
+            isolation: isolate;
+            border: 1px solid #000;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.2s ease;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(125deg, #eceeef 0%, #c0c0c0 28%, #d5d7da 51%, #b4b7ba 75%, #e4e6e8 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.95), inset 0 -1px 2px rgba(95,99,104,0.35);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .cta-button:is(:hover, :focus-visible, :active),
+        .mobile-menu .cta-button:is(:hover, :focus-visible, :active) {
+            background-color: #c0c0c0;
+            color: #000;
+            border-color: #b4b7ba;
+            box-shadow: 0 0 0 1px rgba(235,237,239,0.8), 0 3px 10px rgba(95,99,104,0.16);
+            transform: translateY(-1px);
+        }
+
+        .cta-button:is(:hover, :focus-visible, :active)::before {
+            opacity: 1;
+        }
+
+        .cta-button:focus-visible {
+            outline: 2px solid #5f6368;
+            outline-offset: 3px;
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        .explore-btn {
+            border: 1px solid #000;
+            transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s ease;
+        }
+
+        .explore-btn:hover,
+        .explore-btn:focus-visible,
+        .explore-btn:active {
+            background: #fff;
+            color: #000;
+            border-color: #000;
+            transform: translateY(-1px);
+        }
+
+        .explore-btn:active {
+            transform: translateY(0);
+        }
+
+        .showcase-dark .explore-btn {
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .showcase-dark .explore-btn:hover,
+        .showcase-dark .explore-btn:focus-visible,
+        .showcase-dark .explore-btn:active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .logo-wordmark {
+            font-family: "Gloock", Georgia, "Times New Roman", serif;
+        }
+        .project-type-nav {
+            display: block;
+            background: #090909;
+            padding: 24px 50px 0;
+            scroll-margin-top: 44px;
+        }
+
+        .project-type-tabs {
+            display: flex;
+            gap: 10px;
+            max-width: 1120px;
+            margin: 0 auto;
+            overflow-x: auto;
+            scrollbar-width: none;
+            overscroll-behavior-x: contain;
+        }
+
+        .project-type-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .project-type-tab {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 10px 18px;
+            border: 1px solid #555;
+            border-radius: 24px;
+            background-color: #222;
+            color: #ddd;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 0;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .project-type-tab:hover,
+        .project-type-tab[aria-selected="true"] {
+            color: #111;
+            background-color: #c0c0c0;
+            border-color: #c0c0c0;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .project-type-tab:focus-visible {
+            outline: 2px solid #c0c0c0;
+            outline-offset: -3px;
+        }
+
+        .project-type-panel {
+            scroll-margin-top: 44px;
+        }
+
+        .project-type-panel[hidden] {
+            display: none;
+        }
+
+        .project-type-panel > .portfolio-showcase:first-child {
+            padding-top: 48px;
+        }
+
+        .project-type-empty {
+            min-height: 320px;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 64px 50px;
+        }
+
+        .project-type-empty h2 {
+            font-size: 40px;
+            font-weight: 300;
+            line-height: 1.2;
+            letter-spacing: 0;
+            color: #111;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .project-type-empty p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #5f6368;
+        }
+
+        @media (max-width: 768px) {
+            .project-type-nav {
+                padding: 16px 24px 0;
+            }
+
+            .project-type-tabs {
+                gap: 10px;
+            }
+
+            .project-type-empty {
+                min-height: 280px;
+                padding: 48px 24px;
+            }
+
+            .project-type-empty h2 {
+                font-size: 30px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cta-button,
+            .mobile-menu .cta-button,
+            .cta-button::before,
+            .project-type-tab {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo logo-wordmark" href="index.html" aria-label="JASIMEDIA home">JASIMEDIA</a>
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html">ABOUT</a>
+            <a href="portfolionewdesign.html" aria-current="page">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button">CONTACT</a>
+        </nav>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <a href="index.html" class="mobile-link">HOME</a>
+            <a href="about.html" class="mobile-link">ABOUT</a>
+            <a href="portfolionewdesign.html" class="mobile-link" aria-current="page">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html" class="mobile-link">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html" class="mobile-link">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button mobile-link">CONTACT</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1 class="page-title">Portfolio</h1>
+        <p class="page-subtitle">Project-based portfolios prepared for direct client references, with event films and photo sets organized around each real assignment.</p>
+    </div>
+
+    <main class="portfolio-showcases">
+        <nav class="project-type-nav" id="project-types" aria-label="Portfolio project types">
+            <div class="project-type-tabs" role="tablist" aria-label="Project types">
+                <a class="project-type-tab" id="tab-brand-business" role="tab" href="#brand-business" aria-controls="brand-business" aria-selected="false" tabindex="-1">Brand/Business</a>
+                <a class="project-type-tab" id="tab-event-activation" role="tab" href="#event-activation" aria-controls="event-activation" aria-selected="true" tabindex="0">Event/Activation</a>
+                <a class="project-type-tab" id="tab-wedding-private-event" role="tab" href="#wedding-private-event" aria-controls="wedding-private-event" aria-selected="false" tabindex="-1">Wedding/Private Event</a>
+                <a class="project-type-tab" id="tab-athlete-fitness" role="tab" href="#athlete-fitness" aria-controls="athlete-fitness" aria-selected="false" tabindex="-1">Athlete/Fitness</a>
+                <a class="project-type-tab" id="tab-hospitality-lifestyle" role="tab" href="#hospitality-lifestyle" aria-controls="hospitality-lifestyle" aria-selected="false" tabindex="-1">Hospitality/Lifestyle</a>
+                <a class="project-type-tab" id="tab-personal-brand" role="tab" href="#personal-brand" aria-controls="personal-brand" aria-selected="false" tabindex="-1">Personal Brand</a>
+                <a class="project-type-tab" id="tab-other" role="tab" href="#other" aria-controls="other" aria-selected="false" tabindex="-1">Other</a>
+            </div>
+        </nav>
+
+        <div class="project-type-panel" id="brand-business" role="tabpanel" aria-labelledby="tab-brand-business" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="brand-business-heading">
+                <h2 id="brand-business-heading">Brand/Business</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+
+        <div class="project-type-panel" id="event-activation" role="tabpanel" aria-labelledby="tab-event-activation" tabindex="0">
+        <section class="portfolio-showcase showcase-dark" id="lone-star-le-mans">
+            <div class="showcase-inner">
+                <div class="showcase-intro">
+                    <h2><a href="#lone-star-le-mans">Lone Star Le Mans</a></h2>
+                    <p class="showcase-description">WEC Lone Star Le Mans brings world endurance racing to Circuit of The Americas, where prototype and GT teams battle through heat, strategy, traffic, and the rhythm of a six-hour race weekend. This event portfolio captures the trackside atmosphere, fan energy, and high-speed views from the circuit.</p>
+                    <div class="showcase-actions">
+                        <a class="explore-btn" href="contactnewdesign.html">
+                            LET'S WORK
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-wrap" data-project="event">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous Lone Star Le Mans sample" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel" data-carousel-project="event" aria-label="Lone Star Le Mans samples"></div>
+                <button class="carousel-arrow next" type="button" aria-label="Next Lone Star Le Mans sample" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Lone Star Le Mans carousel position"></div>
+            </div>
+        </section>
+
+        <section class="event-gallery" aria-labelledby="lone-star-le-mans-gallery-title">
+            <div class="event-gallery-inner">
+                <div class="event-gallery-header">
+                    <p class="event-gallery-kicker">Event Photos</p>
+                    <h2 id="lone-star-le-mans-gallery-title">Lone Star Le Mans Gallery</h2>
+                    <p>Selected trackside and crowd moments from the WEC weekend at Circuit of The Americas.</p>
+                </div>
+                <div class="event-photo-grid">
+                    <a class="event-photo" href="https://i.ibb.co/8D2VgyBh/IMG-9669.webp" data-open-project="event" data-open-slide="1" aria-label="Enlarge Lone Star Le Mans photo 1">
+                        <img src="https://i.ibb.co/8D2VgyBh/IMG-9669.webp" alt="Lone Star Le Mans event photo 1" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_9669.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/ZzFjw7cr/IMG-9697.webp" data-open-project="event" data-open-slide="2" aria-label="Enlarge Lone Star Le Mans photo 2">
+                        <img src="https://i.ibb.co/ZzFjw7cr/IMG-9697.webp" alt="Lone Star Le Mans event photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_9697.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/TqgwFx25/IMG-9702.webp" data-open-project="event" data-open-slide="3" aria-label="Enlarge Lone Star Le Mans photo 3">
+                        <img src="https://i.ibb.co/TqgwFx25/IMG-9702.webp" alt="Lone Star Le Mans event photo 3" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_9702.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/gLYrtKmH/IMG-E9705.webp" data-open-project="event" data-open-slide="4" aria-label="Enlarge Lone Star Le Mans photo 4">
+                        <img src="https://i.ibb.co/gLYrtKmH/IMG-E9705.webp" alt="Lone Star Le Mans event photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_E9705.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/NH8qhhN/IMG-E9709.webp" data-open-project="event" data-open-slide="5" aria-label="Enlarge Lone Star Le Mans photo 5">
+                        <img src="https://i.ibb.co/NH8qhhN/IMG-E9709.webp" alt="Lone Star Le Mans event photo 5" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_E9709.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/cXhCTz0n/IMG-E9710.webp" data-open-project="event" data-open-slide="6" aria-label="Enlarge Lone Star Le Mans photo 6">
+                        <img src="https://i.ibb.co/cXhCTz0n/IMG-E9710.webp" alt="Lone Star Le Mans event photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_E9710.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/JFpTbPmg/IMG-9712.webp" data-open-project="event" data-open-slide="7" aria-label="Enlarge Lone Star Le Mans photo 7">
+                        <img src="https://i.ibb.co/JFpTbPmg/IMG-9712.webp" alt="Lone Star Le Mans event photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_9712.webp</span>
+                    </a>
+                    <a class="event-photo" href="https://i.ibb.co/cS14bFLg/IMG-9721.webp" data-open-project="event" data-open-slide="8" aria-label="Enlarge Lone Star Le Mans photo 8">
+                        <img src="https://i.ibb.co/cS14bFLg/IMG-9721.webp" alt="Lone Star Le Mans event photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">IMG_9721.webp</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        </div>
+
+        <div class="project-type-panel" id="wedding-private-event" role="tabpanel" aria-labelledby="tab-wedding-private-event" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="wedding-private-event-heading">
+                <h2 id="wedding-private-event-heading">Wedding/Private Event</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+        <div class="project-type-panel" id="athlete-fitness" role="tabpanel" aria-labelledby="tab-athlete-fitness" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="athlete-fitness-heading">
+                <h2 id="athlete-fitness-heading">Athlete/Fitness</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+        <div class="project-type-panel" id="hospitality-lifestyle" role="tabpanel" aria-labelledby="tab-hospitality-lifestyle" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="hospitality-lifestyle-heading">
+                <h2 id="hospitality-lifestyle-heading">Hospitality/Lifestyle</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+        <div class="project-type-panel" id="personal-brand" role="tabpanel" aria-labelledby="tab-personal-brand" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="personal-brand-heading">
+                <h2 id="personal-brand-heading">Personal Brand</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+        <div class="project-type-panel" id="other" role="tabpanel" aria-labelledby="tab-other" tabindex="0" hidden>
+            <section class="project-type-empty" aria-labelledby="other-heading">
+                <h2 id="other-heading">Other</h2>
+                <p>Portfolio coming soon.</p>
+            </section>
+        </div>
+    </main>
+
+
+    <!-- ── LIGHTBOX MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay" aria-hidden="true" onclick="handleOverlayClick(event)">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" type="button" aria-label="Close viewer" title="Close viewer" onclick="closeModal()">&#x2715;</button>
+
+            <div class="slides-wrapper">
+                <!-- Slides injected by JS -->
+                <button class="arrow prev" type="button" aria-label="Previous photo" onclick="changeSlide(-1)">&#8249;</button>
+                <button class="arrow next" type="button" aria-label="Next photo" onclick="changeSlide(1)">&#8250;</button>
+            </div>
+
+            <div class="modal-dots" id="modalDots"></div>
+            <p class="modal-title" id="modalTitle"></p>
+        </div>
+    </div>
+
+    <section class="cta-section">
+        <h2>Let's Work Together</h2>
+        <p>Have a project in mind? I'd love to hear about it.</p>
+        <a href="contactnewdesign.html">GET IN TOUCH</a>
+    </section>
+
+    <footer>
+        <p>© 2026 JASIMEDIA. All rights reserved. All images are copyrighted. Unauthorized use is prohibited.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.6.0/embla-carousel.umd.js" integrity="sha384-XGqLM9+dJ+PFOMZn6IuZgRRIoxcAT5fx4eIZCx7K3O2Dj5RA7EOlJ3yOS8Jd+kiY" crossorigin="anonymous"></script>
+    <script>
+        // ── Lone Star Le Mans event portfolio ──
+        const projects = {
+            event: {
+                title: 'LONE STAR LE MANS',
+                label: 'Lone Star Le Mans',
+                carouselSlideIndexes: [0],
+                slides: [
+                    {
+                        type: 'video',
+                        title: 'Tower View of Turns 10-15',
+                        src: 'https://player.vimeo.com/video/1227402333?autoplay=1&playsinline=1&title=0&byline=0&portrait=0',
+                        previewSrc: 'https://player.vimeo.com/video/1227402333?autoplay=1&muted=1&loop=1&autopause=0&playsinline=1&title=0&byline=0&portrait=0'
+                    },
+                    { type: 'image', title: 'Trackside Angle 01', src: 'https://i.ibb.co/8D2VgyBh/IMG-9669.webp', alt: 'Lone Star Le Mans event photo 1' },
+                    { type: 'image', title: 'Trackside Angle 02', src: 'https://i.ibb.co/ZzFjw7cr/IMG-9697.webp', alt: 'Lone Star Le Mans event photo 2' },
+                    { type: 'image', title: 'Trackside Angle 03', src: 'https://i.ibb.co/TqgwFx25/IMG-9702.webp', alt: 'Lone Star Le Mans event photo 3' },
+                    { type: 'image', title: 'Circuit Detail 01', src: 'https://i.ibb.co/gLYrtKmH/IMG-E9705.webp', alt: 'Lone Star Le Mans event photo 4' },
+                    { type: 'image', title: 'Circuit Detail 02', src: 'https://i.ibb.co/NH8qhhN/IMG-E9709.webp', alt: 'Lone Star Le Mans event photo 5' },
+                    { type: 'image', title: 'Circuit Detail 03', src: 'https://i.ibb.co/cXhCTz0n/IMG-E9710.webp', alt: 'Lone Star Le Mans event photo 6' },
+                    { type: 'image', title: 'Race Weekend Moment 01', src: 'https://i.ibb.co/JFpTbPmg/IMG-9712.webp', alt: 'Lone Star Le Mans event photo 7' },
+                    { type: 'image', title: 'Race Weekend Moment 02', src: 'https://i.ibb.co/cS14bFLg/IMG-9721.webp', alt: 'Lone Star Le Mans event photo 8' },
+                ]
+            }
+        };
+
+        const getSlideNumber = index => String(index + 1).padStart(2, '0');
+
+        const getSlideTitle = (slide, project, index) => {
+            if (slide.title) return slide.title;
+            if (slide.type === 'image') return `${project.title} ${getSlideNumber(index)}`;
+
+            return slide.src
+                .replace(/\.[^.]+$/, '')
+                .replace(/^jasimediaportfoliovideography\s*/i, '')
+                .replace(/^jasimediaportfolieditLincoln\s*/i, '')
+                .replace(/^jasimediaportfoliedit6\s*/i, '')
+                .replace(/^jasimediaportfoliedit\s*/i, '')
+                .replace(/^jasimediaportfolioedit\s*/i, '')
+                .replace(/^JASIMEDIA\s*/i, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        };
+
+        const escapeHtml = value => {
+            const replacements = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+
+            return String(value).replace(/[&<>"']/g, character => replacements[character]);
+        };
+
+        function renderPortfolioCarousels() {
+            document.querySelectorAll('[data-carousel-project]').forEach(track => {
+                const key = track.dataset.carouselProject;
+                const project = projects[key];
+                if (!project) return;
+
+                track.innerHTML = '';
+
+                const slideIndexes = project.carouselSlideIndexes || project.slides.map((_, index) => index);
+
+                slideIndexes.forEach((slideIndex, cardIndex) => {
+                    const slide = project.slides[slideIndex];
+                    const slideTitle = getSlideTitle(slide, project, slideIndex);
+                    const card = document.createElement('article');
+                    card.className = 'sample-card';
+                    card.tabIndex = 0;
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('aria-label', `Open ${slideTitle} fullscreen`);
+
+                    const media = document.createElement('div');
+                    media.className = 'sample-media';
+
+                    if (slide.type === 'image') {
+                        const img = document.createElement('img');
+                        img.src = slide.src;
+                        img.alt = slide.alt || `${project.title} sample ${slideIndex + 1}`;
+                        img.loading = 'lazy';
+                        media.appendChild(img);
+                    } else if (slide.previewSrc) {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = 'about:blank';
+                        iframe.dataset.src = slide.previewSrc;
+                        iframe.title = `${slideTitle} video preview`;
+                        iframe.allow = 'autoplay';
+                        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+                        iframe.tabIndex = -1;
+                        iframe.setAttribute('aria-hidden', 'true');
+                        media.appendChild(iframe);
+                    } else {
+                        const video = document.createElement('video');
+                        video.muted = true;
+                        video.loop = true;
+                        video.autoplay = true;
+                        video.playsInline = true;
+                        video.preload = 'metadata';
+                        video.setAttribute('aria-label', `${slideTitle} video`);
+
+                        const source = document.createElement('source');
+                        source.src = slide.src;
+                        if (slide.mime) source.type = slide.mime;
+                        video.appendChild(source);
+                        media.appendChild(video);
+                    }
+
+                    const meta = document.createElement('div');
+                    meta.className = 'sample-meta';
+                    const sampleLabel = project.label || `${project.title} ${getSlideNumber(cardIndex)}`;
+                    meta.innerHTML = `
+                        <div>
+                            <span class="sample-label">${escapeHtml(sampleLabel)}</span>
+                            <strong class="sample-title">${escapeHtml(slideTitle)}</strong>
+                        </div>
+                        <span class="card-play-icon" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg>
+                        </span>
+                    `;
+                    media.appendChild(meta);
+
+                    card.appendChild(media);
+                    card.addEventListener('click', () => openModal(key, slideIndex));
+                    card.addEventListener('keydown', event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openModal(key, slideIndex);
+                        }
+                    });
+
+                    track.appendChild(card);
+                });
+            });
+        }
+
+        function setupPortfolioCarousels() {
+            document.querySelectorAll('.carousel-wrap').forEach(wrap => {
+                const track = wrap.querySelector('.sample-carousel');
+                const cards = Array.from(track.querySelectorAll('.sample-card'));
+                const dotsContainer = wrap.querySelector('.carousel-dots');
+                const hasMultipleCards = cards.length > 1;
+                dotsContainer.hidden = !hasMultipleCards;
+                wrap.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.hidden = !hasMultipleCards);
+
+                dotsContainer.innerHTML = '';
+                (hasMultipleCards ? cards : []).forEach((card, index) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                    dot.type = 'button';
+                    dot.setAttribute('aria-label', `Go to sample ${index + 1}`);
+                    dot.addEventListener('click', () => {
+                        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+
+                let ticking = false;
+                track.addEventListener('scroll', () => {
+                    if (ticking) return;
+                    ticking = true;
+                    window.requestAnimationFrame(() => {
+                        updateCarouselDots(wrap);
+                        ticking = false;
+                    });
+                });
+                updateCarouselDots(wrap);
+            });
+
+            document.querySelectorAll('.carousel-arrow').forEach(button => {
+                button.addEventListener('click', () => moveCarousel(button, Number(button.dataset.direction || 1)));
+            });
+        }
+
+        function updateCarouselDots(wrap) {
+            const track = wrap.querySelector('.sample-carousel');
+            const cards = Array.from(track.querySelectorAll('.sample-card'));
+            const dots = Array.from(wrap.querySelectorAll('.carousel-dot'));
+            if (!cards.length) return;
+
+            const trackCenter = track.scrollLeft + track.clientWidth / 2;
+            let activeIndex = 0;
+            let activeDistance = Infinity;
+
+            cards.forEach((card, index) => {
+                const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                const distance = Math.abs(cardCenter - trackCenter);
+                if (distance < activeDistance) {
+                    activeDistance = distance;
+                    activeIndex = index;
+                }
+            });
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        function moveCarousel(button, direction) {
+            const wrap = button.closest('.carousel-wrap');
+            const track = wrap.querySelector('.sample-carousel');
+            const cards = Array.from(track.querySelectorAll('.sample-card'));
+            const dots = Array.from(wrap.querySelectorAll('.carousel-dot'));
+            const activeIndex = Math.max(0, dots.findIndex(dot => dot.classList.contains('active')));
+            const nextIndex = Math.min(cards.length - 1, Math.max(0, activeIndex + direction));
+            cards[nextIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        function setPreviewPlayback(media, playing) {
+            playing = playing && !media.closest('[hidden]');
+            if (media.tagName === 'IFRAME') {
+                const src = playing ? media.dataset.src : 'about:blank';
+                if (media.getAttribute('src') !== src) media.src = src;
+            } else if (playing) {
+                media.play().catch(() => {});
+            } else {
+                media.pause();
+            }
+        }
+
+        function setupPreviewPlayback() {
+            const videos = Array.from(document.querySelectorAll('.sample-card video, .sample-card iframe'));
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        const video = entry.target;
+                        const modalOpen = document.getElementById('modalOverlay').classList.contains('active');
+                        setPreviewPlayback(video, entry.isIntersecting && !modalOpen);
+                    });
+                }, { threshold: 0.32 });
+
+                videos.forEach(video => observer.observe(video));
+            } else {
+                videos.forEach(video => setPreviewPlayback(video, true));
+            }
+        }
+
+        function pausePreviewVideos() {
+            document.querySelectorAll('.sample-card video, .sample-card iframe').forEach(video => setPreviewPlayback(video, false));
+        }
+
+        function playVisiblePreviewVideos() {
+            document.querySelectorAll('.sample-card video, .sample-card iframe').forEach(video => {
+                const rect = video.getBoundingClientRect();
+                const visible = rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+                setPreviewPlayback(video, visible);
+            });
+        }
+
+        function setupInlineMediaEnlargers() {
+            document.querySelectorAll('[data-open-project][data-open-slide]').forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    openModal(link.dataset.openProject, Number(link.dataset.openSlide));
+                });
+            });
+        }
+
+        renderPortfolioCarousels();
+        setupPortfolioCarousels();
+        setupInlineMediaEnlargers();
+        setupPreviewPlayback();
+
+        let currentSlide = 0;
+        let currentProject = null;
+        let viewerTrigger = null;
+        let photoCarousel = null;
+
+        function isMobileViewer() {
+            return window.matchMedia('(max-width: 768px), (max-height: 500px) and (pointer: coarse)').matches;
+        }
+
+        function openModal(key, startIndex = 0) {
+            const project = projects[key];
+            const selectedSlide = project.slides[Math.min(Math.max(startIndex, 0), project.slides.length - 1)];
+            const slides = selectedSlide.type === 'image'
+                ? project.slides.filter(slide => slide.type === 'image')
+                : [selectedSlide];
+            currentProject = { ...project, slides };
+            currentSlide = slides.indexOf(selectedSlide);
+            viewerTrigger = document.activeElement;
+            const modal = document.querySelector('.modal');
+            modal.dataset.mediaType = selectedSlide.type;
+            renderSlides();
+            updateModalTitle();
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('modalOverlay').setAttribute('aria-hidden', 'false');
+            setupPhotoCarousel();
+            document.body.style.overflow = 'hidden';
+            pausePreviewVideos();
+            modal.querySelector('.modal-close').focus({ preventScroll: true });
+            // Fill the screen where supported; the mobile layout also works without this API.
+            if (isMobileViewer() && modal.requestFullscreen && !document.fullscreenElement) {
+                modal.requestFullscreen().catch(() => {});
+            }
+            playActiveVideo();
+        }
+
+        function updateModalTitle() {
+            const activeSlide = currentProject.slides[currentSlide];
+            document.getElementById('modalTitle').textContent = getSlideTitle(activeSlide, currentProject, currentSlide);
+        }
+
+        function closeModal() {
+            destroyPhotoCarousel();
+            document.querySelectorAll('.slide video').forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            document.querySelectorAll('.slide iframe').forEach(iframe => iframe.src = 'about:blank');
+            if (document.fullscreenElement === document.querySelector('.modal')) {
+                document.exitFullscreen().catch(() => {});
+            }
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('modalOverlay').setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            if (viewerTrigger && viewerTrigger.isConnected) viewerTrigger.focus({ preventScroll: true });
+            playVisiblePreviewVideos();
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
+        }
+
+        function renderSlides() {
+            const wrapper = document.querySelector('.slides-wrapper');
+            destroyPhotoCarousel();
+            // Remove old slides
+            wrapper.querySelectorAll('.slide').forEach(s => s.remove());
+            wrapper.querySelector('.photo-track')?.remove();
+
+            const isPhotoGallery = currentProject.slides.every(slide => slide.type === 'image');
+            const photoTrack = isPhotoGallery ? document.createElement('div') : null;
+            if (photoTrack) {
+                photoTrack.className = 'photo-track';
+                wrapper.insertBefore(photoTrack, wrapper.querySelector('.arrow.prev'));
+            }
+
+            const dotsContainer = document.getElementById('modalDots');
+            dotsContainer.innerHTML = '';
+            const hasGallery = currentProject.slides.length > 1;
+            dotsContainer.hidden = !hasGallery;
+            wrapper.querySelectorAll('.arrow').forEach(arrow => arrow.hidden = !hasGallery);
+
+            currentProject.slides.forEach((slide, i) => {
+                const div = document.createElement('div');
+                div.className = 'slide' + (i === currentSlide ? ' active' : '');
+
+                if (slide.type === 'image') {
+                    div.classList.add('image-slide');
+                    div.setAttribute('aria-hidden', i !== currentSlide);
+                    const img = document.createElement('img');
+                    img.src = slide.src;
+                    img.alt = slide.alt || 'Portfolio image';
+                    img.draggable = false;
+                    div.appendChild(img);
+                } else if (slide.src.includes('player.')) {
+                    const iframe = document.createElement('iframe');
+                    const playerUrl = new URL(slide.src);
+                    if (isMobileViewer()) playerUrl.searchParams.set('playsinline', '0');
+                    iframe.src = i === currentSlide ? playerUrl.href : 'about:blank';
+                    iframe.dataset.src = playerUrl.href;
+                    iframe.title = getSlideTitle(slide, currentProject, i);
+                    iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+                    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+                    iframe.allowFullscreen = true;
+                    div.classList.add('video-slide');
+                    div.appendChild(iframe);
+                } else {
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.playsInline = !isMobileViewer();
+                    video.preload = 'metadata';
+                    const source = document.createElement('source');
+                    source.src = slide.src;
+                    if (slide.mime) {
+                        source.type = slide.mime;
+                    }
+                    video.appendChild(source);
+                    div.classList.add('video-slide');
+                    div.appendChild(video);
+                }
+
+                if (photoTrack) photoTrack.appendChild(div);
+                else wrapper.insertBefore(div, wrapper.querySelector('.arrow.prev'));
+
+                if (!hasGallery) return;
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'dot' + (i === currentSlide ? ' active' : '');
+                dot.setAttribute('aria-label', `Go to ${getSlideTitle(slide, currentProject, i)}`);
+                dot.setAttribute('aria-current', i === currentSlide ? 'true' : 'false');
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function changeSlide(dir) {
+            if (!currentProject || currentProject.slides.length < 2) return;
+            if (photoCarousel) {
+                const jump = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (dir < 0) photoCarousel.scrollPrev(jump);
+                else photoCarousel.scrollNext(jump);
+                return;
+            }
+            const total = currentProject.slides.length;
+            goToSlide((currentSlide + dir + total) % total);
+        }
+
+        function goToSlide(index) {
+            if (!currentProject || currentProject.slides.length < 2 || index < 0 || index >= currentProject.slides.length) return;
+            if (photoCarousel) {
+                photoCarousel.scrollTo(index, window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+                return;
+            }
+            const slides = document.querySelectorAll('.slide');
+            const dots   = document.querySelectorAll('.dot');
+
+            // Pause/clear previous video
+            const prevSlide = slides[currentSlide];
+            const prevIframe = prevSlide && prevSlide.querySelector('iframe');
+            if (prevIframe) prevIframe.src = 'about:blank';
+            const prevVideo = prevSlide && prevSlide.querySelector('video');
+            if (prevVideo) prevVideo.pause();
+
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].setAttribute('aria-hidden', 'true');
+            dots[currentSlide].classList.remove('active');
+            dots[currentSlide].setAttribute('aria-current', 'false');
+
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            slides[currentSlide].setAttribute('aria-hidden', 'false');
+            dots[currentSlide].classList.add('active');
+            dots[currentSlide].setAttribute('aria-current', 'true');
+            updateModalTitle();
+
+            // Load video src lazily
+            const iframe = slides[currentSlide].querySelector('iframe');
+            if (iframe && iframe.getAttribute('src') === 'about:blank') {
+                iframe.src = iframe.dataset.src;
+            }
+
+            playActiveVideo();
+        }
+
+        function playActiveVideo() {
+            const activeVideo = document.querySelector('.slide.active video');
+            if (activeVideo) {
+                activeVideo.play().catch(() => {});
+            }
+        }
+
+        function destroyPhotoCarousel() {
+            if (photoCarousel) photoCarousel.destroy();
+            photoCarousel = null;
+            document.querySelector('.slides-wrapper').classList.remove('photo-carousel');
+        }
+
+        function setupPhotoCarousel() {
+            const wrapper = document.querySelector('.slides-wrapper');
+            const track = wrapper.querySelector('.photo-track');
+            if (!track || typeof window.EmblaCarousel !== 'function') return;
+
+            wrapper.classList.add('photo-carousel');
+            photoCarousel = window.EmblaCarousel(wrapper, {
+                container: track,
+                loop: true,
+                startIndex: currentSlide,
+                duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 28,
+                watchFocus: false,
+                watchDrag: (_, event) => isMobileViewer()
+                    && (!event.touches || event.touches.length === 1)
+                    && (!window.visualViewport || window.visualViewport.scale <= 1.01)
+            });
+
+            const syncSelection = () => {
+                currentSlide = photoCarousel.selectedScrollSnap();
+                track.querySelectorAll('.slide').forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentSlide);
+                    slide.setAttribute('aria-hidden', index !== currentSlide);
+                });
+                document.querySelectorAll('#modalDots .dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                    dot.setAttribute('aria-current', index === currentSlide ? 'true' : 'false');
+                });
+                updateModalTitle();
+            };
+            photoCarousel.on('select', syncSelection).on('reInit', syncSelection);
+            syncSelection();
+        }
+
+        // Keep basic swipe navigation available if the carousel script cannot load.
+        const photoSwipeArea = document.querySelector('.slides-wrapper');
+        let photoSwipeStart = null;
+        const canSwipePhotos = () => !photoCarousel && isMobileViewer()
+            && document.getElementById('modalOverlay').classList.contains('active')
+            && document.querySelector('.modal').dataset.mediaType === 'image'
+            && (!window.visualViewport || window.visualViewport.scale <= 1.01);
+
+        photoSwipeArea.addEventListener('touchstart', event => {
+            photoSwipeStart = null;
+            if (!canSwipePhotos() || event.touches.length !== 1) return;
+            const touch = event.touches[0];
+            photoSwipeStart = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+        }, { passive: true });
+
+        photoSwipeArea.addEventListener('touchmove', event => {
+            if (event.touches.length !== 1 || !canSwipePhotos()) photoSwipeStart = null;
+        }, { passive: true });
+
+        photoSwipeArea.addEventListener('touchend', event => {
+            const start = photoSwipeStart;
+            photoSwipeStart = null;
+            if (!start || event.touches.length || !canSwipePhotos()) return;
+            const touch = Array.from(event.changedTouches).find(item => item.identifier === start.id);
+            if (!touch) return;
+            const dx = touch.clientX - start.x;
+            const dy = touch.clientY - start.y;
+            if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                changeSlide(dx < 0 ? 1 : -1);
+            }
+        }, { passive: true });
+
+        photoSwipeArea.addEventListener('touchcancel', () => {
+            photoSwipeStart = null;
+        }, { passive: true });
+
+        // ── Hamburger ──
+        const btn  = document.getElementById('hamburgerBtn');
+        const menu = document.getElementById('mobileMenu');
+
+        btn.addEventListener('click', () => {
+            const isOpen = menu.classList.toggle('open');
+            btn.classList.toggle('open', isOpen);
+            btn.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', false);
+                menu.setAttribute('aria-hidden', true);
+            });
+        });
+
+        const projectTypeTabs = Array.from(document.querySelectorAll('.project-type-tab'));
+        const projectTypePanels = Array.from(document.querySelectorAll('.project-type-panel'));
+        const projectTypeNav = document.getElementById('project-types');
+
+        function getProjectHashTarget() {
+            try {
+                return document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+            } catch {
+                return null;
+            }
+        }
+
+        function selectProjectType(id) {
+            const selectedPanel = projectTypePanels.find(panel => panel.id === id);
+            if (!selectedPanel) return;
+            if (document.getElementById('modalOverlay').classList.contains('active')) closeModal();
+            projectTypePanels.forEach(panel => { panel.hidden = panel !== selectedPanel; });
+            projectTypeTabs.forEach(tab => {
+                const selected = tab.getAttribute('aria-controls') === id;
+                tab.setAttribute('aria-selected', String(selected));
+                tab.tabIndex = selected ? 0 : -1;
+                if (selected) {
+                    const track = tab.parentElement;
+                    const left = tab.offsetLeft - track.offsetLeft;
+                    if (left < track.scrollLeft) track.scrollLeft = left;
+                    else if (left + tab.offsetWidth > track.scrollLeft + track.clientWidth) {
+                        track.scrollLeft = left + tab.offsetWidth - track.clientWidth;
+                    }
+                }
+            });
+            pausePreviewVideos();
+            requestAnimationFrame(playVisiblePreviewVideos);
+        }
+
+        function restoreProjectTypeFromHash() {
+            const target = getProjectHashTarget();
+            const panel = target && target.closest('.project-type-panel');
+            selectProjectType(panel ? panel.id : 'event-activation');
+            if (panel) {
+                requestAnimationFrame(() => {
+                    (target === panel ? projectTypeNav : target).scrollIntoView({ block: 'start' });
+                });
+            }
+        }
+
+        projectTypeTabs.forEach((tab, index) => {
+            tab.addEventListener('click', event => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                if (window.location.hash !== tab.hash) history.pushState(null, '', tab.hash);
+                selectProjectType(tab.getAttribute('aria-controls'));
+                projectTypeNav.scrollIntoView({ block: 'start' });
+            });
+            tab.addEventListener('keydown', event => {
+                let nextIndex;
+                if (event.key === 'ArrowRight') nextIndex = (index + 1) % projectTypeTabs.length;
+                else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + projectTypeTabs.length) % projectTypeTabs.length;
+                else if (event.key === 'Home') nextIndex = 0;
+                else if (event.key === 'End') nextIndex = projectTypeTabs.length - 1;
+                else if (event.key === ' ') {
+                    event.preventDefault();
+                    tab.click();
+                    return;
+                } else return;
+                event.preventDefault();
+                projectTypeTabs[nextIndex].focus({ preventScroll: true });
+                projectTypeTabs[nextIndex].click();
+            });
+        });
+
+        window.addEventListener('hashchange', restoreProjectTypeFromHash);
+        restoreProjectTypeFromHash();
+
+        // ── Keyboard nav ──
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('modalOverlay').classList.contains('active')) return;
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                changeSlide(e.key === 'ArrowLeft' ? -1 : 1);
+            }
+            if (e.key === 'Escape')     closeModal();
+            if (e.key === 'Tab') {
+                const focusable = Array.from(document.querySelector('.modal').querySelectorAll('button, iframe'))
+                    .filter(element => element.getClientRects().length && !element.disabled);
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

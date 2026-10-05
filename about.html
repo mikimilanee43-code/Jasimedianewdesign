@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JASIMEDIA - About</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* ── HEADER (same as homepage) ── */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 0 50px;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { display: flex; align-items: center; min-height: 44px; text-decoration: none; }
+        .logo:focus-visible { outline: 2px solid #5f6368; outline-offset: 2px; }
+        .logo img { height: 22px; }
+
+        .logo-wordmark {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 1px;
+            color: #000;
+        }
+
+        nav {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: color 0.3s;
+        }
+
+        nav a:not(.cta-button),
+        .mobile-menu a:not(.cta-button) {
+            text-decoration-line: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 6px;
+        }
+
+        nav a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]),
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) {
+            color: #5f6368;
+            text-decoration-color: #c0c0c0;
+        }
+
+        .cta-button {
+            background-color: #000;
+            color: #fff !important;
+            padding: 6px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.8px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover { background-color: #333 !important; }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 200;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 1.5px;
+            width: 100%;
+            background-color: #000;
+            border-radius: 2px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .mobile-menu.open { max-height: 500px; opacity: 1; }
+
+        .mobile-menu a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 1px;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s, color 0.2s;
+            display: block;
+        }
+
+        .mobile-menu a:last-child { border-bottom: none; }
+        .mobile-menu a:not(.cta-button):is(:hover, :focus-visible, [aria-current="page"]) { background-color: #f8f8f8; }
+
+        .mobile-menu .cta-button {
+            margin: 16px 24px;
+            text-align: center;
+            border-radius: 20px;
+            padding: 10px 24px;
+            background-color: #000;
+            color: #fff !important;
+            border-bottom: none;
+        }
+
+        /* Meet the Team */
+        .about-me-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 50px;
+            scroll-margin-top: 44px;
+        }
+
+        .about-me-section h2 {
+            text-align: center;
+            font-size: 56px;
+            font-weight: 300;
+            letter-spacing: 0;
+            color: #333;
+            margin-bottom: 60px;
+        }
+
+        .about-me-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 260px;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .about-text-box {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about-text-box p {
+            font-size: 16px;
+            line-height: 1.9;
+            color: #555;
+        }
+
+        .about-text-box h3 {
+            font-size: 32px;
+            font-weight: 300;
+            line-height: 1.2;
+            letter-spacing: 0;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .about-text-box .team-role {
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 500;
+            color: #5f6368;
+            margin-bottom: 20px;
+        }
+
+        .about-text-box .team-role + p {
+            margin-top: 0;
+        }
+
+        .bio-details {
+            margin-top: 16px;
+        }
+
+        .bio-details summary {
+            width: fit-content;
+            padding: 12px 0;
+            font-size: 14px;
+            line-height: 20px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .bio-details summary::marker {
+            color: #5f6368;
+        }
+
+        .bio-details summary:is(:hover, :focus-visible) {
+            color: #5f6368;
+        }
+
+        .bio-details summary:focus-visible {
+            outline: 2px solid #5f6368;
+            outline-offset: 4px;
+        }
+
+        .bio-details .collapse-label,
+        .bio-details[open] .expand-label {
+            display: none;
+        }
+
+        .bio-details[open] .collapse-label {
+            display: inline;
+        }
+
+        .bio-details[open] summary {
+            margin-bottom: 12px;
+        }
+
+        .about-text-box p + p,
+        .journey-text p + p {
+            margin-top: 18px;
+        }
+
+        .about-text-box .placeholder-copy,
+        .journey-text .placeholder-copy {
+            display: none;
+        }
+
+        .journey-text.legacy-copy {
+            display: none;
+        }
+
+        .about-photo-box {
+            width: 100%;
+            max-width: 260px;
+            aspect-ratio: 2 / 3;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .about-photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-auto-rows: auto;
+            gap: 24px;
+            margin-top: 40px;
+            list-style: none;
+        }
+
+        .team-member {
+            height: 100%;
+            background-color: #fff;
+            border: 1px solid #dedede;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-photo-placeholder {
+            flex: 0 0 200px;
+            display: grid;
+            place-items: center;
+            background-color: #e3e5e6;
+            border-bottom: 1px solid #d4d6d7;
+            color: #777c80;
+            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-size: 48px;
+            letter-spacing: 0;
+        }
+
+        .team-member-copy {
+            min-width: 0;
+            padding: 24px 28px;
+        }
+
+        .team-member h3 {
+            font-size: 28px;
+            font-weight: 300;
+            line-height: 1.2;
+            letter-spacing: 0;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .team-member p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #5f6368;
+        }
+
+        .team-impact {
+            padding: 20px 50px;
+            scroll-margin-top: 44px;
+        }
+
+        .impact-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+            column-gap: 24px;
+            align-items: center;
+            background-color: #c0c0c0;
+            border: 1px solid #b4b7ba;
+            border-radius: 20px;
+        }
+
+        .impact-note {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            border-right: 1px solid #96999b;
+        }
+
+        .impact-item {
+            min-width: 0;
+            padding: 0 20px;
+            text-align: center;
+            border-right: 1px solid #96999b;
+        }
+
+        .impact-item:last-child {
+            border-right: 0;
+        }
+
+        .impact-item dt {
+            font-size: 13px;
+            line-height: 1.4;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .impact-item dd {
+            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-size: 34px;
+            line-height: 1.15;
+            letter-spacing: 0;
+            color: #222;
+        }
+
+        .impact-contact {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center;
+            width: 144px;
+            height: 56px;
+            min-height: 56px;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: 0;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .impact-contact:focus-visible {
+            outline: 2px solid #5f6368;
+            outline-offset: 4px;
+        }
+
+        /* About JASIMEDIA */
+        .journey-section {
+            background-color: #fff;
+            padding: 80px 50px;
+        }
+
+        .journey-section h1 {
+            font-size: 48px;
+            font-weight: 300;
+            line-height: 1.15;
+            letter-spacing: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .journey-text {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            font-size: 16px;
+            line-height: 1.9;
+            color: #555;
+            background-color: #f9f9f9;
+            border-left: 3px solid #6b6b6b;
+            padding: 30px 40px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .company-photo {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            display: block;
+            margin: 0 auto 60px;
+        }
+
+        /* ── FOOTER (same as homepage) ── */
+        footer {
+            background-color: #c0c0c0;
+            padding: 24px 50px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #000;
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin: 0;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover { opacity: 1; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            header { padding: 0 20px; height: 44px; position: sticky; }
+            nav { display: none; }
+            .hamburger { display: flex; }
+            .mobile-menu { display: flex; }
+
+            .about-me-section {
+                padding: 50px 24px;
+            }
+
+            .about-me-section h2 {
+                font-size: 40px;
+                margin-bottom: 40px;
+            }
+
+            .about-me-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .about-text-box {
+                min-height: auto;
+                padding: 30px 24px;
+            }
+
+            .about-photo-box {
+                max-width: 220px;
+                justify-self: center;
+            }
+
+            .team-grid {
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .team-member-copy {
+                padding: 24px;
+            }
+
+            .team-photo-placeholder {
+                flex-basis: 180px;
+            }
+
+            .team-impact {
+                padding: 10px 12px;
+            }
+
+            .impact-inner {
+                padding: 12px 8px;
+                grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+                column-gap: 8px;
+            }
+
+            .impact-contact {
+                width: 100%;
+                max-width: 96px;
+                height: 48px;
+                min-height: 48px;
+                padding: 6px;
+                font-size: 12px;
+                line-height: 1.2;
+                margin-top: 0;
+            }
+
+            .impact-note {
+                margin-bottom: 6px;
+            }
+
+            .impact-item {
+                padding: 0 6px;
+            }
+
+            .impact-item dt {
+                font-size: 12px;
+                min-height: 34px;
+                margin-bottom: 4px;
+            }
+
+            .impact-item dd {
+                font-size: 28px;
+            }
+
+            .journey-section {
+                padding: 50px 24px;
+            }
+
+            .journey-section h1 {
+                font-size: 36px;
+            }
+
+            .journey-text {
+                padding: 20px 24px;
+            }
+
+        }
+
+        @media (max-width: 540px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cta-button,
+        .mobile-menu .cta-button {
+            border: 1px solid #000;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.2s ease;
+        }
+
+        .cta-button:hover,
+        .cta-button:focus-visible,
+        .cta-button:active {
+            background-color: #fff !important;
+            color: #000 !important;
+            border-color: #000;
+            transform: translateY(-1px);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        header .cta-button {
+            position: relative;
+            isolation: isolate;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.2s ease;
+        }
+
+        header .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(125deg, #eceeef 0%, #c0c0c0 28%, #d5d7da 51%, #b4b7ba 75%, #e4e6e8 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.95), inset 0 -1px 2px rgba(95,99,104,0.35);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        header .cta-button:is(:hover, :focus-visible, :active) {
+            background-color: #c0c0c0 !important;
+            color: #000 !important;
+            border-color: #b4b7ba;
+            box-shadow: 0 0 0 1px rgba(235,237,239,0.8), 0 3px 10px rgba(95,99,104,0.16);
+        }
+
+        header .cta-button:is(:hover, :focus-visible, :active)::before {
+            opacity: 1;
+        }
+
+        header .cta-button:focus-visible {
+            outline: 2px solid #5f6368;
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            header .cta-button,
+            header .cta-button::before {
+                transition: none;
+            }
+
+            .impact-contact,
+            .impact-contact:is(:hover, :focus-visible, :active) {
+                transition: none;
+                transform: none;
+            }
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .logo-wordmark {
+            font-family: "Gloock", Georgia, "Times New Roman", serif;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo logo-wordmark" href="index.html" aria-label="JASIMEDIA home">JASIMEDIA</a>
+
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="about.html" aria-current="page">ABOUT</a>
+            <a href="portfolionewdesign.html">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button">CONTACT</a>
+        </nav>
+
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <a href="index.html" class="mobile-link">HOME</a>
+            <a href="about.html" class="mobile-link" aria-current="page">ABOUT</a>
+            <a href="portfolionewdesign.html" class="mobile-link">PORTFOLIO</a>
+            <a href="testimonialsnewdesgin.html" class="mobile-link">TESTIMONIALS</a>
+            <a href="servicesnewdesign.html" class="mobile-link">SERVICES</a>
+            <a href="contactnewdesign.html" class="cta-button mobile-link">CONTACT</a>
+        </div>
+    </header>
+
+    <!-- About JASIMEDIA -->
+    <section class="journey-section" id="about-jasimedia" aria-labelledby="about-heading">
+        <h1 id="about-heading">About JASIMEDIA</h1>
+
+        <div class="journey-text">
+            <p>
+                Jasimedia is a South Florida-based creative production company specializing in high-quality photo and video content for brands, businesses, athletes, events, and entrepreneurs. Founded by Jasim, Jasimedia focuses on creating visually compelling stories that capture authentic moments, build brand awareness, and drive engagement across digital platforms.
+            </p>
+            <p>
+                From large-scale conferences, nonprofit campaigns, and fitness events to luxury hospitality, lifestyle brands, and personal brands, Jasimedia delivers professional content with a cinematic approach and fast, reliable execution.
+            </p>
+        </div>
+
+        <div class="journey-text legacy-copy">
+            <p>
+                Whether it's event coverage, promotional campaigns, interviews, social media content, or brand storytelling, every project is approached with creativity, attention to detail, and a commitment to exceeding expectations.
+            </p>
+            <p>
+                At its core, Jasimedia believes great content is more than just visuals - it's about creating meaningful connections, telling impactful stories, and helping clients showcase who they are in a way that resonates with their audience.
+            </p>
+            <p class="placeholder-copy">
+                Jasimedia is a South Florida-based creative production company specializing in high-quality photo and video content for brands, businesses, athletes, events, and entrepreneurs. Founded by Jasim, Jasimedia focuses on creating visually compelling stories that capture authentic moments, build brand awareness, and drive engagement across digital platforms.
+            </p>
+            <p>
+                From large-scale conferences, nonprofit campaigns, and fitness events to luxury hospitality, lifestyle brands, and personal brands, Jasimedia delivers professional content with a cinematic approach and fast, reliable execution.
+            </p>
+            <p class="placeholder-copy">
+                It all started when I picked up my first camera at [age/year]. What began as a hobby quickly turned into a full-blown obsession — chasing golden hour light, experimenting with angles, and telling stories one frame at a time. [Replace with your own journey — Part 1]
+            </p>
+        </div>
+
+        <img src="Homepagenewdesign%20about%20picture.jpeg" alt="The JASIMEDIA team together at an event" class="company-photo" width="690" height="398" decoding="async">
+
+        <div class="journey-text">
+            <p>
+                Whether it's event coverage, promotional campaigns, interviews, social media content, or brand storytelling, every project is approached with creativity, attention to detail, and a commitment to exceeding expectations.
+            </p>
+            <p>
+                At its core, Jasimedia believes great content is more than just visuals - it's about creating meaningful connections, telling impactful stories, and helping clients showcase who they are in a way that resonates with their audience.
+            </p>
+        </div>
+
+        <div class="journey-text legacy-copy">
+            <p>
+                Over the years I've had the privilege of working with [clients / brands / events], each one pushing me to grow my craft further. Today JASIMEDIA is more than just a brand — it's a commitment to capturing your story in the most authentic way possible. [Replace with your own journey — Part 2]
+            </p>
+        </div>
+    </section>
+
+    <section class="team-impact" id="client-impact" aria-label="Clients and impact" aria-describedby="impact-demo-note">
+        <div class="impact-inner">
+            <p class="impact-note" id="impact-demo-note">Sample client and click totals</p>
+            <dl class="impact-grid">
+                <div class="impact-item">
+                    <dt>Happy Clients</dt>
+                    <dd>150+</dd>
+                </div>
+                <div class="impact-item">
+                    <dt>Social Media Clicks</dt>
+                    <dd>2M+</dd>
+                </div>
+            </dl>
+            <a class="cta-button impact-contact" href="contactnewdesign.html">Contact Us</a>
+        </div>
+    </section>
+
+    <!-- Meet the Team -->
+    <section class="about-me-section" id="meet-team" aria-labelledby="team-heading">
+        <h2 id="team-heading">Meet the Team</h2>
+        <article class="about-me-grid" aria-labelledby="jasim-heading">
+            <div class="about-text-box">
+                <h3 id="jasim-heading">Jasim</h3>
+                <p class="team-role">CEO, Founder and Creative Director</p>
+                <p>
+                    Hi, I'm Jasim, the founder of Jasimedia. What started as a passion for storytelling and creativity has grown into a full-service photo and video production company focused on helping brands, businesses, athletes, entrepreneurs, and organizations share their stories through impactful content.
+                </p>
+                <details class="bio-details">
+                    <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                    <div class="bio-rest">
+                        <p>
+                            Over the years, I've had the opportunity to work with a wide range of clients - from nonprofit organizations and national brands to professional athletes, fitness companies, conferences, hospitality groups, and growing businesses. No matter the project, my goal remains the same: create content that feels authentic, captures attention, and delivers results.
+                        </p>
+                        <p>
+                            I believe the best content comes from genuine relationships and understanding the people behind the brand. That's why I take a hands-on approach to every project, working closely with clients to bring their vision to life while making the process seamless and enjoyable.
+                        </p>
+                        <p>
+                            When you work with Jasimedia, you're not just hiring a videographer or photographer - you're partnering with someone who genuinely cares about your success and is invested in helping tell your story in the most compelling way possible.
+                        </p>
+                    </div>
+                </details>
+            </div>
+            <div class="about-photo-box">
+                <img src="jasimediajasimpicture.webp" alt="Jasim filming with a camera stabilizer" width="2400" height="3600" loading="lazy" decoding="async">
+            </div>
+        </article>
+
+        <ul class="team-grid" aria-label="Team members">
+            <li>
+                <article class="team-member" aria-labelledby="gio-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Gio"><span aria-hidden="true">G</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="gio-heading">Gio</h3>
+                        <p>Lead Videographer</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>Gio's introduction is coming soon.</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="team-member" aria-labelledby="gaby-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Gaby"><span aria-hidden="true">G</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="gaby-heading">Gaby</h3>
+                        <p>Lead Photographer</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>Gaby's introduction is coming soon.</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="team-member" aria-labelledby="dani-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Dani"><span aria-hidden="true">D</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="dani-heading">Dani</h3>
+                        <p>Producer</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>Dani's introduction is coming soon.</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="team-member" aria-labelledby="donovan-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Donovan"><span aria-hidden="true">D</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="donovan-heading">Donovan</h3>
+                        <p>Editor/Colorist</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>Donovan's introduction is coming soon.</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+        </ul>
+
+    </section>
+
+    <footer>
+        <p>© 2026 JASIMEDIA. All rights reserved. All images are copyrighted. Unauthorized use is prohibited.</p>
+    </footer>
+
+    <script>
+        const btn = document.getElementById('hamburgerBtn');
+        const menu = document.getElementById('mobileMenu');
+
+        btn.addEventListener('click', () => {
+            const isOpen = menu.classList.toggle('open');
+            btn.classList.toggle('open', isOpen);
+            btn.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', false);
+                menu.setAttribute('aria-hidden', true);
+            });
+        });
+    </script>
+
+</body>
+</html>
