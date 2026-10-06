@@ -7,8 +7,9 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Inter+Tight:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { font-family: Helvetica, Arial, sans-serif; }
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +17,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             background-color: #f5f5f5;
         }
 
@@ -168,10 +169,10 @@
             scroll-margin-top: 44px;
         }
 
-        .about-me-section h2 {
+.about-me-section h2 {
             text-align: center;
             font-size: 56px;
-            font-weight: 300;
+            font-weight: 700;
             letter-spacing: 0;
             color: #333;
             margin-bottom: 60px;
@@ -199,9 +200,9 @@
             color: #555;
         }
 
-        .about-text-box h3 {
+.about-text-box h3 {
             font-size: 32px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.2;
             letter-spacing: 0;
             color: #333;
@@ -316,7 +317,7 @@
             background-color: #e3e5e6;
             border-bottom: 1px solid #d4d6d7;
             color: #777c80;
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 48px;
             letter-spacing: 0;
         }
@@ -326,9 +327,9 @@
             padding: 24px 28px;
         }
 
-        .team-member h3 {
+.team-member h3 {
             font-size: 28px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.2;
             letter-spacing: 0;
             color: #333;
@@ -394,7 +395,7 @@
         }
 
         .impact-item dd {
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 34px;
             line-height: 1.15;
             letter-spacing: 0;
@@ -431,9 +432,9 @@
             padding: 80px 50px;
         }
 
-        .journey-section h1 {
+.journey-section h1 {
             font-size: 48px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.15;
             letter-spacing: 0;
             color: #333;
@@ -656,7 +657,16 @@
         h5,
         h6,
         .logo-wordmark {
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        :is(.about-me-section h2, .about-text-box h3, .team-member h3, .journey-section h1),
+        :is(.about-me-section h2, .about-text-box h3, .team-member h3, .journey-section h1) * {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+        }
+        header .logo-wordmark {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0;
         }
     </style>
 </head>
