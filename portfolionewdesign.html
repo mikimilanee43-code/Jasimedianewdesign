@@ -392,6 +392,16 @@
             overflow: hidden;
         }
 
+        @media (min-width: 769px) and (pointer: fine) {
+            .modal[data-media-type="image"] {
+                width: 100%;
+                max-width: none;
+                height: 100vh;
+                height: 100dvh;
+                border-radius: 0;
+            }
+        }
+
         .modal:fullscreen {
             width: 100%;
             max-width: none;
@@ -1795,8 +1805,8 @@
             document.body.style.overflow = 'hidden';
             pausePreviewVideos();
             modal.querySelector('.modal-close').focus({ preventScroll: true });
-            // Fill the screen where supported; the mobile layout also works without this API.
-            if (isMobileViewer() && modal.requestFullscreen && !document.fullscreenElement) {
+            // Photo viewing fills the screen; CSS also covers browsers that reject fullscreen.
+            if ((isMobileViewer() || selectedSlide.type === 'image') && modal.requestFullscreen && !document.fullscreenElement) {
                 modal.requestFullscreen().catch(() => {});
             }
             playActiveVideo();
