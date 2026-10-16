@@ -290,10 +290,14 @@
         }
 
         .team-image {
-            width: 100%;
-            height: 400px;
+            width: auto;
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
             object-fit: contain;
             display: block;
+            justify-self: center;
+            border-radius: 16px;
         }
 
         .why-section {
@@ -458,7 +462,7 @@
             }
 
             .team-image {
-                height: 260px;
+                max-height: 260px;
             }
 
             .why-grid {
@@ -632,7 +636,7 @@
         <div class="meet-center">
             <h2 id="team-heading">MEET THE TEAM</h2>
             <p class="meet-subtitle">The people, perspective, and craft behind JASIMEDIA</p>
-            <button type="button" onclick="window.location.href='about.html#meet-team'">Learn More</button>
+            <button type="button" onclick="window.location.href='about.html'">Learn More</button>
         </div>
         <img src="Jasimediateampic.webp" alt="The JASIMEDIA team together at an event" class="team-image" width="4240" height="2832" loading="lazy" decoding="async">
     </section>
