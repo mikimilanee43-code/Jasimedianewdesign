@@ -498,18 +498,46 @@
             }
 
             .about-me-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                background-color: #fff;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                overflow: hidden;
             }
 
             .about-text-box {
                 min-height: auto;
-                padding: 30px 24px;
+                width: 100%;
+                padding: 24px;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .about-text-box h3 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .about-text-box p {
+                font-size: 14px;
+                line-height: 1.6;
             }
 
             .about-photo-box {
-                max-width: 220px;
-                justify-self: center;
+                order: -1;
+                max-width: none;
+                height: 180px;
+                aspect-ratio: auto;
+                border-radius: 0;
+                border-bottom: 1px solid #d4d6d7;
+                box-shadow: none;
+            }
+
+            .about-photo-box img {
+                object-fit: cover;
+                object-position: center 30%;
             }
 
             .team-grid {
