@@ -222,8 +222,32 @@
             margin-top: 0;
         }
 
+        .desktop-bio-preview {
+            display: none;
+        }
+
+        @media (min-width: 769px) {
+            .about-text-box .desktop-bio-preview {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+                margin-top: 16px;
+            }
+
+            .about-text-box:has(.bio-details[open]) .desktop-bio-preview {
+                display: none;
+            }
+        }
+
         .bio-details {
             margin-top: 16px;
+        }
+
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .about-text-box .desktop-bio-preview {
+                -webkit-line-clamp: 1;
+            }
         }
 
         .bio-details summary {
@@ -816,6 +840,7 @@
                 <p class="bio-intro">
                     Hi, I'm Jasim, the founder of Jasimedia. What started as a passion for storytelling and creativity has grown into a full-service photo and video production company focused on helping brands, businesses, athletes, entrepreneurs, and organizations share their stories through impactful content.
                 </p>
+                <p class="desktop-bio-preview">Over the years, I've had the opportunity to work with a wide range of clients - from nonprofit organizations and national brands to professional athletes, fitness companies, conferences, hospitality groups, and growing businesses. No matter the project, my goal remains the same: create content that feels authentic, captures attention, and delivers results.</p>
                 <details class="bio-details">
                     <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
                     <div class="bio-rest">
