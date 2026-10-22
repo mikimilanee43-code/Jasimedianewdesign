@@ -7,8 +7,9 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Inter+Tight:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { font-family: Helvetica, Arial, sans-serif; }
         * {
             margin: 0;
             padding: 0;
@@ -16,7 +17,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             background-color: #f5f5f5;
         }
 
@@ -168,10 +169,10 @@
             scroll-margin-top: 44px;
         }
 
-        .about-me-section h2 {
+.about-me-section h2 {
             text-align: center;
             font-size: 56px;
-            font-weight: 300;
+            font-weight: 700;
             letter-spacing: 0;
             color: #333;
             margin-bottom: 60px;
@@ -185,6 +186,7 @@
         }
 
         .about-text-box {
+            align-self: stretch;
             background-color: #fff;
             border-radius: 8px;
             padding: 32px;
@@ -199,9 +201,9 @@
             color: #555;
         }
 
-        .about-text-box h3 {
+.about-text-box h3 {
             font-size: 32px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.2;
             letter-spacing: 0;
             color: #333;
@@ -220,8 +222,32 @@
             margin-top: 0;
         }
 
+        .desktop-bio-preview {
+            display: none;
+        }
+
+        @media (min-width: 769px) {
+            .about-text-box .desktop-bio-preview {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+                margin-top: 16px;
+            }
+
+            .about-text-box:has(.bio-details[open]) .desktop-bio-preview {
+                display: none;
+            }
+        }
+
         .bio-details {
             margin-top: 16px;
+        }
+
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .about-text-box .desktop-bio-preview {
+                -webkit-line-clamp: 1;
+            }
         }
 
         .bio-details summary {
@@ -316,7 +342,7 @@
             background-color: #e3e5e6;
             border-bottom: 1px solid #d4d6d7;
             color: #777c80;
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 48px;
             letter-spacing: 0;
         }
@@ -326,9 +352,9 @@
             padding: 24px 28px;
         }
 
-        .team-member h3 {
+.team-member h3 {
             font-size: 28px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.2;
             letter-spacing: 0;
             color: #333;
@@ -394,7 +420,7 @@
         }
 
         .impact-item dd {
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
             font-size: 34px;
             line-height: 1.15;
             letter-spacing: 0;
@@ -431,9 +457,9 @@
             padding: 80px 50px;
         }
 
-        .journey-section h1 {
+.journey-section h1 {
             font-size: 48px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.15;
             letter-spacing: 0;
             color: #333;
@@ -459,6 +485,7 @@
             height: auto;
             display: block;
             margin: 0 auto 60px;
+            border-radius: 16px;
         }
 
         /* ── FOOTER (same as homepage) ── */
@@ -496,18 +523,56 @@
             }
 
             .about-me-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                background-color: #fff;
+                border: 1px solid #dedede;
+                border-radius: 8px;
+                overflow: hidden;
             }
 
             .about-text-box {
                 min-height: auto;
-                padding: 30px 24px;
+                width: 100%;
+                padding: 24px;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .about-text-box h3 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .about-text-box p {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .about-text-box .bio-intro {
+                max-height: calc(var(--bio-intro-height, 1000px) - var(--portrait-height-gain, 0px));
+                overflow: hidden;
+            }
+
+            .about-text-box:has(.bio-details[open]) .bio-intro {
+                max-height: none;
             }
 
             .about-photo-box {
-                max-width: 220px;
-                justify-self: center;
+                order: -1;
+                max-width: none;
+                height: calc(180px + var(--portrait-height-gain, 0px));
+                flex-shrink: 0;
+                aspect-ratio: auto;
+                border-radius: 0;
+                border-bottom: 1px solid #d4d6d7;
+                box-shadow: none;
+            }
+
+            .about-photo-box img {
+                object-fit: cover;
+                object-position: center 30%;
             }
 
             .team-grid {
@@ -656,7 +721,16 @@
         h5,
         h6,
         .logo-wordmark {
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        :is(.about-me-section h2, .about-text-box h3, .team-member h3, .journey-section h1),
+        :is(.about-me-section h2, .about-text-box h3, .team-member h3, .journey-section h1) * {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+        }
+        header .logo-wordmark {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0;
         }
     </style>
 </head>
@@ -721,7 +795,7 @@
             </p>
         </div>
 
-        <img src="Homepagenewdesign%20about%20picture.jpeg" alt="The JASIMEDIA team together at an event" class="company-photo" width="690" height="398" decoding="async">
+        <img src="Jasimediateampic.webp" alt="The JASIMEDIA team together at an event" class="company-photo" width="4240" height="2832" decoding="async">
 
         <div class="journey-text">
             <p>
@@ -763,9 +837,10 @@
             <div class="about-text-box">
                 <h3 id="jasim-heading">Jasim</h3>
                 <p class="team-role">CEO, Founder and Creative Director</p>
-                <p>
+                <p class="bio-intro">
                     Hi, I'm Jasim, the founder of Jasimedia. What started as a passion for storytelling and creativity has grown into a full-service photo and video production company focused on helping brands, businesses, athletes, entrepreneurs, and organizations share their stories through impactful content.
                 </p>
+                <p class="desktop-bio-preview">Over the years, I've had the opportunity to work with a wide range of clients - from nonprofit organizations and national brands to professional athletes, fitness companies, conferences, hospitality groups, and growing businesses. No matter the project, my goal remains the same: create content that feels authentic, captures attention, and delivers results.</p>
                 <details class="bio-details">
                     <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
                     <div class="bio-rest">
@@ -782,7 +857,7 @@
                 </details>
             </div>
             <div class="about-photo-box">
-                <img src="jasimediajasimpicture.webp" alt="Jasim filming with a camera stabilizer" width="2400" height="3600" loading="lazy" decoding="async">
+                <img src="aboutpagejasimpicture.webp" alt="Jasim smiling while holding a camera stabilizer" width="2832" height="4240" loading="lazy" decoding="async">
             </div>
         </article>
 
@@ -848,6 +923,27 @@
     </footer>
 
     <script>
+        const jasimCard = document.querySelector('.about-me-grid');
+        const bioIntro = jasimCard.querySelector('.bio-intro');
+
+        function sizeMobilePortrait() {
+            if (!window.matchMedia('(max-width: 768px)').matches) return;
+
+            // Transfer up to three lines of preview space to the photo, keeping the card height.
+            bioIntro.style.maxHeight = 'none';
+            const naturalHeight = bioIntro.getBoundingClientRect().height;
+            const lineHeight = parseFloat(getComputedStyle(bioIntro).lineHeight);
+            bioIntro.style.removeProperty('max-height');
+            const lines = Math.round(naturalHeight / lineHeight);
+            const heightGain = Math.min(3, Math.max(0, lines - 2)) * lineHeight;
+            jasimCard.style.setProperty('--bio-intro-height', naturalHeight + 'px');
+            jasimCard.style.setProperty('--portrait-height-gain', heightGain + 'px');
+        }
+
+        sizeMobilePortrait();
+        window.addEventListener('resize', sizeMobilePortrait);
+        document.fonts.ready.then(sizeMobilePortrait);
+
         const btn = document.getElementById('hamburgerBtn');
         const menu = document.getElementById('mobileMenu');
 
