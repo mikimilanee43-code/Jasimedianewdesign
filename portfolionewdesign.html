@@ -7,12 +7,13 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gloock&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gloock&amp;family=Inter+Tight:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { font-family: Helvetica, Arial, sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
             background-color: #f5f5f5;
         }
 
@@ -158,10 +159,10 @@
             padding: 70px 50px 50px;
         }
 
-        .page-title {
+.page-title {
             font-size: 64px;
-            font-weight: 300;
-            letter-spacing: 3px;
+            font-weight: 700;
+            letter-spacing: 0;
             color: #fff;
             margin-bottom: 16px;
         }
@@ -253,10 +254,10 @@
             margin-bottom: 16px;
         }
 
-        .portfolio-text h3 {
+.portfolio-text h3 {
             font-size: 42px;
-            font-weight: 300;
-            letter-spacing: 2px;
+            font-weight: 700;
+            letter-spacing: 0;
             color: #222;
             margin-bottom: 18px;
             line-height: 1.1;
@@ -307,10 +308,10 @@
             padding: 90px 50px;
         }
 
-        .cta-section h2 {
+.cta-section h2 {
             font-size: 52px;
-            font-weight: 300;
-            letter-spacing: 2px;
+            font-weight: 700;
+            letter-spacing: 0;
             margin-bottom: 16px;
         }
 
@@ -390,6 +391,16 @@
             background: #111;
             border-radius: 8px;
             overflow: hidden;
+        }
+
+        @media (min-width: 769px) and (pointer: fine) {
+            .modal[data-media-type="image"] {
+                width: 100%;
+                max-width: none;
+                height: 100vh;
+                height: 100dvh;
+                border-radius: 0;
+            }
         }
 
         .modal:fullscreen {
@@ -746,9 +757,9 @@
             text-underline-offset: 0.18em;
         }
 
-        .showcase-intro h2 {
+.showcase-intro h2 {
             font-size: clamp(38px, 5vw, 64px);
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.04;
             letter-spacing: 0;
             margin-bottom: 18px;
@@ -991,9 +1002,9 @@
             margin-bottom: 12px;
         }
 
-        .event-gallery h2 {
+.event-gallery h2 {
             font-size: clamp(34px, 4.5vw, 56px);
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.06;
             letter-spacing: 0;
             margin-bottom: 16px;
@@ -1206,7 +1217,7 @@
         h5,
         h6,
         .logo-wordmark {
-            font-family: "Gloock", Georgia, "Times New Roman", serif;
+            font-family: Helvetica, Arial, sans-serif;
         }
         .project-type-nav {
             display: block;
@@ -1280,9 +1291,9 @@
             padding: 64px 50px;
         }
 
-        .project-type-empty h2 {
+.project-type-empty h2 {
             font-size: 40px;
-            font-weight: 300;
+            font-weight: 700;
             line-height: 1.2;
             letter-spacing: 0;
             color: #111;
@@ -1321,6 +1332,15 @@
             .project-type-tab {
                 transition: none;
             }
+        }
+        :is(.page-title, .portfolio-text h3, .cta-section h2, .showcase-intro h2, .event-gallery h2, .project-type-empty h2),
+        :is(.page-title, .portfolio-text h3, .cta-section h2, .showcase-intro h2, .event-gallery h2, .project-type-empty h2) * {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+        }
+        header .logo-wordmark {
+            font-family: 'Inter Tight', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0;
         }
     </style>
 </head>
@@ -1375,11 +1395,11 @@
         </div>
 
         <div class="project-type-panel" id="event-activation" role="tabpanel" aria-labelledby="tab-event-activation" tabindex="0">
-        <section class="portfolio-showcase showcase-dark" id="lone-star-le-mans">
+        <section class="portfolio-showcase showcase-dark" id="women-in-wealth">
             <div class="showcase-inner">
                 <div class="showcase-intro">
-                    <h2><a href="#lone-star-le-mans">Lone Star Le Mans</a></h2>
-                    <p class="showcase-description">WEC Lone Star Le Mans brings world endurance racing to Circuit of The Americas, where prototype and GT teams battle through heat, strategy, traffic, and the rhythm of a six-hour race weekend. This event portfolio captures the trackside atmosphere, fan energy, and high-speed views from the circuit.</p>
+                    <h2><a href="#women-in-wealth">Women in Wealth</a></h2>
+                    <p class="showcase-description">The Women in Wealth Conference empowers entrepreneurs, professionals, and investors to bridge the wealth gap through tactical asset-building, leadership scaling, and high-impact financial strategies. This portfolio captures the transformative atmosphere, powerful networking circles, and dynamic masterclasses from a weekend designed to catalyze long-term financial independence.</p>
                     <div class="showcase-actions">
                         <a class="explore-btn" href="contactnewdesign.html">
                             LET'S WORK
@@ -1389,52 +1409,52 @@
                 </div>
             </div>
             <div class="carousel-wrap" data-project="event">
-                <button class="carousel-arrow prev" type="button" aria-label="Previous Lone Star Le Mans sample" data-direction="-1">&#8249;</button>
-                <div class="sample-carousel" data-carousel-project="event" aria-label="Lone Star Le Mans samples"></div>
-                <button class="carousel-arrow next" type="button" aria-label="Next Lone Star Le Mans sample" data-direction="1">&#8250;</button>
-                <div class="carousel-dots" aria-label="Lone Star Le Mans carousel position"></div>
+                <button class="carousel-arrow prev" type="button" aria-label="Previous Women in Wealth sample" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel" data-carousel-project="event" aria-label="Women in Wealth samples"></div>
+                <button class="carousel-arrow next" type="button" aria-label="Next Women in Wealth sample" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Women in Wealth carousel position"></div>
             </div>
         </section>
 
-        <section class="event-gallery" aria-labelledby="lone-star-le-mans-gallery-title">
+        <section class="event-gallery" aria-labelledby="women-in-wealth-gallery-title">
             <div class="event-gallery-inner">
                 <div class="event-gallery-header">
                     <p class="event-gallery-kicker">Event Photos</p>
-                    <h2 id="lone-star-le-mans-gallery-title">Lone Star Le Mans Gallery</h2>
-                    <p>Selected trackside and crowd moments from the WEC weekend at Circuit of The Americas.</p>
+                    <h2 id="women-in-wealth-gallery-title">Women in Wealth Gallery</h2>
+                    <p>Moments from the Women in Wealth Conference.</p>
                 </div>
                 <div class="event-photo-grid">
-                    <a class="event-photo" href="https://i.ibb.co/8D2VgyBh/IMG-9669.webp" data-open-project="event" data-open-slide="1" aria-label="Enlarge Lone Star Le Mans photo 1">
-                        <img src="https://i.ibb.co/8D2VgyBh/IMG-9669.webp" alt="Lone Star Le Mans event photo 1" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_9669.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(1).webp" data-open-project="event" data-open-slide="1" aria-label="Enlarge Women in Wealth photo 1">
+                        <img src="Women%20in%20wealth%20photos%20(1).webp" alt="Women in Wealth event photo 1" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (1).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/ZzFjw7cr/IMG-9697.webp" data-open-project="event" data-open-slide="2" aria-label="Enlarge Lone Star Le Mans photo 2">
-                        <img src="https://i.ibb.co/ZzFjw7cr/IMG-9697.webp" alt="Lone Star Le Mans event photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_9697.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(2).webp" data-open-project="event" data-open-slide="2" aria-label="Enlarge Women in Wealth photo 2">
+                        <img src="Women%20in%20wealth%20photos%20(2).webp" alt="Women in Wealth event photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (2).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/TqgwFx25/IMG-9702.webp" data-open-project="event" data-open-slide="3" aria-label="Enlarge Lone Star Le Mans photo 3">
-                        <img src="https://i.ibb.co/TqgwFx25/IMG-9702.webp" alt="Lone Star Le Mans event photo 3" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_9702.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(3).webp" data-open-project="event" data-open-slide="3" aria-label="Enlarge Women in Wealth photo 3">
+                        <img src="Women%20in%20wealth%20photos%20(3).webp" alt="Women in Wealth event photo 3" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (3).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/gLYrtKmH/IMG-E9705.webp" data-open-project="event" data-open-slide="4" aria-label="Enlarge Lone Star Le Mans photo 4">
-                        <img src="https://i.ibb.co/gLYrtKmH/IMG-E9705.webp" alt="Lone Star Le Mans event photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_E9705.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(4).webp" data-open-project="event" data-open-slide="4" aria-label="Enlarge Women in Wealth photo 4">
+                        <img src="Women%20in%20wealth%20photos%20(4).webp" alt="Women in Wealth event photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (4).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/NH8qhhN/IMG-E9709.webp" data-open-project="event" data-open-slide="5" aria-label="Enlarge Lone Star Le Mans photo 5">
-                        <img src="https://i.ibb.co/NH8qhhN/IMG-E9709.webp" alt="Lone Star Le Mans event photo 5" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_E9709.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(5).webp" data-open-project="event" data-open-slide="5" aria-label="Enlarge Women in Wealth photo 5">
+                        <img src="Women%20in%20wealth%20photos%20(5).webp" alt="Women in Wealth event photo 5" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (5).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/cXhCTz0n/IMG-E9710.webp" data-open-project="event" data-open-slide="6" aria-label="Enlarge Lone Star Le Mans photo 6">
-                        <img src="https://i.ibb.co/cXhCTz0n/IMG-E9710.webp" alt="Lone Star Le Mans event photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_E9710.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(6).webp" data-open-project="event" data-open-slide="6" aria-label="Enlarge Women in Wealth photo 6">
+                        <img src="Women%20in%20wealth%20photos%20(6).webp" alt="Women in Wealth event photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (6).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/JFpTbPmg/IMG-9712.webp" data-open-project="event" data-open-slide="7" aria-label="Enlarge Lone Star Le Mans photo 7">
-                        <img src="https://i.ibb.co/JFpTbPmg/IMG-9712.webp" alt="Lone Star Le Mans event photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_9712.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(7).webp" data-open-project="event" data-open-slide="7" aria-label="Enlarge Women in Wealth photo 7">
+                        <img src="Women%20in%20wealth%20photos%20(7).webp" alt="Women in Wealth event photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (7).webp</span>
                     </a>
-                    <a class="event-photo" href="https://i.ibb.co/cS14bFLg/IMG-9721.webp" data-open-project="event" data-open-slide="8" aria-label="Enlarge Lone Star Le Mans photo 8">
-                        <img src="https://i.ibb.co/cS14bFLg/IMG-9721.webp" alt="Lone Star Le Mans event photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">IMG_9721.webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(8).webp" data-open-project="event" data-open-slide="8" aria-label="Enlarge Women in Wealth photo 8">
+                        <img src="Women%20in%20wealth%20photos%20(8).webp" alt="Women in Wealth event photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (8).webp</span>
                     </a>
                 </div>
             </div>
@@ -1502,27 +1522,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.6.0/embla-carousel.umd.js" integrity="sha384-XGqLM9+dJ+PFOMZn6IuZgRRIoxcAT5fx4eIZCx7K3O2Dj5RA7EOlJ3yOS8Jd+kiY" crossorigin="anonymous"></script>
     <script>
-        // ── Lone Star Le Mans event portfolio ──
+        // ── Women in Wealth event portfolio ──
         const projects = {
             event: {
-                title: 'LONE STAR LE MANS',
-                label: 'Lone Star Le Mans',
+                title: 'WOMEN IN WEALTH',
+                label: 'Women in Wealth',
                 carouselSlideIndexes: [0],
                 slides: [
                     {
                         type: 'video',
-                        title: 'Tower View of Turns 10-15',
-                        src: 'https://player.vimeo.com/video/1227402333?autoplay=1&playsinline=1&title=0&byline=0&portrait=0',
-                        previewSrc: 'https://player.vimeo.com/video/1227402333?autoplay=1&muted=1&loop=1&autopause=0&playsinline=1&title=0&byline=0&portrait=0'
+                        title: 'Women in Wealth Conference Highlights',
+                        src: 'Women%20in%20wealth%20video.webm',
+                        mime: 'video/webm'
                     },
-                    { type: 'image', title: 'Trackside Angle 01', src: 'https://i.ibb.co/8D2VgyBh/IMG-9669.webp', alt: 'Lone Star Le Mans event photo 1' },
-                    { type: 'image', title: 'Trackside Angle 02', src: 'https://i.ibb.co/ZzFjw7cr/IMG-9697.webp', alt: 'Lone Star Le Mans event photo 2' },
-                    { type: 'image', title: 'Trackside Angle 03', src: 'https://i.ibb.co/TqgwFx25/IMG-9702.webp', alt: 'Lone Star Le Mans event photo 3' },
-                    { type: 'image', title: 'Circuit Detail 01', src: 'https://i.ibb.co/gLYrtKmH/IMG-E9705.webp', alt: 'Lone Star Le Mans event photo 4' },
-                    { type: 'image', title: 'Circuit Detail 02', src: 'https://i.ibb.co/NH8qhhN/IMG-E9709.webp', alt: 'Lone Star Le Mans event photo 5' },
-                    { type: 'image', title: 'Circuit Detail 03', src: 'https://i.ibb.co/cXhCTz0n/IMG-E9710.webp', alt: 'Lone Star Le Mans event photo 6' },
-                    { type: 'image', title: 'Race Weekend Moment 01', src: 'https://i.ibb.co/JFpTbPmg/IMG-9712.webp', alt: 'Lone Star Le Mans event photo 7' },
-                    { type: 'image', title: 'Race Weekend Moment 02', src: 'https://i.ibb.co/cS14bFLg/IMG-9721.webp', alt: 'Lone Star Le Mans event photo 8' },
+                    { type: 'image', title: 'Women in Wealth - Photo 01', src: 'Women%20in%20wealth%20photos%20(1).webp', alt: 'Women in Wealth event photo 1' },
+                    { type: 'image', title: 'Women in Wealth - Photo 02', src: 'Women%20in%20wealth%20photos%20(2).webp', alt: 'Women in Wealth event photo 2' },
+                    { type: 'image', title: 'Women in Wealth - Photo 03', src: 'Women%20in%20wealth%20photos%20(3).webp', alt: 'Women in Wealth event photo 3' },
+                    { type: 'image', title: 'Women in Wealth - Photo 04', src: 'Women%20in%20wealth%20photos%20(4).webp', alt: 'Women in Wealth event photo 4' },
+                    { type: 'image', title: 'Women in Wealth - Photo 05', src: 'Women%20in%20wealth%20photos%20(5).webp', alt: 'Women in Wealth event photo 5' },
+                    { type: 'image', title: 'Women in Wealth - Photo 06', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women in Wealth event photo 6' },
+                    { type: 'image', title: 'Women in Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(7).webp', alt: 'Women in Wealth event photo 7' },
+                    { type: 'image', title: 'Women in Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women in Wealth event photo 8' },
                 ]
             }
         };
@@ -1795,8 +1815,8 @@
             document.body.style.overflow = 'hidden';
             pausePreviewVideos();
             modal.querySelector('.modal-close').focus({ preventScroll: true });
-            // Fill the screen where supported; the mobile layout also works without this API.
-            if (isMobileViewer() && modal.requestFullscreen && !document.fullscreenElement) {
+            // Photo viewing fills the screen; CSS also covers browsers that reject fullscreen.
+            if ((isMobileViewer() || selectedSlide.type === 'image') && modal.requestFullscreen && !document.fullscreenElement) {
                 modal.requestFullscreen().catch(() => {});
             }
             playActiveVideo();
