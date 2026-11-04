@@ -367,6 +367,29 @@
             color: #5f6368;
         }
 
+        .team-member-with-bio h3 {
+            margin-bottom: 4px;
+        }
+
+        .team-member-with-bio .team-bio-preview {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .team-member-with-bio .bio-details {
+            margin-top: 0;
+        }
+
+        .team-member-with-bio:has(.bio-details[open]) .team-bio-preview {
+            display: none;
+        }
+
+        .team-member-with-bio .bio-rest p + p {
+            margin-top: 16px;
+        }
+
         .team-impact {
             padding: 20px 50px;
             scroll-margin-top: 44px;
@@ -876,14 +899,15 @@
                 </article>
             </li>
             <li>
-                <article class="team-member" aria-labelledby="gaby-heading">
+                <article class="team-member team-member-with-bio" aria-labelledby="gaby-heading">
                     <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Gaby"><span aria-hidden="true">G</span></div>
                     <div class="team-member-copy">
                         <h3 id="gaby-heading">Gaby</h3>
                         <p>Lead Photographer</p>
+                        <p class="team-bio-preview">Hi! I’m Gaby, a Miami based photographer, &amp; videographer. I specialize in bringing creative visions to life through photography and film.</p>
                         <details class="bio-details">
-                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
-                            <div class="bio-rest"><p>Gaby's introduction is coming soon.</p></div>
+                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>Hi! I’m Gaby, a Miami based photographer, &amp; videographer. I specialize in bringing creative visions to life through photography and film. My experience ranges from fashion to music to brand campaigns, entertainment, and live events. I’ve worked with handfuls of artists, business owners, and creatives. I love being able to turn ideas into something meaningful, and I’m always looking for new ways to grow creatively, collaborate with others, and bring a unique perspective to every project I work on!</p></div>
                         </details>
                     </div>
                 </article>
@@ -902,14 +926,32 @@
                 </article>
             </li>
             <li>
-                <article class="team-member" aria-labelledby="donovan-heading">
+                <article class="team-member team-member-with-bio" aria-labelledby="donovan-heading">
                     <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Donovan"><span aria-hidden="true">D</span></div>
                     <div class="team-member-copy">
                         <h3 id="donovan-heading">Donovan</h3>
                         <p>Editor/Colorist</p>
+                        <p class="team-bio-preview">I’m Donovan, I started my creative journey behind the camera, working in videography before finding my stride in video editing.</p>
                         <details class="bio-details">
-                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
-                            <div class="bio-rest"><p>Donovan's introduction is coming soon.</p></div>
+                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest"><p>I’m Donovan, I started my creative journey behind the camera, working in videography before finding my stride in video editing. Over the years, I’ve worked with a variety of brands, YouTubers, and influencers, editing everything from social media content to long-form videos. I enjoy the creative process of bringing ideas to life and finding the right way to tell a story through video.</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="team-member team-member-with-bio" aria-labelledby="dean-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Dean Sadler"><span aria-hidden="true">D</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="dean-heading">Dean</h3>
+                        <p class="team-bio-preview">I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest">
+                                <p>I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
+                                <p>I’ve worked with brands including Nike, Dior, Calvin Klein, and David Yurman, with experience spanning photography, creative direction, and production.</p>
+                                <p>My focus is on creating imagery that turns brand experiences into cultural moments, builds FOMO, and extends the impact of an event long after it’s over. Content that not only captures the experience, but helps brands build momentum, reach new audiences, and drive excitement for what’s next.</p>
+                            </div>
                         </details>
                     </div>
                 </article>

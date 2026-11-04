@@ -1284,6 +1284,67 @@
             padding-top: 48px;
         }
 
+        .project-showcase-carousel {
+            margin-top: 0;
+            padding-bottom: 32px;
+        }
+
+        .page-header .showcase-actions {
+            max-width: 1120px;
+            margin-inline: auto;
+        }
+
+        .page-header .explore-btn { text-decoration: none; }
+
+        .project-showcase-track {
+            --project-gutter: max(50px, calc((100vw - 1120px) / 2));
+            --project-width: min(76vw, 820px);
+            position: relative;
+            gap: 44px;
+            padding: 0 max(var(--project-gutter), calc(100% - var(--project-gutter) - var(--project-width))) 0 var(--project-gutter);
+            scroll-padding-inline-start: var(--project-gutter);
+        }
+
+        .project-showcase-track > .portfolio-showcase {
+            display: flex;
+            flex: 0 0 var(--project-width);
+            flex-direction: column;
+            min-width: 0;
+            padding: 48px 0 20px;
+            scroll-snap-align: start;
+            opacity: 0.38;
+            transition: opacity 0.24s ease;
+        }
+
+        .project-showcase-track > .is-focused { opacity: 1; }
+
+        .project-showcase-track .showcase-inner {
+            width: 100%;
+        }
+
+        .project-showcase-track .showcase-intro h2 {
+            font-size: 44px;
+            overflow-wrap: anywhere;
+        }
+
+        .project-showcase-track .sample-carousel { padding: 0; }
+        .project-showcase-track .sample-card { flex-basis: 100%; min-width: 0; }
+
+        @media (max-width: 768px) {
+            .project-showcase-track {
+                --project-gutter: 24px;
+                --project-width: max(280px, 84vw);
+                gap: 24px;
+            }
+
+            .project-showcase-track .showcase-inner { padding-inline: 0; }
+            .project-showcase-track .showcase-intro h2 { font-size: 32px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .project-showcase-track > .portfolio-showcase { transition: none; }
+        }
+
         .project-type-empty {
             min-height: 320px;
             max-width: 1120px;
@@ -1372,6 +1433,12 @@
     <div class="page-header">
         <h1 class="page-title">Portfolio</h1>
         <p class="page-subtitle">Project-based portfolios prepared for direct client references, with event films and photo sets organized around each real assignment.</p>
+        <div class="showcase-actions">
+            <a class="explore-btn" href="contactnewdesign.html">
+                LET'S WORK
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+            </a>
+        </div>
     </div>
 
     <main class="portfolio-showcases">
@@ -1388,10 +1455,41 @@
         </nav>
 
         <div class="project-type-panel" id="brand-business" role="tabpanel" aria-labelledby="tab-brand-business" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="brand-business-heading">
-                <h2 id="brand-business-heading">Brand/Business</h2>
-                <p>Portfolio coming soon.</p>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous Brand/Business project" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Brand and business projects">
+            <section class="portfolio-showcase showcase-dark" id="lincoln-serena-williams">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#lincoln-serena-williams">Lincoln</a></h2>
+                        <p class="showcase-description">A Lincoln commercial featuring Serena Williams.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="lincoln-serena-williams">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Lincoln sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="lincoln-serena-williams" aria-label="Lincoln samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Lincoln sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Lincoln carousel position"></div>
+                </div>
             </section>
+            <section class="portfolio-showcase showcase-dark" id="shea-moisture">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#shea-moisture">Shea Moisture</a></h2>
+                        <p class="showcase-description">A brand film for Shea Moisture.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="shea-moisture">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Shea Moisture sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="shea-moisture" aria-label="Shea Moisture samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Shea Moisture sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Shea Moisture carousel position"></div>
+                </div>
+            </section>
+                </div>
+                <button class="carousel-arrow next" type="button" aria-label="Next Brand/Business project" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Brand/Business project position"></div>
+            </div>
         </div>
 
         <div class="project-type-panel" id="event-activation" role="tabpanel" aria-labelledby="tab-event-activation" tabindex="0">
@@ -1400,12 +1498,6 @@
                 <div class="showcase-intro">
                     <h2><a href="#women-in-wealth">Women &amp; Wealth</a></h2>
                     <p class="showcase-description">The Women &amp; Wealth Conference empowers entrepreneurs, professionals, and investors to bridge the wealth gap through tactical asset-building, leadership scaling, and high-impact financial strategies. This portfolio captures the transformative atmosphere, powerful networking circles, and dynamic masterclasses from a weekend designed to catalyze long-term financial independence.</p>
-                    <div class="showcase-actions">
-                        <a class="explore-btn" href="contactnewdesign.html">
-                            LET'S WORK
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
-                        </a>
-                    </div>
                 </div>
             </div>
             <div class="carousel-wrap" data-project="event">
@@ -1462,33 +1554,118 @@
         </div>
 
         <div class="project-type-panel" id="wedding-private-event" role="tabpanel" aria-labelledby="tab-wedding-private-event" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="wedding-private-event-heading">
-                <h2 id="wedding-private-event-heading">Wedding/Private Event</h2>
-                <p>Portfolio coming soon.</p>
+            <section class="portfolio-showcase showcase-dark" id="braun-wedding">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#braun-wedding">Braun Wedding</a></h2>
+                        <p class="showcase-description">Highlights from the Braun Wedding, capturing the candid moments, celebration, and people who made the day special.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="braun-wedding">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Braun Wedding sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="braun-wedding" aria-label="Braun Wedding samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Braun Wedding sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Braun Wedding carousel position"></div>
+                </div>
             </section>
         </div>
         <div class="project-type-panel" id="athlete-fitness" role="tabpanel" aria-labelledby="tab-athlete-fitness" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="athlete-fitness-heading">
-                <h2 id="athlete-fitness-heading">Athlete/Fitness</h2>
-                <p>Portfolio coming soon.</p>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous Athlete/Fitness project" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Athlete and fitness projects">
+            <section class="portfolio-showcase showcase-dark" id="kai-greene-olympia-2025">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#kai-greene-olympia-2025">Kai Greene &mdash; Olympia 2025</a></h2>
+                        <p class="showcase-description">Capturing bodybuilding icon Kai Greene at Olympia 2025, highlighting the energy, passion, and atmosphere of one of the fitness industry's biggest events.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="athlete-fitness">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Kai Greene &mdash; Olympia 2025 sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="0" aria-label="Kai Greene &mdash; Olympia 2025 samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Kai Greene &mdash; Olympia 2025 sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Kai Greene &mdash; Olympia 2025 carousel position"></div>
+                </div>
             </section>
+            <section class="portfolio-showcase showcase-dark" id="alcaraz-shapovalov-practice">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#alcaraz-shapovalov-practice">Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice</a></h2>
+                        <p class="showcase-description">An exclusive look at Carlos Alcaraz and Denis Shapovalov during a center court practice session, capturing the precision, intensity, and athleticism of world-class tennis.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="athlete-fitness">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="1" aria-label="Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice carousel position"></div>
+                </div>
+            </section>
+            <section class="portfolio-showcase showcase-dark" id="miami-drip-grand-slam-track-2025">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#miami-drip-grand-slam-track-2025">Miami Drip &mdash; Grand Slam Track 2025</a></h2>
+                        <p class="showcase-description">Showcasing the style and personality of elite track and field athletes at Grand Slam Track Miami 2025, capturing the fashion, confidence, and energy of their pre-race arrivals.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="athlete-fitness">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Miami Drip &mdash; Grand Slam Track 2025 sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="2" aria-label="Miami Drip &mdash; Grand Slam Track 2025 samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Miami Drip &mdash; Grand Slam Track 2025 sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Miami Drip &mdash; Grand Slam Track 2025 carousel position"></div>
+                </div>
+            </section>
+                </div>
+                <button class="carousel-arrow next" type="button" aria-label="Next Athlete/Fitness project" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Athlete/Fitness project position"></div>
+            </div>
         </div>
         <div class="project-type-panel" id="hospitality-lifestyle" role="tabpanel" aria-labelledby="tab-hospitality-lifestyle" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="hospitality-lifestyle-heading">
-                <h2 id="hospitality-lifestyle-heading">Hospitality/Lifestyle</h2>
-                <p>Portfolio coming soon.</p>
+            <section class="portfolio-showcase showcase-dark" id="palm-tree-festival">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#palm-tree-festival">Palm Tree Festival</a></h2>
+                        <p class="showcase-description">Highlights from Palm Tree Festival.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="palm-tree-festival">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Palm Tree Festival sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="palm-tree-festival" aria-label="Palm Tree Festival samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Palm Tree Festival sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Palm Tree Festival carousel position"></div>
+                </div>
             </section>
         </div>
         <div class="project-type-panel" id="personal-brand" role="tabpanel" aria-labelledby="tab-personal-brand" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="personal-brand-heading">
-                <h2 id="personal-brand-heading">Personal Brand</h2>
-                <p>Portfolio coming soon.</p>
+            <section class="portfolio-showcase showcase-dark" id="adrianna-beats">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#adrianna-beats">Adrianna × Beats</a></h2>
+                        <p class="showcase-description">A personal brand collaboration with Adrianna and Beats.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="adrianna-beats">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Adrianna × Beats sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="adrianna-beats" aria-label="Adrianna × Beats samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Adrianna × Beats sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Adrianna × Beats carousel position"></div>
+                </div>
             </section>
         </div>
         <div class="project-type-panel" id="other" role="tabpanel" aria-labelledby="tab-other" tabindex="0" hidden>
-            <section class="project-type-empty" aria-labelledby="other-heading">
-                <h2 id="other-heading">Other</h2>
-                <p>Portfolio coming soon.</p>
+            <section class="portfolio-showcase showcase-dark" id="jasimedia-2025-recap">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#jasimedia-2025-recap">JASIMEDIA 2025 Recap</a></h2>
+                        <p class="showcase-description">A quick look back at JASIMEDIA's 2025, bringing a year of shoots, stories, and standout moments together in one highlight reel.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="jasimedia-2025-recap">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous JASIMEDIA 2025 Recap sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="jasimedia-2025-recap" aria-label="JASIMEDIA 2025 Recap samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next JASIMEDIA 2025 Recap sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="JASIMEDIA 2025 Recap carousel position"></div>
+                </div>
             </section>
         </div>
     </main>
@@ -1524,6 +1701,48 @@
     <script>
         // ── Women & Wealth event portfolio ──
         const projects = {
+            'lincoln-serena-williams': {
+                title: "Lincoln",
+                label: "Lincoln",
+                slides: [
+                    { type: 'video', title: "Lincoln - Commercial Featuring Serena Williams", src: 'Jasimediaportfolieditlincoln%20Lincoln%20Commercial%20Feat.%20Serena%20Williams.webm', mime: 'video/webm' }
+                ]
+            },
+            'shea-moisture': {
+                title: "Shea Moisture",
+                label: "Shea Moisture",
+                slides: [
+                    { type: 'video', title: "Shea Moisture", src: 'Jasimediaportfoliovideography%20Shea%20Moisture.webm', mime: 'video/webm' }
+                ]
+            },
+            'palm-tree-festival': {
+                title: "Palm Tree Festival",
+                label: "Palm Tree Festival",
+                slides: [
+                    { type: 'video', title: "Palm Tree Festival Highlights", src: 'Jasimediaportfoliovideography%20Palm%20Tree%20Festival.webm', mime: 'video/webm' }
+                ]
+            },
+            'adrianna-beats': {
+                title: "Adrianna × Beats",
+                label: "Adrianna × Beats",
+                slides: [
+                    { type: 'video', title: "Adrianna × Beats", src: 'Jasimediaportfoliovideography%20Adrianna%20X%20Beats.webm', mime: 'video/webm' }
+                ]
+            },
+            'braun-wedding': {
+                title: "Braun Wedding",
+                label: "Braun Wedding",
+                slides: [
+                    { type: 'video', title: "Braun Wedding Highlights", src: 'Jasimediaportfoliovideography%20Wedding.webm', mime: 'video/webm' }
+                ]
+            },
+            'jasimedia-2025-recap': {
+                title: "JASIMEDIA 2025 Recap",
+                label: "JASIMEDIA 2025 Recap",
+                slides: [
+                    { type: 'video', title: "JASIMEDIA 2025 Recap", src: 'Jasimedia%202025%20Recap.webm', mime: 'video/webm' }
+                ]
+            },
             event: {
                 title: 'WOMEN & WEALTH',
                 label: 'Women & Wealth',
@@ -1543,6 +1762,30 @@
                     { type: 'image', title: 'Women & Wealth - Photo 06', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women & Wealth event photo 6' },
                     { type: 'image', title: 'Women & Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(7).webp', alt: 'Women & Wealth event photo 7' },
                     { type: 'image', title: 'Women & Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women & Wealth event photo 8' },
+                ]
+            },
+            'athlete-fitness': {
+                title: 'ATHLETE/FITNESS',
+                label: 'Athlete/Fitness',
+                slides: [
+                    {
+                        type: 'video',
+                        title: 'Kai Greene \u2014 Olympia 2025',
+                        src: 'Jasimediaportfoliovideography%20Kai%20Greene%20X%20Olympia%202025.webm',
+                        mime: 'video/webm'
+                    },
+                    {
+                        type: 'video',
+                        title: 'Carlos Alcaraz \u00d7 Denis Shapovalov \u2014 Center Court Practice',
+                        src: 'Jasimediaportfoliovideography%20Carlos%20Alcaraz%20X%20Denis%20Shapovalov.webm',
+                        mime: 'video/webm'
+                    },
+                    {
+                        type: 'video',
+                        title: 'Miami Drip \u2014 Grand Slam Track 2025',
+                        src: 'jasimediaportfolioedit%20MIAMI%20DRIP%20GST%202025.webm',
+                        mime: 'video/webm'
+                    }
                 ]
             }
         };
@@ -1585,7 +1828,9 @@
 
                 track.innerHTML = '';
 
-                const slideIndexes = project.carouselSlideIndexes || project.slides.map((_, index) => index);
+                const slideIndexes = track.hasAttribute('data-carousel-slide')
+                    ? [Number(track.dataset.carouselSlide)]
+                    : project.carouselSlideIndexes || project.slides.map((_, index) => index);
 
                 slideIndexes.forEach((slideIndex, cardIndex) => {
                     const slide = project.slides[slideIndex];
@@ -1619,7 +1864,7 @@
                         const video = document.createElement('video');
                         video.muted = true;
                         video.loop = true;
-                        video.autoplay = true;
+                        video.autoplay = false;
                         video.playsInline = true;
                         video.preload = 'metadata';
                         video.setAttribute('aria-label', `${slideTitle} video`);
@@ -1661,19 +1906,20 @@
 
         function setupPortfolioCarousels() {
             document.querySelectorAll('.carousel-wrap').forEach(wrap => {
-                const track = wrap.querySelector('.sample-carousel');
-                const cards = Array.from(track.querySelectorAll('.sample-card'));
-                const dotsContainer = wrap.querySelector('.carousel-dots');
+                const track = wrap.querySelector(':scope > .sample-carousel');
+                const cards = Array.from(track.children);
+                const dotsContainer = wrap.querySelector(':scope > .carousel-dots');
                 const hasMultipleCards = cards.length > 1;
                 dotsContainer.hidden = !hasMultipleCards;
-                wrap.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.hidden = !hasMultipleCards);
+                wrap.querySelectorAll(':scope > .carousel-arrow').forEach(arrow => arrow.hidden = !hasMultipleCards);
 
                 dotsContainer.innerHTML = '';
                 (hasMultipleCards ? cards : []).forEach((card, index) => {
                     const dot = document.createElement('button');
                     dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
                     dot.type = 'button';
-                    dot.setAttribute('aria-label', `Go to sample ${index + 1}`);
+                    const heading = card.querySelector('h2');
+                    dot.setAttribute('aria-label', heading ? `Go to ${heading.textContent}` : `Go to sample ${index + 1}`);
                     dot.addEventListener('click', () => {
                         card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                     });
@@ -1698,12 +1944,13 @@
         }
 
         function updateCarouselDots(wrap) {
-            const track = wrap.querySelector('.sample-carousel');
-            const cards = Array.from(track.querySelectorAll('.sample-card'));
-            const dots = Array.from(wrap.querySelectorAll('.carousel-dot'));
+            const track = wrap.querySelector(':scope > .sample-carousel');
+            const cards = Array.from(track.children);
+            const dots = Array.from(wrap.querySelectorAll(':scope > .carousel-dots .carousel-dot'));
             if (!cards.length) return;
 
-            const trackCenter = track.scrollLeft + track.clientWidth / 2;
+            const isProjectTrack = track.classList.contains('project-showcase-track');
+            const trackCenter = track.scrollLeft + (isProjectTrack ? cards[0].offsetLeft + cards[0].offsetWidth / 2 : track.clientWidth / 2);
             let activeIndex = 0;
             let activeDistance = Infinity;
 
@@ -1719,20 +1966,29 @@
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
+
+            if (isProjectTrack) {
+                cards.forEach((card, index) => {
+                    card.classList.toggle('is-focused', index === activeIndex && activeDistance < 8);
+                });
+                playVisiblePreviewVideos();
+            }
         }
 
         function moveCarousel(button, direction) {
             const wrap = button.closest('.carousel-wrap');
-            const track = wrap.querySelector('.sample-carousel');
-            const cards = Array.from(track.querySelectorAll('.sample-card'));
-            const dots = Array.from(wrap.querySelectorAll('.carousel-dot'));
+            const track = wrap.querySelector(':scope > .sample-carousel');
+            const cards = Array.from(track.children);
+            const dots = Array.from(wrap.querySelectorAll(':scope > .carousel-dots .carousel-dot'));
             const activeIndex = Math.max(0, dots.findIndex(dot => dot.classList.contains('active')));
             const nextIndex = Math.min(cards.length - 1, Math.max(0, activeIndex + direction));
             cards[nextIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
 
         function setPreviewPlayback(media, playing) {
-            playing = playing && !media.closest('[hidden]');
+            const focusedSlide = media.closest('.project-showcase-track > .portfolio-showcase');
+            playing = playing && !media.closest('[hidden]') && !document.getElementById('modalOverlay').classList.contains('active')
+                && (!focusedSlide || focusedSlide.classList.contains('is-focused'));
             if (media.tagName === 'IFRAME') {
                 const src = playing ? media.dataset.src : 'about:blank';
                 if (media.getAttribute('src') !== src) media.src = src;
@@ -2103,7 +2359,10 @@
                 }
             });
             pausePreviewVideos();
-            requestAnimationFrame(playVisiblePreviewVideos);
+            requestAnimationFrame(() => {
+                selectedPanel.querySelectorAll('.project-showcase-carousel').forEach(updateCarouselDots);
+                playVisiblePreviewVideos();
+            });
         }
 
         function restoreProjectTypeFromHash() {
@@ -2112,6 +2371,16 @@
             selectProjectType(panel ? panel.id : 'event-activation');
             if (panel) {
                 requestAnimationFrame(() => {
+                    const projectTrack = target.closest('.project-showcase-track');
+                    if (projectTrack && target.parentElement === projectTrack) {
+                        target.scrollIntoView({ block: 'start', behavior: 'instant' });
+                        projectTrack.scrollTo({
+                            left: target.offsetLeft - projectTrack.firstElementChild.offsetLeft,
+                            behavior: 'instant'
+                        });
+                        updateCarouselDots(projectTrack.closest('.project-showcase-carousel'));
+                        return;
+                    }
                     (target === panel ? projectTypeNav : target).scrollIntoView({ block: 'start' });
                 });
             }
@@ -2139,6 +2408,15 @@
                 event.preventDefault();
                 projectTypeTabs[nextIndex].focus({ preventScroll: true });
                 projectTypeTabs[nextIndex].click();
+            });
+        });
+
+        document.querySelectorAll('.project-showcase-track h2 a[href^="#"]').forEach(link => {
+            link.addEventListener('click', event => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                if (window.location.hash !== link.hash) history.pushState(null, '', link.hash);
+                restoreProjectTypeFromHash();
             });
         });
 
