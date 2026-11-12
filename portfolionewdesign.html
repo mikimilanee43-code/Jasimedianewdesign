@@ -1808,15 +1808,15 @@
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
                 <button class="carousel-arrow prev" type="button" aria-label="Previous Personal Brand project" data-direction="-1">&#8249;</button>
                 <div class="sample-carousel project-showcase-track" aria-label="Personal Brand projects">
-                    <section class="portfolio-showcase showcase-dark" id="ben-mills-content-maxxing">
+                    <section class="portfolio-showcase showcase-dark" id="ben-santos-content-maxxing">
                         <div class="showcase-inner">
                             <div class="showcase-intro">
-                                <h2><a href="#ben-mills-content-maxxing">Ben Mills &mdash; Content Maxxing</a></h2>
-                                <p class="showcase-description">A dynamic personal brand feature exploring Ben Mills' approach to content creation, highlighting the creativity, strategy, and ambition behind building a presence in today's digital landscape.</p>
+                                <h2><a href="#ben-santos-content-maxxing">Ben Santos &mdash; Content Maxxing</a></h2>
+                                <p class="showcase-description">A dynamic personal brand feature exploring Ben Santos' approach to content creation, highlighting the creativity, strategy, and ambition behind building a presence in today's digital landscape.</p>
                             </div>
                         </div>
-                        <div class="carousel-wrap" data-project="ben-mills-content-maxxing">
-                            <div class="sample-carousel" data-carousel-project="ben-mills-content-maxxing" aria-label="Ben Mills Content Maxxing video"></div>
+                        <div class="carousel-wrap" data-project="ben-santos-content-maxxing">
+                            <div class="sample-carousel" data-carousel-project="ben-santos-content-maxxing" aria-label="Ben Santos Content Maxxing video"></div>
                             <div class="carousel-dots" hidden></div>
                         </div>
                     </section>
@@ -1939,7 +1939,7 @@
                 title: "Espolòn at Governors Ball",
                 label: "Event/Activation",
                 slides: [
-                    { type: 'video', title: "Espolòn at Governors Ball", src: 'jasimediaportfoliedit6%208%20Jasim%20Edit%20-%20Gov%20Ball%20Espolon%20%20v1%202.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Espolòn at Governors Ball", src: 'Gov%20Ball%20Espolon%20%20v1%202.webm', mime: 'video/webm' }
                 ]
             },
             'kai-greene-arnold-classic-2026': {
@@ -1953,7 +1953,7 @@
                 title: "Kai Greene — Olympia 2025",
                 label: "Personal Brand",
                 slides: [
-                    { type: 'video', title: "Kai Greene — Olympia 2025", src: 'jasimediaportfoliovideography%20Kai%20Greene%20X%20OLYMPIA%202025.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Kai Greene — Olympia 2025", src: 'Greene%20X%20OLYMPIA%202025.webm', mime: 'video/webm' }
                 ]
             },
             'lincoln-serena-williams': {
@@ -1998,11 +1998,11 @@
                     { type: 'video', title: 'Malcolm Todd \u2014 Live in Fort Lauderdale', src: '5x4%20-%201080p%20Malcolm%20Todd%20ALT.webm', mime: 'video/webm' }
                 ]
             },
-            'ben-mills-content-maxxing': {
-                title: 'Ben Mills \u2014 Content Maxxing',
+            'ben-santos-content-maxxing': {
+                title: 'Ben Santos \u2014 Content Maxxing',
                 label: 'Personal Brand',
                 slides: [
-                    { type: 'video', title: 'Ben Mills \u2014 Content Maxxing', src: '9x16%20-%20Content%20Maxxing%20Promo%20v3.webm', mime: 'video/webm' }
+                    { type: 'video', title: 'Ben Santos \u2014 Content Maxxing', src: '9x16%20-%20Content%20Maxxing%20Promo%20v3.webm', mime: 'video/webm' }
                 ]
             },
             'tish-martinez-cadence': {
@@ -2016,7 +2016,7 @@
                 title: "Adrianna × Beats",
                 label: "Adrianna × Beats",
                 slides: [
-                    { type: 'video', title: "Adrianna × Beats", src: 'jasimediaportfoliovideography%20Adrianna%20x%20Beats.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Adrianna × Beats", src: 'Adrianna%20x%20Beats.webm', mime: 'video/webm' }
                 ]
             },
             'bridges-from-school-to-work': {
@@ -2101,7 +2101,7 @@
                     {
                         type: 'video',
                         title: 'Carlos Alcaraz \u00d7 Denis Shapovalov \u2014 Center Court Practice',
-                        src: 'jasimediaportfoliovideography%20Carlos%20Alcaraz%20X%20Denis%20Shapovalov.webm',
+                        src: 'Carlos%20Alcaraz%20X%20Denis%20Shapovalov.webm',
                         mime: 'video/webm'
                     },
                     {
@@ -2691,6 +2691,7 @@
         function getProjectHashTarget() {
             try {
                 const id = decodeURIComponent(window.location.hash.slice(1));
+                if (id === 'ben-mills-content-maxxing') return document.getElementById('ben-santos-content-maxxing');
                 return document.getElementById(id === 'hospitality-lifestyle' ? 'music-entertainment' : id);
             } catch {
                 return null;
