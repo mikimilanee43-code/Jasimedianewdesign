@@ -757,12 +757,13 @@
             text-underline-offset: 0.18em;
         }
 
-.showcase-intro h2 {
-            font-size: clamp(38px, 5vw, 64px);
+        .showcase-intro h2 {
+            font-size: 44px;
             font-weight: 700;
             line-height: 1.04;
             letter-spacing: 0;
             margin-bottom: 18px;
+            overflow-wrap: anywhere;
         }
 
         .showcase-description {
@@ -994,14 +995,6 @@
             margin-bottom: 34px;
         }
 
-        .event-gallery-kicker {
-            font-size: 11px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #8f8f8f;
-            margin-bottom: 12px;
-        }
-
 .event-gallery h2 {
             font-size: clamp(34px, 4.5vw, 56px);
             font-weight: 700;
@@ -1022,6 +1015,29 @@
             gap: 16px;
         }
 
+        .event-more-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+            min-height: 44px;
+            margin: 28px auto 0;
+            padding-inline: 24px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .event-more-toggle::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-right: 1px solid currentColor;
+            border-bottom: 1px solid currentColor;
+            transform: translateY(-2px) rotate(45deg);
+        }
+
+        .event-more-toggle[aria-expanded="true"]::after { transform: translateY(2px) rotate(225deg); }
+
         .event-photo {
             position: relative;
             display: block;
@@ -1034,11 +1050,8 @@
             cursor: pointer;
         }
 
-        .event-photo:nth-child(3n + 1) {
-            aspect-ratio: 1 / 1;
-        }
-
-        .event-photo img {
+        .event-photo img,
+        .event-video-tile video {
             width: 100%;
             height: 100%;
             display: block;
@@ -1050,6 +1063,10 @@
         .event-photo:focus-visible img {
             transform: scale(1.035);
         }
+
+        .event-video-tile { width: 100%; padding: 0; border: 0; background: #111; }
+        .event-photo[hidden] { display: none; }
+        .event-video-tile .sample-meta { padding: 32px 12px 12px; gap: 8px; text-align: left; }
 
         .photo-fallback {
             position: absolute;
@@ -1284,6 +1301,21 @@
             padding-top: 48px;
         }
 
+        .portfolio-showcase .showcase-intro {
+            min-block-size: var(--project-intro-height, 0px);
+            margin-bottom: 0;
+        }
+
+        .measuring-project-intros .showcase-intro { min-block-size: 0; }
+
+        .measuring-project-intros .project-type-panel[hidden] {
+            display: block;
+            position: fixed;
+            inset: 0 0 auto;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
         .project-showcase-carousel {
             margin-top: 0;
             padding-bottom: 32px;
@@ -1322,15 +1354,10 @@
             width: 100%;
         }
 
-        .project-showcase-track .showcase-intro h2 {
-            font-size: 44px;
-            overflow-wrap: anywhere;
-        }
-
         .project-showcase-track .sample-carousel { padding: 0; }
         .project-showcase-track .sample-card { flex-basis: 100%; min-width: 0; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .project-showcase-track {
                 --project-gutter: 24px;
                 --project-width: max(280px, 84vw);
@@ -1338,7 +1365,10 @@
             }
 
             .project-showcase-track .showcase-inner { padding-inline: 0; }
-            .project-showcase-track .showcase-intro h2 { font-size: 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .showcase-intro h2 { font-size: 32px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1444,11 +1474,11 @@
     <main class="portfolio-showcases">
         <nav class="project-type-nav" id="project-types" aria-label="Portfolio project types">
             <div class="project-type-tabs" role="tablist" aria-label="Project types">
-                <a class="project-type-tab" id="tab-brand-business" role="tab" href="#brand-business" aria-controls="brand-business" aria-selected="false" tabindex="-1">Brand/Business</a>
                 <a class="project-type-tab" id="tab-event-activation" role="tab" href="#event-activation" aria-controls="event-activation" aria-selected="true" tabindex="0">Event/Activation</a>
-                <a class="project-type-tab" id="tab-wedding-private-event" role="tab" href="#wedding-private-event" aria-controls="wedding-private-event" aria-selected="false" tabindex="-1">Wedding/Private Event</a>
                 <a class="project-type-tab" id="tab-athlete-fitness" role="tab" href="#athlete-fitness" aria-controls="athlete-fitness" aria-selected="false" tabindex="-1">Athlete/Fitness</a>
-                <a class="project-type-tab" id="tab-hospitality-lifestyle" role="tab" href="#hospitality-lifestyle" aria-controls="hospitality-lifestyle" aria-selected="false" tabindex="-1">Hospitality/Lifestyle</a>
+                <a class="project-type-tab" id="tab-brand-business" role="tab" href="#brand-business" aria-controls="brand-business" aria-selected="false" tabindex="-1">Brand/Business</a>
+                <a class="project-type-tab" id="tab-wedding-private-event" role="tab" href="#wedding-private-event" aria-controls="wedding-private-event" aria-selected="false" tabindex="-1">Wedding/Private Event</a>
+                <a class="project-type-tab" id="tab-music-entertainment" role="tab" href="#music-entertainment" aria-controls="music-entertainment" aria-selected="false" tabindex="-1">Music/Entertainment</a>
                 <a class="project-type-tab" id="tab-personal-brand" role="tab" href="#personal-brand" aria-controls="personal-brand" aria-selected="false" tabindex="-1">Personal Brand</a>
                 <a class="project-type-tab" id="tab-other" role="tab" href="#other" aria-controls="other" aria-selected="false" tabindex="-1">Other</a>
             </div>
@@ -1458,18 +1488,28 @@
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
                 <button class="carousel-arrow prev" type="button" aria-label="Previous Brand/Business project" data-direction="-1">&#8249;</button>
                 <div class="sample-carousel project-showcase-track" aria-label="Brand and business projects">
-            <section class="portfolio-showcase showcase-dark" id="lincoln-serena-williams">
+            <section class="portfolio-showcase showcase-dark" id="aretyn-behind-the-brand">
                 <div class="showcase-inner">
                     <div class="showcase-intro">
-                        <h2><a href="#lincoln-serena-williams">Lincoln</a></h2>
-                        <p class="showcase-description">A Lincoln commercial featuring Serena Williams.</p>
+                        <h2><a href="#aretyn-behind-the-brand">ARETYN &mdash; Behind the Brand</a></h2>
+                        <p class="showcase-description">An inside look at ARETYN's premium sportswear operations, showcasing the manufacturing, fulfillment, and innovative technology behind the brand's commitment to quality, efficiency, and modern teamwear.</p>
                     </div>
                 </div>
-                <div class="carousel-wrap" data-project="lincoln-serena-williams">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous Lincoln sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="lincoln-serena-williams" aria-label="Lincoln samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next Lincoln sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="Lincoln carousel position"></div>
+                <div class="carousel-wrap" data-project="aretyn-behind-the-brand">
+                    <div class="sample-carousel" data-carousel-project="aretyn-behind-the-brand" aria-label="ARETYN video"></div>
+                    <div class="carousel-dots" hidden></div>
+                </div>
+            </section>
+            <section class="portfolio-showcase showcase-dark" id="bridges-from-school-to-work">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#bridges-from-school-to-work">Bridges &mdash; From School to Work</a></h2>
+                        <p class="showcase-description">Bringing the mission of Bridges from School to Work to life through the stories of young adults with disabilities, highlighting the organization's commitment to creating opportunities, empowering individuals, and building pathways to meaningful employment.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="bridges-from-school-to-work">
+                    <div class="sample-carousel" data-carousel-project="bridges-from-school-to-work" aria-label="Bridges from School to Work video"></div>
+                    <div class="carousel-dots" hidden></div>
                 </div>
             </section>
             <section class="portfolio-showcase showcase-dark" id="shea-moisture">
@@ -1486,6 +1526,20 @@
                     <div class="carousel-dots" aria-label="Shea Moisture carousel position"></div>
                 </div>
             </section>
+            <section class="portfolio-showcase showcase-dark" id="lincoln-serena-williams">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#lincoln-serena-williams">Lincoln</a></h2>
+                        <p class="showcase-description">A Lincoln commercial featuring Serena Williams.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="lincoln-serena-williams">
+                    <button class="carousel-arrow prev" type="button" aria-label="Previous Lincoln sample" data-direction="-1">&#8249;</button>
+                    <div class="sample-carousel" data-carousel-project="lincoln-serena-williams" aria-label="Lincoln samples"></div>
+                    <button class="carousel-arrow next" type="button" aria-label="Next Lincoln sample" data-direction="1">&#8250;</button>
+                    <div class="carousel-dots" aria-label="Lincoln carousel position"></div>
+                </div>
+            </section>
                 </div>
                 <button class="carousel-arrow next" type="button" aria-label="Next Brand/Business project" data-direction="1">&#8250;</button>
                 <div class="carousel-dots" aria-label="Brand/Business project position"></div>
@@ -1493,100 +1547,181 @@
         </div>
 
         <div class="project-type-panel" id="event-activation" role="tabpanel" aria-labelledby="tab-event-activation" tabindex="0">
-        <section class="portfolio-showcase showcase-dark" id="women-in-wealth">
-            <div class="showcase-inner">
-                <div class="showcase-intro">
-                    <h2><a href="#women-in-wealth">Women &amp; Wealth</a></h2>
-                    <p class="showcase-description">The Women &amp; Wealth Conference empowers entrepreneurs, professionals, and investors to bridge the wealth gap through tactical asset-building, leadership scaling, and high-impact financial strategies. This portfolio captures the transformative atmosphere, powerful networking circles, and dynamic masterclasses from a weekend designed to catalyze long-term financial independence.</p>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous event project" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Event and activation projects">
+                    <section class="portfolio-showcase showcase-dark" id="women-in-wealth">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#women-in-wealth">Women &amp; Wealth</a></h2>
+                                <p class="showcase-description">The Women &amp; Wealth Conference empowers entrepreneurs, professionals, and investors to bridge the wealth gap through tactical asset-building, leadership scaling, and high-impact financial strategies. This portfolio captures the transformative atmosphere, powerful networking circles, and dynamic masterclasses from a weekend designed to catalyze long-term financial independence.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="event">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Women &amp; Wealth sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="event" aria-label="Women &amp; Wealth samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Women &amp; Wealth sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Women &amp; Wealth carousel position"></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="mr-olympia-2026-expo">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#mr-olympia-2026-expo">Mr. Olympia 2026 &mdash; Expo</a></h2>
+                                <p class="showcase-description">Leading social media production at the Olympia Expo 2026, Jasimedia showcased the energy of the event through fitness brands, interactive activations, athlete appearances, and unforgettable fan experiences.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="mr-olympia-2026-expo">
+                            <div class="sample-carousel" data-carousel-project="mr-olympia-2026-expo" aria-label="Mr. Olympia 2026 Expo recap video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="espolon-gov-ball">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#espolon-gov-ball">Espolòn at Governors Ball</a></h2>
+                                <p class="showcase-description">An event highlight reel for Espolòn at Governors Ball.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="espolon-gov-ball">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Espolòn at Governors Ball sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="espolon-gov-ball" aria-label="Espolòn at Governors Ball samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Espolòn at Governors Ball sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Espolòn at Governors Ball carousel position"></div>
+                        </div>
+                    </section>
                 </div>
+                <button class="carousel-arrow next" type="button" aria-label="Next event project" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Event/Activation project position"></div>
             </div>
-            <div class="carousel-wrap" data-project="event">
-                <button class="carousel-arrow prev" type="button" aria-label="Previous Women &amp; Wealth sample" data-direction="-1">&#8249;</button>
-                <div class="sample-carousel" data-carousel-project="event" aria-label="Women &amp; Wealth samples"></div>
-                <button class="carousel-arrow next" type="button" aria-label="Next Women &amp; Wealth sample" data-direction="1">&#8250;</button>
-                <div class="carousel-dots" aria-label="Women &amp; Wealth carousel position"></div>
-            </div>
-        </section>
 
-        <section class="event-gallery" aria-labelledby="women-in-wealth-gallery-title">
+        <section class="event-gallery" data-carousel-owner="women-in-wealth" aria-labelledby="women-in-wealth-gallery-title">
             <div class="event-gallery-inner">
                 <div class="event-gallery-header">
-                    <p class="event-gallery-kicker">Event Photos</p>
                     <h2 id="women-in-wealth-gallery-title">Women &amp; Wealth Gallery</h2>
                     <p>Moments from the Women &amp; Wealth Conference.</p>
                 </div>
-                <div class="event-photo-grid">
+                <div class="event-photo-grid" id="women-wealth-gallery-grid">
                     <a class="event-photo" href="Women%20in%20wealth%20photos%20(1).webp" data-open-project="event" data-open-slide="1" aria-label="Enlarge Women &amp; Wealth photo 1">
                         <img src="Women%20in%20wealth%20photos%20(1).webp" alt="Women &amp; Wealth event photo 1" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
                         <span class="photo-fallback">Women in wealth photos (1).webp</span>
                     </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(2).webp" data-open-project="event" data-open-slide="2" aria-label="Enlarge Women &amp; Wealth photo 2">
-                        <img src="Women%20in%20wealth%20photos%20(2).webp" alt="Women &amp; Wealth event photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">Women in wealth photos (2).webp</span>
+                    <button class="event-photo event-video-tile" type="button" data-open-project="women-wealth-mastermind" data-open-slide="0" aria-label="Open Women &amp; Wealth Mastermind Reel fullscreen">
+                        <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                        <span class="sample-meta" aria-hidden="true">
+                            <strong>Mastermind Reel</strong>
+                            <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                        </span>
+                    </button>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(9).webp" data-open-project="event" data-open-slide="2" aria-label="Enlarge Women &amp; Wealth photo 2">
+                        <img src="Women%20in%20wealth%20photos%20(9).webp" alt="Women &amp; Wealth event photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (9).webp</span>
                     </a>
                     <a class="event-photo" href="Women%20in%20wealth%20photos%20(3).webp" data-open-project="event" data-open-slide="3" aria-label="Enlarge Women &amp; Wealth photo 3">
                         <img src="Women%20in%20wealth%20photos%20(3).webp" alt="Women &amp; Wealth event photo 3" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
                         <span class="photo-fallback">Women in wealth photos (3).webp</span>
                     </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(4).webp" data-open-project="event" data-open-slide="4" aria-label="Enlarge Women &amp; Wealth photo 4">
-                        <img src="Women%20in%20wealth%20photos%20(4).webp" alt="Women &amp; Wealth event photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">Women in wealth photos (4).webp</span>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(12).webp" data-open-project="event" data-open-slide="4" aria-label="Enlarge Women &amp; Wealth photo 4">
+                        <img src="Women%20in%20wealth%20photos%20(12).webp" alt="Women &amp; Wealth event photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (12).webp</span>
                     </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(5).webp" data-open-project="event" data-open-slide="5" aria-label="Enlarge Women &amp; Wealth photo 5">
-                        <img src="Women%20in%20wealth%20photos%20(5).webp" alt="Women &amp; Wealth event photo 5" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">Women in wealth photos (5).webp</span>
-                    </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(6).webp" data-open-project="event" data-open-slide="6" aria-label="Enlarge Women &amp; Wealth photo 6">
-                        <img src="Women%20in%20wealth%20photos%20(6).webp" alt="Women &amp; Wealth event photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
-                        <span class="photo-fallback">Women in wealth photos (6).webp</span>
-                    </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(7).webp" data-open-project="event" data-open-slide="7" aria-label="Enlarge Women &amp; Wealth photo 7">
-                        <img src="Women%20in%20wealth%20photos%20(7).webp" alt="Women &amp; Wealth event photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                    <button class="event-photo event-video-tile" type="button" data-open-project="women-wealth-intro" data-open-slide="0" aria-label="Open Women &amp; Wealth Extended Intro fullscreen">
+                        <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                        <span class="sample-meta" aria-hidden="true">
+                            <strong>Extended Intro</strong>
+                            <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                        </span>
+                    </button>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(7).webp" data-open-project="event" data-open-slide="5" aria-label="Enlarge Women &amp; Wealth photo 5">
+                        <img src="Women%20in%20wealth%20photos%20(7).webp" alt="Women &amp; Wealth event photo 5" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
                         <span class="photo-fallback">Women in wealth photos (7).webp</span>
                     </a>
-                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(8).webp" data-open-project="event" data-open-slide="8" aria-label="Enlarge Women &amp; Wealth photo 8">
-                        <img src="Women%20in%20wealth%20photos%20(8).webp" alt="Women &amp; Wealth event photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(13).webp" data-open-project="event" data-open-slide="6" aria-label="Enlarge Women &amp; Wealth photo 6">
+                        <img src="Women%20in%20wealth%20photos%20(13).webp" alt="Women &amp; Wealth event photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (13).webp</span>
+                    </a>
+                    <button class="event-photo event-video-tile" type="button" data-open-project="women-wealth-day-one" data-open-slide="0" aria-label="Open Women &amp; Wealth Day 1 Recap fullscreen" data-event-extra hidden>
+                        <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                        <span class="sample-meta" aria-hidden="true">
+                            <strong>Day 1 Recap</strong>
+                            <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                        </span>
+                    </button>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(2).webp" data-open-project="event" data-open-slide="7" aria-label="Enlarge Women &amp; Wealth photo 7" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(2).webp" alt="Women &amp; Wealth event photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (2).webp</span>
+                    </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(4).webp" data-open-project="event" data-open-slide="8" aria-label="Enlarge Women &amp; Wealth photo 8" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(4).webp" alt="Women &amp; Wealth event photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (4).webp</span>
+                    </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(5).webp" data-open-project="event" data-open-slide="9" aria-label="Enlarge Women &amp; Wealth photo 9" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(5).webp" alt="Women &amp; Wealth event photo 9" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (5).webp</span>
+                    </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(6).webp" data-open-project="event" data-open-slide="10" aria-label="Enlarge Women &amp; Wealth photo 10" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(6).webp" alt="Women &amp; Wealth event photo 10" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (6).webp</span>
+                    </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(8).webp" data-open-project="event" data-open-slide="11" aria-label="Enlarge Women &amp; Wealth photo 11" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(8).webp" alt="Women &amp; Wealth event photo 11" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
                         <span class="photo-fallback">Women in wealth photos (8).webp</span>
                     </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(10).webp" data-open-project="event" data-open-slide="12" aria-label="Enlarge Women &amp; Wealth photo 12" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(10).webp" alt="Women &amp; Wealth event photo 12" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (10).webp</span>
+                    </a>
+                    <a class="event-photo" href="Women%20in%20wealth%20photos%20(11).webp" data-open-project="event" data-open-slide="13" aria-label="Enlarge Women &amp; Wealth photo 13" data-event-extra hidden>
+                        <img src="Women%20in%20wealth%20photos%20(11).webp" alt="Women &amp; Wealth event photo 13" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                        <span class="photo-fallback">Women in wealth photos (11).webp</span>
+                    </a>
                 </div>
+                <button class="cta-button event-more-toggle" type="button" aria-controls="women-wealth-gallery-grid" aria-expanded="false">More</button>
             </div>
         </section>
         </div>
 
         <div class="project-type-panel" id="wedding-private-event" role="tabpanel" aria-labelledby="tab-wedding-private-event" tabindex="0" hidden>
-            <section class="portfolio-showcase showcase-dark" id="braun-wedding">
-                <div class="showcase-inner">
-                    <div class="showcase-intro">
-                        <h2><a href="#braun-wedding">Braun Wedding</a></h2>
-                        <p class="showcase-description">Highlights from the Braun Wedding, capturing the candid moments, celebration, and people who made the day special.</p>
-                    </div>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous wedding or private event" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Wedding and private event projects">
+                    <section class="portfolio-showcase showcase-dark" id="bridges-annual-charity-gala">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#bridges-annual-charity-gala">Bridges &mdash; Annual Charity Gala</a></h2>
+                                <p class="showcase-description">Capturing the elegance, atmosphere, and meaningful moments of the Bridges Charity Gala, showcasing an unforgettable evening of celebration, community, and support for a meaningful cause.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="bridges-annual-charity-gala">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Bridges &mdash; Annual Charity Gala sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="bridges-annual-charity-gala" aria-label="Bridges &mdash; Annual Charity Gala samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Bridges &mdash; Annual Charity Gala sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Bridges &mdash; Annual Charity Gala carousel position"></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="braun-wedding">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#braun-wedding">Braun Wedding</a></h2>
+                                <p class="showcase-description">Highlights from the Braun Wedding, capturing the candid moments, celebration, and people who made the day special.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="braun-wedding">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Braun Wedding sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="braun-wedding" aria-label="Braun Wedding samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Braun Wedding sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Braun Wedding carousel position"></div>
+                        </div>
+                    </section>
                 </div>
-                <div class="carousel-wrap" data-project="braun-wedding">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous Braun Wedding sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="braun-wedding" aria-label="Braun Wedding samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next Braun Wedding sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="Braun Wedding carousel position"></div>
-                </div>
-            </section>
+                <button class="carousel-arrow next" type="button" aria-label="Next wedding or private event" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Wedding/Private Event project position"></div>
+            </div>
         </div>
         <div class="project-type-panel" id="athlete-fitness" role="tabpanel" aria-labelledby="tab-athlete-fitness" tabindex="0" hidden>
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
                 <button class="carousel-arrow prev" type="button" aria-label="Previous Athlete/Fitness project" data-direction="-1">&#8249;</button>
                 <div class="sample-carousel project-showcase-track" aria-label="Athlete and fitness projects">
-            <section class="portfolio-showcase showcase-dark" id="kai-greene-olympia-2025">
-                <div class="showcase-inner">
-                    <div class="showcase-intro">
-                        <h2><a href="#kai-greene-olympia-2025">Kai Greene &mdash; Olympia 2025</a></h2>
-                        <p class="showcase-description">Capturing bodybuilding icon Kai Greene at Olympia 2025, highlighting the energy, passion, and atmosphere of one of the fitness industry's biggest events.</p>
-                    </div>
-                </div>
-                <div class="carousel-wrap" data-project="athlete-fitness">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous Kai Greene &mdash; Olympia 2025 sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="0" aria-label="Kai Greene &mdash; Olympia 2025 samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next Kai Greene &mdash; Olympia 2025 sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="Kai Greene &mdash; Olympia 2025 carousel position"></div>
-                </div>
-            </section>
             <section class="portfolio-showcase showcase-dark" id="alcaraz-shapovalov-practice">
                 <div class="showcase-inner">
                     <div class="showcase-intro">
@@ -1596,7 +1731,7 @@
                 </div>
                 <div class="carousel-wrap" data-project="athlete-fitness">
                     <button class="carousel-arrow prev" type="button" aria-label="Previous Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="1" aria-label="Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice samples"></div>
+                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="0" aria-label="Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice samples"></div>
                     <button class="carousel-arrow next" type="button" aria-label="Next Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice sample" data-direction="1">&#8250;</button>
                     <div class="carousel-dots" aria-label="Carlos Alcaraz &times; Denis Shapovalov &mdash; Center Court Practice carousel position"></div>
                 </div>
@@ -1610,7 +1745,7 @@
                 </div>
                 <div class="carousel-wrap" data-project="athlete-fitness">
                     <button class="carousel-arrow prev" type="button" aria-label="Previous Miami Drip &mdash; Grand Slam Track 2025 sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="2" aria-label="Miami Drip &mdash; Grand Slam Track 2025 samples"></div>
+                    <div class="sample-carousel" data-carousel-project="athlete-fitness" data-carousel-slide="1" aria-label="Miami Drip &mdash; Grand Slam Track 2025 samples"></div>
                     <button class="carousel-arrow next" type="button" aria-label="Next Miami Drip &mdash; Grand Slam Track 2025 sample" data-direction="1">&#8250;</button>
                     <div class="carousel-dots" aria-label="Miami Drip &mdash; Grand Slam Track 2025 carousel position"></div>
                 </div>
@@ -1620,37 +1755,129 @@
                 <div class="carousel-dots" aria-label="Athlete/Fitness project position"></div>
             </div>
         </div>
-        <div class="project-type-panel" id="hospitality-lifestyle" role="tabpanel" aria-labelledby="tab-hospitality-lifestyle" tabindex="0" hidden>
-            <section class="portfolio-showcase showcase-dark" id="palm-tree-festival">
-                <div class="showcase-inner">
-                    <div class="showcase-intro">
-                        <h2><a href="#palm-tree-festival">Palm Tree Festival</a></h2>
-                        <p class="showcase-description">Highlights from Palm Tree Festival.</p>
-                    </div>
+        <div class="project-type-panel" id="music-entertainment" role="tabpanel" aria-labelledby="tab-music-entertainment" tabindex="0" hidden>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous music project" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Music and entertainment projects">
+                    <section class="portfolio-showcase showcase-dark" id="tonto-dont-trip">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#tonto-dont-trip">DONT TRIP - Tonto</a></h2>
+                                <p class="showcase-description">Tonto's first music Video. It was shoot in the living room, with one light, one TV and one Camera.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="tonto-dont-trip">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous DONT TRIP - Tonto sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="tonto-dont-trip" aria-label="DONT TRIP - Tonto samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next DONT TRIP - Tonto sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="DONT TRIP - Tonto carousel position"></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="malcolm-todd-live-fort-lauderdale">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#malcolm-todd-live-fort-lauderdale">Malcolm Todd &mdash; Live in Fort Lauderdale</a></h2>
+                                <p class="showcase-description">Capturing Malcolm Todd's live performance at Fort Lauderdale's War Memorial Auditorium through a dynamic cinematic montage, highlighting the energy, stage presence, and atmosphere of the show.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="malcolm-todd-live-fort-lauderdale">
+                            <div class="sample-carousel" data-carousel-project="malcolm-todd-live-fort-lauderdale" aria-label="Malcolm Todd live performance video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="palm-tree-festival">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#palm-tree-festival">Palm Tree Festival</a></h2>
+                                <p class="showcase-description">Highlights from Palm Tree Festival.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="palm-tree-festival">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Palm Tree Festival sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="palm-tree-festival" aria-label="Palm Tree Festival samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Palm Tree Festival sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Palm Tree Festival carousel position"></div>
+                        </div>
+                    </section>
                 </div>
-                <div class="carousel-wrap" data-project="palm-tree-festival">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous Palm Tree Festival sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="palm-tree-festival" aria-label="Palm Tree Festival samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next Palm Tree Festival sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="Palm Tree Festival carousel position"></div>
-                </div>
-            </section>
+                <button class="carousel-arrow next" type="button" aria-label="Next music project" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Music/Entertainment project position"></div>
+            </div>
         </div>
         <div class="project-type-panel" id="personal-brand" role="tabpanel" aria-labelledby="tab-personal-brand" tabindex="0" hidden>
-            <section class="portfolio-showcase showcase-dark" id="adrianna-beats">
-                <div class="showcase-inner">
-                    <div class="showcase-intro">
-                        <h2><a href="#adrianna-beats">Adrianna × Beats</a></h2>
-                        <p class="showcase-description">A personal brand collaboration with Adrianna and Beats.</p>
-                    </div>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous Personal Brand project" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Personal Brand projects">
+                    <section class="portfolio-showcase showcase-dark" id="ben-mills-content-maxxing">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#ben-mills-content-maxxing">Ben Mills &mdash; Content Maxxing</a></h2>
+                                <p class="showcase-description">A dynamic personal brand feature exploring Ben Mills' approach to content creation, highlighting the creativity, strategy, and ambition behind building a presence in today's digital landscape.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="ben-mills-content-maxxing">
+                            <div class="sample-carousel" data-carousel-project="ben-mills-content-maxxing" aria-label="Ben Mills Content Maxxing video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="tish-martinez-cadence">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#tish-martinez-cadence">Tish Martinez &times; Cadence</a></h2>
+                                <p class="showcase-description">Celebrating fitness creator Leticia &ldquo;Tish&rdquo; Martinez and her partnership with Cadence through a vibrant Miami-based production, blending personal branding, lifestyle, and creative storytelling.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="tish-martinez-cadence">
+                            <div class="sample-carousel" data-carousel-project="tish-martinez-cadence" aria-label="Tish Martinez and Cadence video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="adrianna-beats">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#adrianna-beats">Adrianna × Beats</a></h2>
+                                <p class="showcase-description">A personal brand collaboration with Adrianna and Beats.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="adrianna-beats">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Adrianna × Beats sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="adrianna-beats" aria-label="Adrianna × Beats samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Adrianna × Beats sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Adrianna × Beats carousel position"></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="kai-greene-arnold-classic-2026">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#kai-greene-arnold-classic-2026">Kai Greene — Arnold Classic 2026</a></h2>
+                                <p class="showcase-description">Highlights featuring Kai Greene at the 2026 Arnold Classic.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="kai-greene-arnold-classic-2026">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Kai Greene — Arnold Classic 2026 sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="kai-greene-arnold-classic-2026" aria-label="Kai Greene — Arnold Classic 2026 samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Kai Greene — Arnold Classic 2026 sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Kai Greene — Arnold Classic 2026 carousel position"></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="kai-greene-olympia-2025">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#kai-greene-olympia-2025">Kai Greene &mdash; Olympia 2025</a></h2>
+                                <p class="showcase-description">Capturing bodybuilding icon Kai Greene at Olympia 2025, highlighting the energy, passion, and atmosphere of one of the fitness industry's biggest events.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="kai-greene-olympia-2025">
+                            <button class="carousel-arrow prev" type="button" aria-label="Previous Kai Greene &mdash; Olympia 2025 sample" data-direction="-1">&#8249;</button>
+                            <div class="sample-carousel" data-carousel-project="kai-greene-olympia-2025" aria-label="Kai Greene &mdash; Olympia 2025 samples"></div>
+                            <button class="carousel-arrow next" type="button" aria-label="Next Kai Greene &mdash; Olympia 2025 sample" data-direction="1">&#8250;</button>
+                            <div class="carousel-dots" aria-label="Kai Greene &mdash; Olympia 2025 carousel position"></div>
+                        </div>
+                    </section>
                 </div>
-                <div class="carousel-wrap" data-project="adrianna-beats">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous Adrianna × Beats sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="adrianna-beats" aria-label="Adrianna × Beats samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next Adrianna × Beats sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="Adrianna × Beats carousel position"></div>
-                </div>
-            </section>
+                <button class="carousel-arrow next" type="button" aria-label="Next Personal Brand project" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Personal Brand project position"></div>
+            </div>
         </div>
         <div class="project-type-panel" id="other" role="tabpanel" aria-labelledby="tab-other" tabindex="0" hidden>
             <section class="portfolio-showcase showcase-dark" id="jasimedia-2025-recap">
@@ -1689,7 +1916,7 @@
 
     <section class="cta-section">
         <h2>Let's Work Together</h2>
-        <p>Have a project in mind? I'd love to hear about it.</p>
+        <p>Have a project in mind? We'd love to hear about it.</p>
         <a href="contactnewdesign.html">GET IN TOUCH</a>
     </section>
 
@@ -1701,46 +1928,144 @@
     <script>
         // ── Women & Wealth event portfolio ──
         const projects = {
+            'mr-olympia-2026-expo': {
+                title: 'Mr. Olympia 2026 \u2014 Expo',
+                label: 'Event/Activation',
+                slides: [
+                    { type: 'video', title: 'Mr. Olympia 2026 \u2014 Expo', src: '4x3%20-%20Expo%20Recap.webm', mime: 'video/webm' }
+                ]
+            },
+            'espolon-gov-ball': {
+                title: "Espolòn at Governors Ball",
+                label: "Event/Activation",
+                slides: [
+                    { type: 'video', title: "Espolòn at Governors Ball", src: 'jasimediaportfoliedit6%208%20Jasim%20Edit%20-%20Gov%20Ball%20Espolon%20%20v1%202.webm', mime: 'video/webm' }
+                ]
+            },
+            'kai-greene-arnold-classic-2026': {
+                title: "Kai Greene — Arnold Classic 2026",
+                label: "Personal Brand",
+                slides: [
+                    { type: 'video', title: "Kai Greene — Arnold Classic 2026", src: 'Jasimediaportfoliedit%20Arnold%20Classic%202026.webm', mime: 'video/webm' }
+                ]
+            },
+            'kai-greene-olympia-2025': {
+                title: "Kai Greene — Olympia 2025",
+                label: "Personal Brand",
+                slides: [
+                    { type: 'video', title: "Kai Greene — Olympia 2025", src: 'jasimediaportfoliovideography%20Kai%20Greene%20X%20OLYMPIA%202025.webm', mime: 'video/webm' }
+                ]
+            },
             'lincoln-serena-williams': {
                 title: "Lincoln",
                 label: "Lincoln",
                 slides: [
-                    { type: 'video', title: "Lincoln - Commercial Featuring Serena Williams", src: 'Jasimediaportfolieditlincoln%20Lincoln%20Commercial%20Feat.%20Serena%20Williams.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Lincoln - Commercial Featuring Serena Williams", src: 'jasimediaportfolieditLincoln%20Lincoln%20Commercial%20feat.%20Serena%20Williams.webm', mime: 'video/webm', startAt: 0.15 }
                 ]
             },
             'shea-moisture': {
                 title: "Shea Moisture",
                 label: "Shea Moisture",
                 slides: [
-                    { type: 'video', title: "Shea Moisture", src: 'Jasimediaportfoliovideography%20Shea%20Moisture.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Shea Moisture", src: 'jasimediaportfoliovideography%20Shea%20Moisture.webm', mime: 'video/webm' }
+                ]
+            },
+            'aretyn-behind-the-brand': {
+                title: 'ARETYN \u2014 Behind the Brand',
+                label: 'Brand/Business',
+                slides: [
+                    { type: 'video', title: 'ARETYN \u2014 Behind the Brand', src: 'Aretyn%20v4%20OG%20Music.webm', mime: 'video/webm' }
+                ]
+            },
+            'tonto-dont-trip': {
+                title: 'DONT TRIP - Tonto',
+                label: 'Music/Entertainment',
+                slides: [
+                    { type: 'video', title: 'DONT TRIP - Tonto', src: 'Tonto%20Don%27t%20Trip%20Video.webm', mime: 'video/webm' }
                 ]
             },
             'palm-tree-festival': {
                 title: "Palm Tree Festival",
                 label: "Palm Tree Festival",
                 slides: [
-                    { type: 'video', title: "Palm Tree Festival Highlights", src: 'Jasimediaportfoliovideography%20Palm%20Tree%20Festival.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Palm Tree Festival Highlights", src: 'jasimediaportfoliovideography%20Palm%20Tree%20Festival.webm', mime: 'video/webm' }
+                ]
+            },
+            'malcolm-todd-live-fort-lauderdale': {
+                title: 'Malcolm Todd \u2014 Live in Fort Lauderdale',
+                label: 'Music/Entertainment',
+                slides: [
+                    { type: 'video', title: 'Malcolm Todd \u2014 Live in Fort Lauderdale', src: '5x4%20-%201080p%20Malcolm%20Todd%20ALT.webm', mime: 'video/webm' }
+                ]
+            },
+            'ben-mills-content-maxxing': {
+                title: 'Ben Mills \u2014 Content Maxxing',
+                label: 'Personal Brand',
+                slides: [
+                    { type: 'video', title: 'Ben Mills \u2014 Content Maxxing', src: '9x16%20-%20Content%20Maxxing%20Promo%20v3.webm', mime: 'video/webm' }
+                ]
+            },
+            'tish-martinez-cadence': {
+                title: 'Tish Martinez \u00d7 Cadence',
+                label: 'Personal Brand',
+                slides: [
+                    { type: 'video', title: 'Tish Martinez \u00d7 Cadence', src: '5x4%20-%20Tish%20x%20Cadence%20v1.webm', mime: 'video/webm' }
                 ]
             },
             'adrianna-beats': {
                 title: "Adrianna × Beats",
                 label: "Adrianna × Beats",
                 slides: [
-                    { type: 'video', title: "Adrianna × Beats", src: 'Jasimediaportfoliovideography%20Adrianna%20X%20Beats.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Adrianna × Beats", src: 'jasimediaportfoliovideography%20Adrianna%20x%20Beats.webm', mime: 'video/webm' }
+                ]
+            },
+            'bridges-from-school-to-work': {
+                title: 'Bridges \u2014 From School to Work',
+                label: 'Brand/Business',
+                slides: [
+                    { type: 'video', title: 'Bridges \u2014 From School to Work', src: '16x9%20-%20Bridges%20Final.webm', mime: 'video/webm', startAt: 1 }
+                ]
+            },
+            'bridges-annual-charity-gala': {
+                title: 'Bridges \u2014 Annual Charity Gala',
+                label: 'Wedding/Private Event',
+                slides: [
+                    { type: 'video', title: 'Bridges \u2014 Annual Charity Gala', src: '16x9%20-%20Bridges%20Gala%20v1.webm', mime: 'video/webm' }
                 ]
             },
             'braun-wedding': {
                 title: "Braun Wedding",
                 label: "Braun Wedding",
                 slides: [
-                    { type: 'video', title: "Braun Wedding Highlights", src: 'Jasimediaportfoliovideography%20Wedding.webm', mime: 'video/webm' }
+                    { type: 'video', title: "Braun Wedding Highlights", src: 'jasimediaportfoliovideography%20Wedding.webm', mime: 'video/webm' }
                 ]
             },
             'jasimedia-2025-recap': {
                 title: "JASIMEDIA 2025 Recap",
                 label: "JASIMEDIA 2025 Recap",
                 slides: [
-                    { type: 'video', title: "JASIMEDIA 2025 Recap", src: 'Jasimedia%202025%20Recap.webm', mime: 'video/webm' }
+                    { type: 'video', title: "JASIMEDIA 2025 Recap", src: 'JASIMEDIA%202025%20RECAP.webm', mime: 'video/webm' }
+                ]
+            },
+            'women-wealth-mastermind': {
+                title: 'Women & Wealth Mastermind Reel',
+                label: 'Women & Wealth',
+                slides: [
+                    { type: 'video', title: 'Mastermind Reel', src: '9x16%20-%20Mastermind%20Reel%20v1.webm', mime: 'video/webm' }
+                ]
+            },
+            'women-wealth-intro': {
+                title: 'Women & Wealth Extended Intro',
+                label: 'Women & Wealth',
+                slides: [
+                    { type: 'video', title: 'Extended Intro', src: '16x9%20-%20Extended%20Intro.webm', mime: 'video/webm' }
+                ]
+            },
+            'women-wealth-day-one': {
+                title: 'Women & Wealth Day 1 Recap',
+                label: 'Women & Wealth',
+                slides: [
+                    { type: 'video', title: 'Day 1 Recap', src: 'Women%20in%20wealth%20video.webm', mime: 'video/webm' }
                 ]
             },
             event: {
@@ -1750,18 +2075,23 @@
                 slides: [
                     {
                         type: 'video',
-                        title: 'Women & Wealth Conference Highlights',
-                        src: 'Women%20in%20wealth%20video.webm',
+                        title: 'Women & Wealth Full Event Recap',
+                        src: '5x4%20-%20WIW%20Full%20Event%20Recap%20Feel%20This%20Moment.webm',
                         mime: 'video/webm'
                     },
                     { type: 'image', title: 'Women & Wealth - Photo 01', src: 'Women%20in%20wealth%20photos%20(1).webp', alt: 'Women & Wealth event photo 1' },
-                    { type: 'image', title: 'Women & Wealth - Photo 02', src: 'Women%20in%20wealth%20photos%20(2).webp', alt: 'Women & Wealth event photo 2' },
+                    { type: 'image', title: 'Women & Wealth - Photo 02', src: 'Women%20in%20wealth%20photos%20(9).webp', alt: 'Women & Wealth event photo 2' },
                     { type: 'image', title: 'Women & Wealth - Photo 03', src: 'Women%20in%20wealth%20photos%20(3).webp', alt: 'Women & Wealth event photo 3' },
-                    { type: 'image', title: 'Women & Wealth - Photo 04', src: 'Women%20in%20wealth%20photos%20(4).webp', alt: 'Women & Wealth event photo 4' },
-                    { type: 'image', title: 'Women & Wealth - Photo 05', src: 'Women%20in%20wealth%20photos%20(5).webp', alt: 'Women & Wealth event photo 5' },
-                    { type: 'image', title: 'Women & Wealth - Photo 06', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women & Wealth event photo 6' },
-                    { type: 'image', title: 'Women & Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(7).webp', alt: 'Women & Wealth event photo 7' },
-                    { type: 'image', title: 'Women & Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women & Wealth event photo 8' },
+                    { type: 'image', title: 'Women & Wealth - Photo 04', src: 'Women%20in%20wealth%20photos%20(12).webp', alt: 'Women & Wealth event photo 4' },
+                    { type: 'image', title: 'Women & Wealth - Photo 05', src: 'Women%20in%20wealth%20photos%20(7).webp', alt: 'Women & Wealth event photo 5' },
+                    { type: 'image', title: 'Women & Wealth - Photo 06', src: 'Women%20in%20wealth%20photos%20(13).webp', alt: 'Women & Wealth event photo 6' },
+                    { type: 'image', title: 'Women & Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(2).webp', alt: 'Women & Wealth event photo 7', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(4).webp', alt: 'Women & Wealth event photo 8', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 09', src: 'Women%20in%20wealth%20photos%20(5).webp', alt: 'Women & Wealth event photo 9', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 10', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women & Wealth event photo 10', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 11', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women & Wealth event photo 11', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 12', src: 'Women%20in%20wealth%20photos%20(10).webp', alt: 'Women & Wealth event photo 12', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 13', src: 'Women%20in%20wealth%20photos%20(11).webp', alt: 'Women & Wealth event photo 13', extra: true },
                 ]
             },
             'athlete-fitness': {
@@ -1770,14 +2100,8 @@
                 slides: [
                     {
                         type: 'video',
-                        title: 'Kai Greene \u2014 Olympia 2025',
-                        src: 'Jasimediaportfoliovideography%20Kai%20Greene%20X%20Olympia%202025.webm',
-                        mime: 'video/webm'
-                    },
-                    {
-                        type: 'video',
                         title: 'Carlos Alcaraz \u00d7 Denis Shapovalov \u2014 Center Court Practice',
-                        src: 'Jasimediaportfoliovideography%20Carlos%20Alcaraz%20X%20Denis%20Shapovalov.webm',
+                        src: 'jasimediaportfoliovideography%20Carlos%20Alcaraz%20X%20Denis%20Shapovalov.webm',
                         mime: 'video/webm'
                     },
                     {
@@ -1791,6 +2115,7 @@
         };
 
         const getSlideNumber = index => String(index + 1).padStart(2, '0');
+        const getVideoSource = slide => slide.startAt ? `${slide.src}#t=${slide.startAt}` : slide.src;
 
         const getSlideTitle = (slide, project, index) => {
             if (slide.title) return slide.title;
@@ -1863,14 +2188,20 @@
                     } else {
                         const video = document.createElement('video');
                         video.muted = true;
-                        video.loop = true;
+                        video.loop = !slide.startAt;
+                        if (slide.startAt) {
+                            video.addEventListener('ended', () => {
+                                video.currentTime = slide.startAt;
+                                setPreviewPlayback(video, true);
+                            });
+                        }
                         video.autoplay = false;
                         video.playsInline = true;
                         video.preload = 'metadata';
                         video.setAttribute('aria-label', `${slideTitle} video`);
 
                         const source = document.createElement('source');
-                        source.src = slide.src;
+                        source.src = getVideoSource(slide);
                         if (slide.mime) source.type = slide.mime;
                         video.appendChild(source);
                         media.appendChild(video);
@@ -1971,6 +2302,8 @@
                 cards.forEach((card, index) => {
                     card.classList.toggle('is-focused', index === activeIndex && activeDistance < 8);
                 });
+                const gallery = wrap.parentElement.querySelector(':scope > [data-carousel-owner]');
+                if (gallery) gallery.hidden = cards[activeIndex].id !== gallery.dataset.carouselOwner;
                 playVisiblePreviewVideos();
             }
         }
@@ -2042,6 +2375,29 @@
         setupPortfolioCarousels();
         setupInlineMediaEnlargers();
         setupPreviewPlayback();
+        const eventMoreButton = document.querySelector('.event-more-toggle');
+        const eventGrid = document.getElementById(eventMoreButton.getAttribute('aria-controls'));
+        const extraEventTiles = Array.from(eventGrid.querySelectorAll('[data-event-extra]'));
+
+        function loadEventThumbnail(tile) {
+            const preview = tile.querySelector('video');
+            if (preview && !preview.hasAttribute('src')) {
+                preview.src = projects[tile.dataset.openProject].slides[Number(tile.dataset.openSlide)].src + '#t=0.1';
+            }
+        }
+
+        eventGrid.querySelectorAll('.event-video-tile:not([hidden])').forEach(loadEventThumbnail);
+
+        eventMoreButton.addEventListener('click', () => {
+            const expanded = eventMoreButton.getAttribute('aria-expanded') === 'false';
+            extraEventTiles.forEach(tile => { tile.hidden = !expanded; });
+            eventMoreButton.setAttribute('aria-expanded', String(expanded));
+            eventMoreButton.textContent = expanded ? 'Less' : 'More';
+            if (expanded) {
+                extraEventTiles.forEach(loadEventThumbnail);
+                extraEventTiles[0].scrollIntoView({ block: 'nearest' });
+            }
+        });
 
         let currentSlide = 0;
         let currentProject = null;
@@ -2056,7 +2412,7 @@
             const project = projects[key];
             const selectedSlide = project.slides[Math.min(Math.max(startIndex, 0), project.slides.length - 1)];
             const slides = selectedSlide.type === 'image'
-                ? project.slides.filter(slide => slide.type === 'image')
+                ? project.slides.filter(slide => slide.type === 'image' && (!slide.extra || eventMoreButton.getAttribute('aria-expanded') === 'true'))
                 : [selectedSlide];
             currentProject = { ...project, slides };
             currentSlide = slides.indexOf(selectedSlide);
@@ -2154,7 +2510,7 @@
                     video.playsInline = !isMobileViewer();
                     video.preload = 'metadata';
                     const source = document.createElement('source');
-                    source.src = slide.src;
+                    source.src = getVideoSource(slide);
                     if (slide.mime) {
                         source.type = slide.mime;
                     }
@@ -2334,7 +2690,8 @@
 
         function getProjectHashTarget() {
             try {
-                return document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+                const id = decodeURIComponent(window.location.hash.slice(1));
+                return document.getElementById(id === 'hospitality-lifestyle' ? 'music-entertainment' : id);
             } catch {
                 return null;
             }
@@ -2371,14 +2728,17 @@
             selectProjectType(panel ? panel.id : 'event-activation');
             if (panel) {
                 requestAnimationFrame(() => {
-                    const projectTrack = target.closest('.project-showcase-track');
-                    if (projectTrack && target.parentElement === projectTrack) {
-                        target.scrollIntoView({ block: 'start', behavior: 'instant' });
+                    const gallery = target.closest('[data-carousel-owner]');
+                    const project = gallery ? document.getElementById(gallery.dataset.carouselOwner) : target;
+                    const projectTrack = project.closest('.project-showcase-track');
+                    if (projectTrack && project.parentElement === projectTrack) {
+                        project.scrollIntoView({ block: 'start', behavior: 'instant' });
                         projectTrack.scrollTo({
-                            left: target.offsetLeft - projectTrack.firstElementChild.offsetLeft,
+                            left: project.offsetLeft - projectTrack.firstElementChild.offsetLeft,
                             behavior: 'instant'
                         });
                         updateCarouselDots(projectTrack.closest('.project-showcase-carousel'));
+                        if (gallery) target.scrollIntoView({ block: 'start', behavior: 'instant' });
                         return;
                     }
                     (target === panel ? projectTypeNav : target).scrollIntoView({ block: 'start' });
@@ -2419,6 +2779,25 @@
                 restoreProjectTypeFromHash();
             });
         });
+
+        const portfolioShowcases = document.querySelector('.portfolio-showcases');
+        const projectIntros = Array.from(portfolioShowcases.querySelectorAll('.portfolio-showcase .showcase-intro'));
+
+        function alignProjectVideos() {
+            // Measure hidden tabs without changing the selected category.
+            portfolioShowcases.classList.add('measuring-project-intros');
+            const height = Math.max(...projectIntros.map(intro => intro.getBoundingClientRect().height));
+            portfolioShowcases.classList.remove('measuring-project-intros');
+            portfolioShowcases.style.setProperty('--project-intro-height', `${Math.ceil(height)}px`);
+        }
+
+        let alignmentFrame;
+        window.addEventListener('resize', () => {
+            cancelAnimationFrame(alignmentFrame);
+            alignmentFrame = requestAnimationFrame(alignProjectVideos);
+        });
+        alignProjectVideos();
+        document.fonts.ready.then(alignProjectVideos);
 
         window.addEventListener('hashchange', restoreProjectTypeFromHash);
         restoreProjectTypeFromHash();
