@@ -394,7 +394,7 @@
         }
 
         @media (min-width: 769px) and (pointer: fine) {
-            .modal[data-media-type="image"] {
+            .modal:is([data-media-type="image"], [data-media-type="gallery"]) {
                 width: 100%;
                 max-width: none;
                 height: 100vh;
@@ -490,12 +490,16 @@
             display: flex;
         }
 
-        .photo-carousel .image-slide {
+        .photo-carousel .slide {
             display: flex;
             flex: 0 0 100%;
             min-width: 0;
             align-items: center;
             justify-content: center;
+        }
+
+        .photo-carousel .slide:not(.active) {
+            pointer-events: none;
         }
 
         .photo-carousel .image-slide img {
@@ -549,6 +553,7 @@
         .modal-dots {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 0;
             padding: 0 12px;
             background: #111;
@@ -659,8 +664,12 @@
                 display: none;
             }
 
-            .modal[data-media-type="image"] .slides-wrapper {
+            .modal:is([data-media-type="image"], [data-media-type="gallery"]) .slides-wrapper {
                 touch-action: pan-y pinch-zoom;
+            }
+
+            .modal[data-media-type="gallery"] .dot {
+                width: min(32px, calc((100vw - 24px) / var(--gallery-size)));
             }
 
             .modal[data-media-type="video"] .modal-title {
@@ -922,12 +931,13 @@
 
         .carousel-arrow {
             position: absolute;
-            top: 50%;
+            top: var(--carousel-arrow-top, 50%);
             transform: translateY(-50%);
-            width: 46px;
+            width: 58px;
             height: 46px;
-            border-radius: 50%;
-            border: none;
+            padding: 0;
+            border-radius: 999px;
+            border: 1px solid transparent;
             background: rgba(255,255,255,0.84);
             color: #111;
             box-shadow: 0 10px 28px rgba(0,0,0,0.22);
@@ -938,12 +948,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-
-        .carousel-arrow:hover {
-            transform: translateY(-50%) scale(1.05);
-            background: #fff;
+            transition: background-color 0.25s, border-color 0.25s, box-shadow 0.25s;
         }
 
         .carousel-arrow.prev { left: max(18px, calc((100vw - 1220px) / 2)); }
@@ -977,6 +982,17 @@
         }
 
         .showcase-dark .carousel-dot.active { background: #fff; }
+
+        .project-galleries {
+            position: relative;
+            overflow: clip;
+            background: #fff;
+        }
+
+        .project-galleries > .event-gallery[inert] {
+            position: absolute;
+            inset: 0 0 auto;
+        }
 
         .event-gallery {
             background: #fff;
@@ -1013,6 +1029,24 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 16px;
+        }
+
+        .studio-oma-gallery .event-gallery-inner {
+            max-width: 960px;
+        }
+
+        .studio-oma-gallery .event-photo-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .studio-oma-gallery .event-video-tile {
+            aspect-ratio: 4 / 3;
+        }
+
+        @media (max-width: 540px) {
+            .studio-oma-gallery .event-photo-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
         }
 
         .event-more-toggle {
@@ -1160,7 +1194,8 @@
             transition: background-color 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.2s ease;
         }
 
-        .cta-button::before {
+        .cta-button::before,
+        .carousel-arrow::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -1174,19 +1209,24 @@
         }
 
         .cta-button:is(:hover, :focus-visible, :active),
-        .mobile-menu .cta-button:is(:hover, :focus-visible, :active) {
+        .carousel-arrow:is(:hover, :focus-visible, :active) {
             background-color: #c0c0c0;
             color: #000;
             border-color: #b4b7ba;
             box-shadow: 0 0 0 1px rgba(235,237,239,0.8), 0 3px 10px rgba(95,99,104,0.16);
+        }
+
+        .cta-button:is(:hover, :focus-visible, :active) {
             transform: translateY(-1px);
         }
 
-        .cta-button:is(:hover, :focus-visible, :active)::before {
+        .cta-button:is(:hover, :focus-visible, :active)::before,
+        .carousel-arrow:is(:hover, :focus-visible, :active)::before {
             opacity: 1;
         }
 
-        .cta-button:focus-visible {
+        .cta-button:focus-visible,
+        .carousel-arrow:focus-visible {
             outline: 2px solid #5f6368;
             outline-offset: 3px;
         }
@@ -1317,8 +1357,26 @@
         }
 
         .project-showcase-carousel {
+            --project-gutter: max(70px, calc((100vw - 1120px) / 2));
+            --project-width: min(76vw, 820px);
+            --project-gap: 72px;
             margin-top: 0;
             padding-bottom: 32px;
+        }
+
+        @media (width > 900px) {
+            .project-showcase-carousel > .carousel-arrow {
+                transform: translate(-50%, -50%);
+            }
+
+            .project-showcase-carousel > .carousel-arrow.prev {
+                left: calc(var(--project-gutter) - var(--project-gap) / 2);
+            }
+
+            .project-showcase-carousel > .carousel-arrow.next {
+                left: calc(var(--project-gutter) + var(--project-width) + var(--project-gap) / 2);
+                right: auto;
+            }
         }
 
         .page-header .showcase-actions {
@@ -1329,10 +1387,8 @@
         .page-header .explore-btn { text-decoration: none; }
 
         .project-showcase-track {
-            --project-gutter: max(50px, calc((100vw - 1120px) / 2));
-            --project-width: min(76vw, 820px);
             position: relative;
-            gap: 44px;
+            gap: var(--project-gap);
             padding: 0 max(var(--project-gutter), calc(100% - var(--project-gutter) - var(--project-width))) 0 var(--project-gutter);
             scroll-padding-inline-start: var(--project-gutter);
         }
@@ -1350,6 +1406,8 @@
 
         .project-showcase-track > .is-focused { opacity: 1; }
 
+        .project-showcase-track.is-sliding { scroll-snap-type: none; }
+
         .project-showcase-track .showcase-inner {
             width: 100%;
         }
@@ -1358,10 +1416,10 @@
         .project-showcase-track .sample-card { flex-basis: 100%; min-width: 0; }
 
         @media (max-width: 900px) {
-            .project-showcase-track {
+            .project-showcase-carousel {
                 --project-gutter: 24px;
                 --project-width: max(280px, 84vw);
-                gap: 24px;
+                --project-gap: 24px;
             }
 
             .project-showcase-track .showcase-inner { padding-inline: 0; }
@@ -1420,6 +1478,8 @@
             .cta-button,
             .mobile-menu .cta-button,
             .cta-button::before,
+            .carousel-arrow,
+            .carousel-arrow::before,
             .project-type-tab {
                 transition: none;
             }
@@ -1595,6 +1655,7 @@
                 <div class="carousel-dots" aria-label="Event/Activation project position"></div>
             </div>
 
+        <div class="project-galleries">
         <section class="event-gallery" data-carousel-owner="women-in-wealth" aria-labelledby="women-in-wealth-gallery-title">
             <div class="event-gallery-inner">
                 <div class="event-gallery-header">
@@ -1762,6 +1823,7 @@
             </div>
         </section>
         </div>
+        </div>
 
         <div class="project-type-panel" id="wedding-private-event" role="tabpanel" aria-labelledby="tab-wedding-private-event" tabindex="0" hidden>
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
@@ -1804,6 +1866,18 @@
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
                 <button class="carousel-arrow prev" type="button" aria-label="Previous Athlete/Fitness project" data-direction="-1">&#8249;</button>
                 <div class="sample-carousel project-showcase-track" aria-label="Athlete and fitness projects">
+            <section class="portfolio-showcase showcase-dark" id="mr-olympia-2026-competition">
+                <div class="showcase-inner">
+                    <div class="showcase-intro">
+                        <h2><a href="#mr-olympia-2026-competition">Mr. Olympia 2026 &mdash; Competition</a></h2>
+                        <p class="showcase-description">As the lead social media production team for Mr. Olympia 2026, Jasimedia captured the intensity of world-class bodybuilding, highlighting elite athletes, championship performances, and defining moments from bodybuilding's biggest stage.</p>
+                    </div>
+                </div>
+                <div class="carousel-wrap" data-project="mr-olympia-2026-competition">
+                    <div class="sample-carousel" data-carousel-project="mr-olympia-2026-competition" aria-label="Mr. Olympia 2026 Competition hero video"></div>
+                    <div class="carousel-dots" hidden></div>
+                </div>
+            </section>
             <section class="portfolio-showcase showcase-dark" id="alcaraz-shapovalov-practice">
                 <div class="showcase-inner">
                     <div class="showcase-intro">
@@ -1835,6 +1909,96 @@
                 </div>
                 <button class="carousel-arrow next" type="button" aria-label="Next Athlete/Fitness project" data-direction="1">&#8250;</button>
                 <div class="carousel-dots" aria-label="Athlete/Fitness project position"></div>
+            </div>
+
+            <div class="project-galleries">
+            <section class="event-gallery" data-carousel-owner="mr-olympia-2026-competition" aria-labelledby="mr-olympia-2026-competition-gallery" hidden>
+                <div class="event-gallery-inner">
+                    <div class="event-gallery-header">
+                        <h2 id="mr-olympia-2026-competition-gallery">Mr. Olympia Competition Gallery</h2>
+                        <p>Highlights from the 2026 Mr. Olympia stage.</p>
+                    </div>
+                    <div class="event-photo-grid" id="mr-olympia-competition-gallery-grid">
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(13).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="1" aria-label="Enlarge Mr. Olympia Competition photo 13">
+                            <img src="Mr.%20Olympia%20Competition%20%20(13).webp" alt="Mr. Olympia Competition photo 13" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 13</span>
+                        </a>
+                        <button class="event-photo event-video-tile" type="button" data-open-project="mr-olympia-2026-competition-nick-walker-win" data-open-slide="0" aria-label="Open Nick Walker Win fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>Nick Walker Win</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(11).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="2" aria-label="Enlarge Mr. Olympia Competition photo 11">
+                            <img src="Mr.%20Olympia%20Competition%20%20(11).webp" alt="Mr. Olympia Competition photo 11" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 11</span>
+                        </a>
+                        <button class="event-photo event-video-tile" type="button" data-open-project="mr-olympia-2026-competition-niall-win" data-open-slide="0" aria-label="Open Niall Win fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>Niall Win</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(1).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="3" aria-label="Enlarge Mr. Olympia Competition photo 1">
+                            <img src="Mr.%20Olympia%20Competition%20%20(1).webp" alt="Mr. Olympia Competition photo 1" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 1</span>
+                        </a>
+                        <button class="event-photo event-video-tile" type="button" data-open-project="mr-olympia-2026-competition-212-on-stage" data-open-slide="0" aria-label="Open 212 On Stage fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>212 On Stage</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(7).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="8" aria-label="Enlarge Mr. Olympia Competition photo 7">
+                            <img src="Mr.%20Olympia%20Competition%20%20(7).webp" alt="Mr. Olympia Competition photo 7" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 7</span>
+                        </a>
+                        <button class="event-photo event-video-tile" type="button" data-open-project="mr-olympia-2026-competition-bikini-winner" data-open-slide="0" aria-label="Open Bikini Winner fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>Bikini Winner</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(2).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="4" aria-label="Enlarge Mr. Olympia Competition photo 2" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(2).webp" alt="Mr. Olympia Competition photo 2" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 2</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(3).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="5" aria-label="Enlarge Mr. Olympia Competition photo 3" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(3).webp" alt="Mr. Olympia Competition photo 3" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 3</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(4).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="6" aria-label="Enlarge Mr. Olympia Competition photo 4" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(4).webp" alt="Mr. Olympia Competition photo 4" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 4</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(6).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="7" aria-label="Enlarge Mr. Olympia Competition photo 6" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(6).webp" alt="Mr. Olympia Competition photo 6" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 6</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(8).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="9" aria-label="Enlarge Mr. Olympia Competition photo 8" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(8).webp" alt="Mr. Olympia Competition photo 8" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 8</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(9).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="10" aria-label="Enlarge Mr. Olympia Competition photo 9" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(9).webp" alt="Mr. Olympia Competition photo 9" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 9</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(10).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="11" aria-label="Enlarge Mr. Olympia Competition photo 10" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(10).webp" alt="Mr. Olympia Competition photo 10" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 10</span>
+                        </a>
+                        <a class="event-photo" href="Mr.%20Olympia%20Competition%20%20(12).webp" data-open-project="mr-olympia-2026-competition" data-open-slide="12" aria-label="Enlarge Mr. Olympia Competition photo 12" data-event-extra hidden>
+                            <img src="Mr.%20Olympia%20Competition%20%20(12).webp" alt="Mr. Olympia Competition photo 12" loading="lazy" onerror="this.closest('.event-photo').classList.add('image-missing')">
+                            <span class="photo-fallback">Mr. Olympia Competition photo 12</span>
+                        </a>
+                    </div>
+                    <button class="cta-button event-more-toggle" type="button" aria-controls="mr-olympia-competition-gallery-grid" aria-expanded="false">More</button>
+                </div>
+            </section>
             </div>
         </div>
         <div class="project-type-panel" id="music-entertainment" role="tabpanel" aria-labelledby="tab-music-entertainment" tabindex="0" hidden>
@@ -1890,6 +2054,17 @@
             <div class="carousel-wrap project-showcase-carousel showcase-dark">
                 <button class="carousel-arrow prev" type="button" aria-label="Previous Personal Brand project" data-direction="-1">&#8249;</button>
                 <div class="sample-carousel project-showcase-track" aria-label="Personal Brand projects">
+                    <section class="portfolio-showcase showcase-dark" id="tish-martinez-studio-oma">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#tish-martinez-studio-oma">Tish Martinez &mdash; Studio Ōma</a></h2>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="tish-martinez-studio-oma">
+                            <div class="sample-carousel" data-carousel-project="tish-martinez-studio-oma" aria-label="Tish Martinez at Studio Ōma hero video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
                     <section class="portfolio-showcase showcase-dark" id="ben-santos-content-maxxing">
                         <div class="showcase-inner">
                             <div class="showcase-intro">
@@ -1960,22 +2135,64 @@
                 <button class="carousel-arrow next" type="button" aria-label="Next Personal Brand project" data-direction="1">&#8250;</button>
                 <div class="carousel-dots" aria-label="Personal Brand project position"></div>
             </div>
-        </div>
-        <div class="project-type-panel" id="other" role="tabpanel" aria-labelledby="tab-other" tabindex="0" hidden>
-            <section class="portfolio-showcase showcase-dark" id="jasimedia-2025-recap">
-                <div class="showcase-inner">
-                    <div class="showcase-intro">
-                        <h2><a href="#jasimedia-2025-recap">JASIMEDIA 2025 Recap</a></h2>
-                        <p class="showcase-description">A quick look back at JASIMEDIA's 2025, bringing a year of shoots, stories, and standout moments together in one highlight reel.</p>
+            <div class="project-galleries">
+            <section class="event-gallery studio-oma-gallery" data-carousel-owner="tish-martinez-studio-oma" aria-labelledby="tish-martinez-studio-oma-gallery" hidden>
+                <div class="event-gallery-inner">
+                    <div class="event-gallery-header">
+                        <h2 id="tish-martinez-studio-oma-gallery">Studio Ōma Gallery</h2>
+                    </div>
+                    <div class="event-photo-grid">
+                        <button class="event-photo event-video-tile" type="button" data-open-project="tish-martinez-studio-oma" data-open-slide="1" aria-label="Open Studio Ōma Behind the Scenes fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>Behind the Scenes</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
+                        <button class="event-photo event-video-tile" type="button" data-open-project="tish-martinez-studio-oma" data-open-slide="2" data-preview-time="7.3" aria-label="Open Strong Looks Good on You fullscreen">
+                            <video muted playsinline preload="metadata" aria-hidden="true"></video>
+                            <span class="sample-meta" aria-hidden="true">
+                                <strong>Strong Looks Good on You</strong>
+                                <span class="card-play-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="5,3 19,12 5,21"/></svg></span>
+                            </span>
+                        </button>
                     </div>
                 </div>
-                <div class="carousel-wrap" data-project="jasimedia-2025-recap">
-                    <button class="carousel-arrow prev" type="button" aria-label="Previous JASIMEDIA 2025 Recap sample" data-direction="-1">&#8249;</button>
-                    <div class="sample-carousel" data-carousel-project="jasimedia-2025-recap" aria-label="JASIMEDIA 2025 Recap samples"></div>
-                    <button class="carousel-arrow next" type="button" aria-label="Next JASIMEDIA 2025 Recap sample" data-direction="1">&#8250;</button>
-                    <div class="carousel-dots" aria-label="JASIMEDIA 2025 Recap carousel position"></div>
-                </div>
             </section>
+            </div>
+        </div>
+        <div class="project-type-panel" id="other" role="tabpanel" aria-labelledby="tab-other" tabindex="0" hidden>
+            <div class="carousel-wrap project-showcase-carousel showcase-dark">
+                <button class="carousel-arrow prev" type="button" aria-label="Previous project in Other" data-direction="-1">&#8249;</button>
+                <div class="sample-carousel project-showcase-track" aria-label="Other projects">
+                    <section class="portfolio-showcase showcase-dark" id="jasimedia-2025-recap">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#jasimedia-2025-recap">JASIMEDIA 2025 Recap</a></h2>
+                                <p class="showcase-description">A quick look back at JASIMEDIA's 2025, bringing a year of shoots, stories, and standout moments together in one highlight reel.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="jasimedia-2025-recap">
+                            <div class="sample-carousel" data-carousel-project="jasimedia-2025-recap" aria-label="JASIMEDIA 2025 Recap video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                    <section class="portfolio-showcase showcase-dark" id="ben-shelton-ultimate-sports-challenge">
+                        <div class="showcase-inner">
+                            <div class="showcase-intro">
+                                <h2><a href="#ben-shelton-ultimate-sports-challenge">Ben Shelton &mdash; Ultimate Sports Challenge</a></h2>
+                                <p class="showcase-description">Featuring professional tennis star Ben Shelton in an entertaining sports challenge, showcasing dynamic content production that brings together athletic competition, engaging personalities, and creative storytelling.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-wrap" data-project="ben-shelton-ultimate-sports-challenge">
+                            <div class="sample-carousel" data-carousel-project="ben-shelton-ultimate-sports-challenge" aria-label="Ben Shelton Ultimate Sports Challenge video"></div>
+                            <div class="carousel-dots" hidden></div>
+                        </div>
+                    </section>
+                </div>
+                <button class="carousel-arrow next" type="button" aria-label="Next project in Other" data-direction="1">&#8250;</button>
+                <div class="carousel-dots" aria-label="Other project position"></div>
+            </div>
         </div>
     </main>
 
@@ -1987,8 +2204,8 @@
 
             <div class="slides-wrapper">
                 <!-- Slides injected by JS -->
-                <button class="arrow prev" type="button" aria-label="Previous photo" onclick="changeSlide(-1)">&#8249;</button>
-                <button class="arrow next" type="button" aria-label="Next photo" onclick="changeSlide(1)">&#8250;</button>
+                <button class="arrow prev" type="button" aria-label="Previous slide" onclick="changeSlide(-1)">&#8249;</button>
+                <button class="arrow next" type="button" aria-label="Next slide" onclick="changeSlide(1)">&#8250;</button>
             </div>
 
             <div class="modal-dots" id="modalDots"></div>
@@ -2009,6 +2226,54 @@
     <script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.6.0/embla-carousel.umd.js" integrity="sha384-XGqLM9+dJ+PFOMZn6IuZgRRIoxcAT5fx4eIZCx7K3O2Dj5RA7EOlJ3yOS8Jd+kiY" crossorigin="anonymous"></script>
     <script>
         const projects = {
+            'mr-olympia-2026-competition': {
+                title: 'Mr. Olympia 2026 — Competition',
+                label: 'Athlete/Fitness',
+                carouselSlideIndexes: [0],
+                slides: [
+                    { type: 'video', title: 'Open Prejudge', src: '4x3%20-%20Open%20Prejudge.webm', mime: 'video/webm' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 13', src: 'Mr.%20Olympia%20Competition%20%20(13).webp', alt: 'Mr. Olympia Competition photo 13' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 11', src: 'Mr.%20Olympia%20Competition%20%20(11).webp', alt: 'Mr. Olympia Competition photo 11' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 01', src: 'Mr.%20Olympia%20Competition%20%20(1).webp', alt: 'Mr. Olympia Competition photo 1' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 02', src: 'Mr.%20Olympia%20Competition%20%20(2).webp', alt: 'Mr. Olympia Competition photo 2' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 03', src: 'Mr.%20Olympia%20Competition%20%20(3).webp', alt: 'Mr. Olympia Competition photo 3' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 04', src: 'Mr.%20Olympia%20Competition%20%20(4).webp', alt: 'Mr. Olympia Competition photo 4' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 06', src: 'Mr.%20Olympia%20Competition%20%20(6).webp', alt: 'Mr. Olympia Competition photo 6' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 07', src: 'Mr.%20Olympia%20Competition%20%20(7).webp', alt: 'Mr. Olympia Competition photo 7' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 08', src: 'Mr.%20Olympia%20Competition%20%20(8).webp', alt: 'Mr. Olympia Competition photo 8' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 09', src: 'Mr.%20Olympia%20Competition%20%20(9).webp', alt: 'Mr. Olympia Competition photo 9' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 10', src: 'Mr.%20Olympia%20Competition%20%20(10).webp', alt: 'Mr. Olympia Competition photo 10' },
+                    { type: 'image', title: 'Mr. Olympia Competition - Photo 12', src: 'Mr.%20Olympia%20Competition%20%20(12).webp', alt: 'Mr. Olympia Competition photo 12' }
+                ]
+            },
+            'mr-olympia-2026-competition-nick-walker-win': {
+                title: 'Nick Walker Win',
+                label: 'Mr. Olympia Competition',
+                slides: [
+                    { type: 'video', title: 'Nick Walker Win', src: '4x3%20-%20Nick%20Walker%20Win.webm', mime: 'video/webm' }
+                ]
+            },
+            'mr-olympia-2026-competition-niall-win': {
+                title: 'Niall Win',
+                label: 'Mr. Olympia Competition',
+                slides: [
+                    { type: 'video', title: 'Niall Win', src: '4x3%20-%20Niall%20Win.webm', mime: 'video/webm' }
+                ]
+            },
+            'mr-olympia-2026-competition-212-on-stage': {
+                title: '212 On Stage',
+                label: 'Mr. Olympia Competition',
+                slides: [
+                    { type: 'video', title: '212 On Stage', src: '4x3%20-%20212%20On%20Stage.webm', mime: 'video/webm' }
+                ]
+            },
+            'mr-olympia-2026-competition-bikini-winner': {
+                title: 'Bikini Winner',
+                label: 'Mr. Olympia Competition',
+                slides: [
+                    { type: 'video', title: 'Bikini Winner', src: '4x3%20-%20Bikini%20Winner%20Edit.webm', mime: 'video/webm' }
+                ]
+            },
             'mr-olympia-2026-expo': {
                 title: 'Mr. Olympia 2026 \u2014 Expo',
                 label: 'Event/Activation',
@@ -2021,14 +2286,14 @@
                     { type: 'image', title: 'Mr. Olympia Expo - Photo 04', src: 'Mr.%20Olympia%20Photos%20(4).webp', alt: 'Mr. Olympia Expo photo 4' },
                     { type: 'image', title: 'Mr. Olympia Expo - Photo 05', src: 'Mr.%20Olympia%20Photos%20(5).webp', alt: 'Mr. Olympia Expo photo 5' },
                     { type: 'image', title: 'Mr. Olympia Expo - Photo 06', src: 'Mr.%20Olympia%20Photos%20(6).webp', alt: 'Mr. Olympia Expo photo 6' },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 07', src: 'Mr.%20Olympia%20Photos%20(7).webp', alt: 'Mr. Olympia Expo photo 7', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 08', src: 'Mr.%20Olympia%20Photos%20(8).webp', alt: 'Mr. Olympia Expo photo 8', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 09', src: 'Mr.%20Olympia%20Photos%20(9).webp', alt: 'Mr. Olympia Expo photo 9', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 10', src: 'Mr.%20Olympia%20Photos%20(10).webp', alt: 'Mr. Olympia Expo photo 10', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 11', src: 'Mr.%20Olympia%20Photos%20(11).webp', alt: 'Mr. Olympia Expo photo 11', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 12', src: 'Mr.%20Olympia%20Photos%20(12).webp', alt: 'Mr. Olympia Expo photo 12', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 13', src: 'Mr.%20Olympia%20Photos%20(13).webp', alt: 'Mr. Olympia Expo photo 13', extra: true },
-                    { type: 'image', title: 'Mr. Olympia Expo - Photo 14', src: 'Mr.%20Olympia%20Photos%20(14).webp', alt: 'Mr. Olympia Expo photo 14', extra: true }
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 07', src: 'Mr.%20Olympia%20Photos%20(7).webp', alt: 'Mr. Olympia Expo photo 7' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 08', src: 'Mr.%20Olympia%20Photos%20(8).webp', alt: 'Mr. Olympia Expo photo 8' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 09', src: 'Mr.%20Olympia%20Photos%20(9).webp', alt: 'Mr. Olympia Expo photo 9' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 10', src: 'Mr.%20Olympia%20Photos%20(10).webp', alt: 'Mr. Olympia Expo photo 10' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 11', src: 'Mr.%20Olympia%20Photos%20(11).webp', alt: 'Mr. Olympia Expo photo 11' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 12', src: 'Mr.%20Olympia%20Photos%20(12).webp', alt: 'Mr. Olympia Expo photo 12' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 13', src: 'Mr.%20Olympia%20Photos%20(13).webp', alt: 'Mr. Olympia Expo photo 13' },
+                    { type: 'image', title: 'Mr. Olympia Expo - Photo 14', src: 'Mr.%20Olympia%20Photos%20(14).webp', alt: 'Mr. Olympia Expo photo 14' }
                 ]
             },
             'mr-olympia-gnc-recap': {
@@ -2108,6 +2373,16 @@
                     { type: 'video', title: 'Malcolm Todd \u2014 Live in Fort Lauderdale', src: '5x4%20-%201080p%20Malcolm%20Todd%20ALT.webm', mime: 'video/webm' }
                 ]
             },
+            'tish-martinez-studio-oma': {
+                title: 'Tish Martinez — Studio Ōma',
+                label: 'Personal Brand',
+                carouselSlideIndexes: [0],
+                slides: [
+                    { type: 'video', title: 'Tish Martinez — Studio Ōma', src: '16x9%20-%204k%20Studio%20Oma%20Long%20Form%20v3.webm', mime: 'video/webm' },
+                    { type: 'video', title: 'Behind the Scenes', src: '5x4%20-%20VHS%20BTS%20v1.webm', mime: 'video/webm' },
+                    { type: 'video', title: 'Strong Looks Good on You', src: '9x16%20-%20Strong%20Looks%20Good%20on%20You%20MUSIC%20v2.webm', mime: 'video/webm' }
+                ]
+            },
             'ben-santos-content-maxxing': {
                 title: 'Ben Santos \u2014 Content Maxxing',
                 label: 'Personal Brand',
@@ -2157,6 +2432,13 @@
                     { type: 'video', title: "JASIMEDIA 2025 Recap", src: 'Jasimedia%202025%20Recap.webm', mime: 'video/webm' }
                 ]
             },
+            'ben-shelton-ultimate-sports-challenge': {
+                title: 'Ben Shelton — Ultimate Sports Challenge',
+                label: 'Other',
+                slides: [
+                    { type: 'video', title: 'Ben Shelton — Ultimate Sports Challenge', src: 'Ben%20Shelton%20Youtube.webm', mime: 'video/webm' }
+                ]
+            },
             'women-wealth-mastermind': {
                 title: 'Women & Wealth Mastermind Reel',
                 label: 'Women & Wealth',
@@ -2195,13 +2477,13 @@
                     { type: 'image', title: 'Women & Wealth - Photo 04', src: 'Women%20in%20wealth%20photos%20(12).webp', alt: 'Women & Wealth event photo 4' },
                     { type: 'image', title: 'Women & Wealth - Photo 05', src: 'Women%20in%20wealth%20photos%20(7).webp', alt: 'Women & Wealth event photo 5' },
                     { type: 'image', title: 'Women & Wealth - Photo 06', src: 'Women%20in%20wealth%20photos%20(13).webp', alt: 'Women & Wealth event photo 6' },
-                    { type: 'image', title: 'Women & Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(2).webp', alt: 'Women & Wealth event photo 7', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(4).webp', alt: 'Women & Wealth event photo 8', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 09', src: 'Women%20in%20wealth%20photos%20(5).webp', alt: 'Women & Wealth event photo 9', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 10', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women & Wealth event photo 10', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 11', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women & Wealth event photo 11', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 12', src: 'Women%20in%20wealth%20photos%20(10).webp', alt: 'Women & Wealth event photo 12', extra: true },
-                    { type: 'image', title: 'Women & Wealth - Photo 13', src: 'Women%20in%20wealth%20photos%20(11).webp', alt: 'Women & Wealth event photo 13', extra: true },
+                    { type: 'image', title: 'Women & Wealth - Photo 07', src: 'Women%20in%20wealth%20photos%20(2).webp', alt: 'Women & Wealth event photo 7' },
+                    { type: 'image', title: 'Women & Wealth - Photo 08', src: 'Women%20in%20wealth%20photos%20(4).webp', alt: 'Women & Wealth event photo 8' },
+                    { type: 'image', title: 'Women & Wealth - Photo 09', src: 'Women%20in%20wealth%20photos%20(5).webp', alt: 'Women & Wealth event photo 9' },
+                    { type: 'image', title: 'Women & Wealth - Photo 10', src: 'Women%20in%20wealth%20photos%20(6).webp', alt: 'Women & Wealth event photo 10' },
+                    { type: 'image', title: 'Women & Wealth - Photo 11', src: 'Women%20in%20wealth%20photos%20(8).webp', alt: 'Women & Wealth event photo 11' },
+                    { type: 'image', title: 'Women & Wealth - Photo 12', src: 'Women%20in%20wealth%20photos%20(10).webp', alt: 'Women & Wealth event photo 12' },
+                    { type: 'image', title: 'Women & Wealth - Photo 13', src: 'Women%20in%20wealth%20photos%20(11).webp', alt: 'Women & Wealth event photo 13' },
                 ]
             },
             'athlete-fitness': {
@@ -2354,6 +2636,20 @@
                 dotsContainer.hidden = !hasMultipleCards;
                 wrap.querySelectorAll(':scope > .carousel-arrow').forEach(arrow => arrow.hidden = !hasMultipleCards);
 
+                if (hasMultipleCards) {
+                    const media = cards[0].querySelector('.sample-media');
+                    const arrowPositionObserver = new ResizeObserver(() => {
+                        // Measure the frame in the carousel's layout, ignoring card hover transforms.
+                        let center = media.offsetHeight / 2;
+                        for (let element = media; element && element !== wrap; element = element.offsetParent) {
+                            center += element.offsetTop;
+                        }
+                        wrap.style.setProperty('--carousel-arrow-top', `${center}px`);
+                    });
+                    arrowPositionObserver.observe(wrap);
+                    arrowPositionObserver.observe(media);
+                }
+
                 dotsContainer.innerHTML = '';
                 (hasMultipleCards ? cards : []).forEach((card, index) => {
                     const dot = document.createElement('button');
@@ -2372,7 +2668,7 @@
                     if (ticking) return;
                     ticking = true;
                     window.requestAnimationFrame(() => {
-                        updateCarouselDots(wrap);
+                        updateCarouselDots(wrap, true);
                         ticking = false;
                     });
                 });
@@ -2384,7 +2680,62 @@
             });
         }
 
-        function updateCarouselDots(wrap) {
+        const galleryTransitions = new WeakMap();
+
+        function updateProjectGallery(group, projectId, animate, settled) {
+            const galleries = Array.from(group.children);
+            const previous = galleries.find(gallery => !gallery.hidden && !gallery.inert);
+            const next = galleries.find(gallery => gallery.dataset.carouselOwner === projectId);
+            const sliding = previous && next;
+            if (!settled && !sliding) return;
+            if (previous === next && animate) return;
+
+            const startHeight = group.getBoundingClientRect().height;
+            const startOpacity = previous ? getComputedStyle(previous).opacity : 0;
+            const previousOffset = previous ? getComputedStyle(previous).translate : 'none';
+            const nextOffset = next && !next.hidden ? getComputedStyle(next).translate : null;
+            galleryTransitions.get(group)?.forEach(animation => animation.cancel());
+            galleryTransitions.delete(group);
+            galleries.forEach(gallery => {
+                gallery.hidden = gallery !== next;
+                gallery.inert = false;
+            });
+
+            if (previous === next || !animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            const endHeight = group.getBoundingClientRect().height;
+            const options = sliding
+                ? { duration: 420, easing: 'cubic-bezier(0.33, 1, 0.68, 1)' }
+                : { duration: 480, easing: 'ease-in-out' };
+            const resize = group.animate({ height: [`${startHeight}px`, `${endHeight}px`] }, options);
+            const animations = [resize];
+            if (previous) {
+                previous.inert = true;
+                previous.hidden = false;
+            }
+            if (sliding) {
+                const direction = galleries.indexOf(next) > galleries.indexOf(previous) ? 1 : -1;
+                animations.push(
+                    previous.animate({ translate: [previousOffset, `${-direction * 100}%`] }, { ...options, fill: 'forwards' }),
+                    next.animate({ translate: [nextOffset ?? `${direction * 100}%`, '0%'] }, options)
+                );
+            } else {
+                if (previous) animations.push(previous.animate({ opacity: [startOpacity, 0] }, { ...options, fill: 'forwards' }));
+                if (next) animations.push(next.animate({ opacity: [0, 1] }, options));
+            }
+            galleryTransitions.set(group, animations);
+
+            resize.onfinish = () => {
+                if (previous) {
+                    previous.hidden = true;
+                    previous.inert = false;
+                    animations[1].cancel();
+                }
+                galleryTransitions.delete(group);
+            };
+        }
+
+        function updateCarouselDots(wrap, animateGallery = false) {
             const track = wrap.querySelector(':scope > .sample-carousel');
             const cards = Array.from(track.children);
             const dots = Array.from(wrap.querySelectorAll(':scope > .carousel-dots .carousel-dot'));
@@ -2412,11 +2763,43 @@
                 cards.forEach((card, index) => {
                     card.classList.toggle('is-focused', index === activeIndex && activeDistance < 8);
                 });
-                wrap.parentElement.querySelectorAll(':scope > [data-carousel-owner]').forEach(gallery => {
-                    gallery.hidden = cards[activeIndex].id !== gallery.dataset.carouselOwner;
-                });
+                const galleries = wrap.parentElement.querySelector(':scope > .project-galleries');
+                if (galleries && !wrap.parentElement.hidden) {
+                    updateProjectGallery(galleries, cards[activeIndex].id, animateGallery, activeDistance < 8);
+                }
                 playVisiblePreviewVideos();
             }
+        }
+
+        const projectSlideFrames = new WeakMap();
+
+        function slideProjectTrack(track, left) {
+            cancelAnimationFrame(projectSlideFrames.get(track));
+            projectSlideFrames.delete(track);
+            const start = track.scrollLeft;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || Math.abs(left - start) < 1) {
+                track.classList.remove('is-sliding');
+                track.scrollTo({ left, behavior: 'instant' });
+                return;
+            }
+
+            // Let the track travel between snap points, then restore swipe snapping.
+            track.classList.add('is-sliding');
+            let startTime;
+            const duration = 420;
+            function step(now) {
+                startTime ??= now;
+                const progress = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - (1 - progress) ** 3;
+                track.scrollTo({ left: start + (left - start) * eased, behavior: 'instant' });
+                if (progress < 1) {
+                    projectSlideFrames.set(track, requestAnimationFrame(step));
+                } else {
+                    track.classList.remove('is-sliding');
+                    projectSlideFrames.delete(track);
+                }
+            }
+            projectSlideFrames.set(track, requestAnimationFrame(step));
         }
 
         function moveCarousel(button, direction) {
@@ -2426,6 +2809,11 @@
             const dots = Array.from(wrap.querySelectorAll(':scope > .carousel-dots .carousel-dot'));
             const activeIndex = Math.max(0, dots.findIndex(dot => dot.classList.contains('active')));
             const nextIndex = Math.min(cards.length - 1, Math.max(0, activeIndex + direction));
+            if (track.classList.contains('project-showcase-track')) {
+                const left = cards[nextIndex].getBoundingClientRect().left - cards[0].getBoundingClientRect().left;
+                slideProjectTrack(track, left);
+                return;
+            }
             cards[nextIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
 
@@ -2490,14 +2878,16 @@
         function loadEventThumbnail(tile) {
             const preview = tile.querySelector('video');
             if (preview && !preview.hasAttribute('src')) {
-                preview.src = projects[tile.dataset.openProject].slides[Number(tile.dataset.openSlide)].src + '#t=0.1';
+                const { openProject, openSlide, previewTime = '0.1' } = tile.dataset;
+                preview.src = `${projects[openProject].slides[Number(openSlide)].src}#t=${previewTime}`;
             }
         }
+
+        document.querySelectorAll('.event-video-tile:not([hidden])').forEach(loadEventThumbnail);
 
         document.querySelectorAll('.event-more-toggle').forEach(button => {
             const grid = document.getElementById(button.getAttribute('aria-controls'));
             const extraTiles = grid.querySelectorAll('[data-event-extra]');
-            grid.querySelectorAll('.event-video-tile:not([hidden])').forEach(loadEventThumbnail);
 
             button.addEventListener('click', () => {
                 const expanded = button.getAttribute('aria-expanded') === 'false';
@@ -2523,15 +2913,16 @@
         function openModal(key, startIndex = 0, trigger = document.activeElement) {
             const project = projects[key];
             const selectedSlide = project.slides[Math.min(Math.max(startIndex, 0), project.slides.length - 1)];
-            const moreButton = trigger?.closest('.event-gallery')?.querySelector('.event-more-toggle');
-            const slides = selectedSlide.type === 'image'
-                ? project.slides.filter(slide => slide.type === 'image' && (!slide.extra || moreButton?.getAttribute('aria-expanded') === 'true'))
-                : [selectedSlide];
+            const grid = trigger?.closest('.event-photo-grid');
+            const slides = grid ? Array.from(grid.children, tile => (
+                projects[tile.dataset.openProject].slides[Number(tile.dataset.openSlide)]
+            )) : [selectedSlide];
             currentProject = { ...project, slides };
             currentSlide = slides.indexOf(selectedSlide);
             viewerTrigger = trigger;
             const modal = document.querySelector('.modal');
-            modal.dataset.mediaType = selectedSlide.type;
+            modal.dataset.mediaType = grid ? 'gallery' : selectedSlide.type;
+            modal.style.setProperty('--gallery-size', slides.length);
             renderSlides();
             updateModalTitle();
             document.getElementById('modalOverlay').classList.add('active');
@@ -2540,8 +2931,8 @@
             document.body.style.overflow = 'hidden';
             pausePreviewVideos();
             modal.querySelector('.modal-close').focus({ preventScroll: true });
-            // Photo viewing fills the screen; CSS also covers browsers that reject fullscreen.
-            if ((isMobileViewer() || selectedSlide.type === 'image') && modal.requestFullscreen && !document.fullscreenElement) {
+            // Gallery viewing fills the screen, with a CSS fallback.
+            if ((grid || isMobileViewer() || selectedSlide.type === 'image') && modal.requestFullscreen && !document.fullscreenElement) {
                 modal.requestFullscreen().catch(() => {});
             }
             playActiveVideo();
@@ -2580,8 +2971,8 @@
             wrapper.querySelectorAll('.slide').forEach(s => s.remove());
             wrapper.querySelector('.photo-track')?.remove();
 
-            const isPhotoGallery = currentProject.slides.every(slide => slide.type === 'image');
-            const photoTrack = isPhotoGallery ? document.createElement('div') : null;
+            const hasGallery = currentProject.slides.length > 1;
+            const photoTrack = hasGallery ? document.createElement('div') : null;
             if (photoTrack) {
                 photoTrack.className = 'photo-track';
                 wrapper.insertBefore(photoTrack, wrapper.querySelector('.arrow.prev'));
@@ -2589,17 +2980,17 @@
 
             const dotsContainer = document.getElementById('modalDots');
             dotsContainer.innerHTML = '';
-            const hasGallery = currentProject.slides.length > 1;
             dotsContainer.hidden = !hasGallery;
             wrapper.querySelectorAll('.arrow').forEach(arrow => arrow.hidden = !hasGallery);
 
             currentProject.slides.forEach((slide, i) => {
                 const div = document.createElement('div');
                 div.className = 'slide' + (i === currentSlide ? ' active' : '');
+                div.setAttribute('aria-hidden', i !== currentSlide);
+                div.inert = i !== currentSlide;
 
                 if (slide.type === 'image') {
                     div.classList.add('image-slide');
-                    div.setAttribute('aria-hidden', i !== currentSlide);
                     const img = document.createElement('img');
                     img.src = slide.src;
                     img.alt = slide.alt || 'Portfolio image';
@@ -2620,8 +3011,8 @@
                 } else {
                     const video = document.createElement('video');
                     video.controls = true;
-                    video.playsInline = !isMobileViewer();
-                    video.preload = 'metadata';
+                    video.playsInline = hasGallery || !isMobileViewer();
+                    video.preload = hasGallery && i !== currentSlide ? 'none' : 'metadata';
                     const source = document.createElement('source');
                     source.src = getVideoSource(slide);
                     if (slide.mime) {
@@ -2664,24 +3055,28 @@
                 photoCarousel.scrollTo(index, window.matchMedia('(prefers-reduced-motion: reduce)').matches);
                 return;
             }
-            const slides = document.querySelectorAll('.slide');
-            const dots   = document.querySelectorAll('.dot');
+            syncModalSlide(index);
+        }
 
-            // Pause/clear previous video
+        function syncModalSlide(index) {
+            if (index === currentSlide) return;
+            const slides = document.querySelectorAll('.slides-wrapper .slide');
+            const dots = document.querySelectorAll('#modalDots .dot');
             const prevSlide = slides[currentSlide];
-            const prevIframe = prevSlide && prevSlide.querySelector('iframe');
+            const prevIframe = prevSlide.querySelector('iframe');
             if (prevIframe) prevIframe.src = 'about:blank';
-            const prevVideo = prevSlide && prevSlide.querySelector('video');
-            if (prevVideo) prevVideo.pause();
+            prevSlide.querySelector('video')?.pause();
 
-            slides[currentSlide].classList.remove('active');
-            slides[currentSlide].setAttribute('aria-hidden', 'true');
+            prevSlide.classList.remove('active');
+            prevSlide.setAttribute('aria-hidden', 'true');
+            prevSlide.inert = true;
             dots[currentSlide].classList.remove('active');
             dots[currentSlide].setAttribute('aria-current', 'false');
 
             currentSlide = index;
             slides[currentSlide].classList.add('active');
             slides[currentSlide].setAttribute('aria-hidden', 'false');
+            slides[currentSlide].inert = false;
             dots[currentSlide].classList.add('active');
             dots[currentSlide].setAttribute('aria-current', 'true');
             updateModalTitle();
@@ -2725,20 +3120,8 @@
                     && (!window.visualViewport || window.visualViewport.scale <= 1.01)
             });
 
-            const syncSelection = () => {
-                currentSlide = photoCarousel.selectedScrollSnap();
-                track.querySelectorAll('.slide').forEach((slide, index) => {
-                    slide.classList.toggle('active', index === currentSlide);
-                    slide.setAttribute('aria-hidden', index !== currentSlide);
-                });
-                document.querySelectorAll('#modalDots .dot').forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentSlide);
-                    dot.setAttribute('aria-current', index === currentSlide ? 'true' : 'false');
-                });
-                updateModalTitle();
-            };
+            const syncSelection = () => syncModalSlide(photoCarousel.selectedScrollSnap());
             photoCarousel.on('select', syncSelection).on('reInit', syncSelection);
-            syncSelection();
         }
 
         // Keep basic swipe navigation available if the carousel script cannot load.
@@ -2746,7 +3129,7 @@
         let photoSwipeStart = null;
         const canSwipePhotos = () => !photoCarousel && isMobileViewer()
             && document.getElementById('modalOverlay').classList.contains('active')
-            && document.querySelector('.modal').dataset.mediaType === 'image'
+            && currentProject?.slides.length > 1
             && (!window.visualViewport || window.visualViewport.scale <= 1.01);
 
         photoSwipeArea.addEventListener('touchstart', event => {
@@ -2831,7 +3214,7 @@
             });
             pausePreviewVideos();
             requestAnimationFrame(() => {
-                selectedPanel.querySelectorAll('.project-showcase-carousel').forEach(updateCarouselDots);
+                selectedPanel.querySelectorAll('.project-showcase-carousel').forEach(wrap => updateCarouselDots(wrap));
                 playVisiblePreviewVideos();
             });
         }
@@ -2919,13 +3302,13 @@
         // ── Keyboard nav ──
         document.addEventListener('keydown', e => {
             if (!document.getElementById('modalOverlay').classList.contains('active')) return;
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !e.target.closest?.('video')) {
                 e.preventDefault();
                 changeSlide(e.key === 'ArrowLeft' ? -1 : 1);
             }
             if (e.key === 'Escape')     closeModal();
             if (e.key === 'Tab') {
-                const focusable = Array.from(document.querySelector('.modal').querySelectorAll('button, iframe'))
+                const focusable = Array.from(document.querySelector('.modal').querySelectorAll('button, .slide.active iframe, .slide.active video[controls]'))
                     .filter(element => element.getClientRects().length && !element.disabled);
                 const first = focusable[0];
                 const last = focusable[focusable.length - 1];
