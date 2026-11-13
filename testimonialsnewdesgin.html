@@ -233,9 +233,68 @@
             display: none;
         }
 
+        .testimonial-inquiry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px 24px;
+            flex-wrap: wrap;
+            width: min(100% - 120px, 1180px);
+            margin: 32px auto 0;
+            padding: 18px clamp(18px, 3vw, 34px);
+            background: #000;
+            color: #fff;
+            border-radius: 24px;
+        }
+
+        .inquiry-copy {
+            flex: 1 1 340px;
+            min-width: 0;
+        }
+
+        .testimonial-inquiry h2 {
+            font-size: clamp(24px, 3vw, 38px);
+            font-weight: 700;
+            line-height: 1.08;
+        }
+
+        .testimonial-inquiry .inquiry-description {
+            margin: 6px 0 0;
+            color: #e0e0e0;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .testimonial-inquiry .inquiry-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            min-height: 50px;
+            padding: 10px clamp(16px, 4vw, 26px);
+            border: 1px solid #fff;
+            border-radius: 24px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.25s, color 0.25s;
+        }
+
+        .inquiry-button:is(:hover, :focus-visible, :active) {
+            background: #fff;
+            color: #000;
+        }
+
+        .inquiry-button:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 3px;
+        }
+
         /* ── TESTIMONIALS GRID ── */
         .testimonials-section {
-            padding: 80px 60px 100px;
+            padding: 44px 60px 100px;
             max-width: 1300px;
             margin: 0 auto;
             display: grid;
@@ -275,6 +334,19 @@
         }
         .testimonial-photo > span { font: 400 48px/1 Helvetica, Arial, sans-serif; }
         .testimonial-photo small { font-size: 12px; }
+        img.testimonial-photo {
+            display: block;
+            width: 100%;
+            object-fit: cover;
+            object-position: center 15%;
+        }
+        .testimonial-slide[aria-labelledby="deniz-name"] img { object-position: center 28%; }
+        @media (min-width: 901px) {
+            img.testimonial-photo { object-position: var(--desktop-photo-position, center 15%); }
+            .testimonial-slide[aria-labelledby="mark-name"] { --desktop-photo-position: center 43%; }
+            .testimonial-slide[aria-labelledby="kai-name"] { --desktop-photo-position: center top; }
+            .testimonial-slide[aria-labelledby="andrew-name"] { --desktop-photo-position: 65% 28%; }
+        }
         .testimonial-copy { padding: 28px 32px 0; }
         .testimonial-heading { min-height: 104px; }
         .testimonial-card h2 {
@@ -386,9 +458,11 @@
             .page-header { padding: 50px 24px 40px; }
             .page-header h1 { font-size: 40px; }
 
+            .testimonial-inquiry { width: calc(100% - 48px); }
+
             .testimonials-section {
                 grid-template-columns: 1fr;
-                padding: 50px 24px 60px;
+                padding: 36px 24px 60px;
                 gap: 40px;
             }
 
@@ -448,7 +522,8 @@
         @media (prefers-reduced-motion: reduce) {
             header .cta-button,
             header .mobile-menu .cta-button,
-            header .cta-button::before { transition: none; }
+            header .cta-button::before,
+            .testimonial-inquiry .inquiry-button { transition: none; }
         }
 
         h1,
@@ -525,16 +600,21 @@
         </div>
     </section>
 
+    <section class="testimonial-inquiry" aria-labelledby="project-inquiry-heading">
+        <div class="inquiry-copy">
+            <h2 id="project-inquiry-heading">Let's Create Something Great.</h2>
+            <p class="inquiry-description">Inspired by what you've seen? We'd love to hear about your vision and bring it to life.</p>
+        </div>
+        <a class="inquiry-button" href="contactnewdesign.html#inquiry">Start Your Project</a>
+    </section>
+
     <!-- TESTIMONIALS -->
     <section class="testimonials-section" aria-label="Client testimonials">
         <section class="testimonial-column" aria-labelledby="people-heading">
             <h2 class="column-label" id="people-heading">People</h2>
             <div class="testimonial-card" id="people-testimonials" aria-roledescription="carousel" aria-label="People testimonials">
                 <article class="testimonial-slide" aria-labelledby="mark-name">
-                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Mark Henry">
-                        <span aria-hidden="true">MH</span>
-                        <small aria-hidden="true">Photo coming soon</small>
-                    </div>
+                    <img class="testimonial-photo" src="Mark%20Henry.webp" alt="Mark Henry" loading="lazy">
                     <div class="testimonial-copy">
                         <div class="testimonial-heading">
             <h2 id="mark-name">Mark Henry</h2>
@@ -547,10 +627,7 @@
                     </div>
                 </article>
                 <article class="testimonial-slide" aria-labelledby="kai-name" hidden>
-                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Kai Greene">
-                        <span aria-hidden="true">KG</span>
-                        <small aria-hidden="true">Photo coming soon</small>
-                    </div>
+                    <img class="testimonial-photo" src="Kai%20Greene.webp" alt="Kai Greene" loading="lazy">
                     <div class="testimonial-copy">
                         <div class="testimonial-heading">
                             <h2 id="kai-name">Kai Greene</h2>
@@ -579,10 +656,7 @@
             <h2 class="column-label" id="brands-heading">Companies &amp; Brands</h2>
             <div class="testimonial-card" id="company-testimonials" aria-roledescription="carousel" aria-label="Companies and brands testimonials">
                 <article class="testimonial-slide" aria-labelledby="deniz-name">
-                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Deniz">
-                        <span aria-hidden="true">D</span>
-                        <small aria-hidden="true">Photo coming soon</small>
-                    </div>
+                    <img class="testimonial-photo" src="Broken%20Sound%20Deniz.webp" alt="Deniz with a colleague" loading="lazy">
                     <div class="testimonial-copy">
                         <div class="testimonial-heading">
             <h2 id="deniz-name">Deniz</h2>
@@ -612,10 +686,7 @@
                     </div>
                 </article>
                 <article class="testimonial-slide" aria-labelledby="andrew-name" hidden>
-                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Andrew Stallings">
-                        <span aria-hidden="true">AS</span>
-                        <small aria-hidden="true">Photo coming soon</small>
-                    </div>
+                    <img class="testimonial-photo" src="Andrew%20Stallings.webp" alt="Andrew Stallings" loading="lazy">
                     <div class="testimonial-copy">
                         <div class="testimonial-heading">
             <h2 id="andrew-name">Andrew Stallings</h2>
