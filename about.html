@@ -181,16 +181,14 @@
         .about-me-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr) 260px;
-            gap: 32px;
-            align-items: start;
+            background-color: #fff;
+            border: 1px solid #dedede;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         .about-text-box {
-            align-self: stretch;
-            background-color: #fff;
-            border-radius: 8px;
             padding: 32px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
         }
@@ -301,18 +299,19 @@
         }
 
         .about-photo-box {
+            position: relative;
             width: 100%;
-            max-width: 260px;
-            aspect-ratio: 2 / 3;
-            border-radius: 8px;
+            min-height: 390px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         }
 
         .about-photo-box img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center 30%;
             display: block;
         }
 
@@ -320,13 +319,13 @@
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             grid-auto-rows: auto;
+            align-items: start;
             gap: 24px;
             margin-top: 40px;
             list-style: none;
         }
 
         .team-member {
-            height: 100%;
             background-color: #fff;
             border: 1px solid #dedede;
             border-radius: 8px;
@@ -388,6 +387,48 @@
 
         .team-member-with-bio .bio-rest p + p {
             margin-top: 16px;
+        }
+
+        @media (min-width: 769px) {
+            .team-grid {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+                grid-template-areas:
+                    "gio gio gaby gaby dean dean"
+                    ". dani dani donovan donovan .";
+                gap: clamp(16px, 2vw, 24px);
+            }
+
+            .team-grid > :has(#dani-heading) { grid-area: dani; }
+            .team-grid > :has(#gaby-heading) { grid-area: gaby; }
+            .team-grid > :has(#gio-heading) { grid-area: gio; }
+            .team-grid > :has(#donovan-heading) { grid-area: donovan; }
+            .team-grid > :has(#dean-heading) { grid-area: dean; }
+
+            .team-grid .team-member {
+                min-height: calc(clamp(130px, 14vw, 186px) + 192px);
+            }
+
+            .team-grid .team-photo-placeholder {
+                flex-basis: clamp(130px, 14vw, 186px);
+                font-size: clamp(32px, 4vw, 48px);
+            }
+
+            .team-member-copy {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                padding: 14px clamp(10px, 1.3vw, 18px);
+            }
+
+            .team-member h3 {
+                font-size: clamp(20px, 2vw, 26px);
+                margin-bottom: 4px;
+            }
+
+            .team-member .bio-details {
+                margin-top: auto;
+                padding-top: 8px;
+            }
         }
 
         .team-impact {
@@ -548,19 +589,11 @@
             .about-me-grid {
                 display: flex;
                 flex-direction: column;
-                gap: 0;
-                background-color: #fff;
-                border: 1px solid #dedede;
-                border-radius: 8px;
-                overflow: hidden;
             }
 
             .about-text-box {
-                min-height: auto;
                 width: 100%;
                 padding: 24px;
-                border-radius: 0;
-                box-shadow: none;
             }
 
             .about-text-box h3 {
@@ -584,18 +617,10 @@
 
             .about-photo-box {
                 order: -1;
-                max-width: none;
+                min-height: 0;
                 height: calc(180px + var(--portrait-height-gain, 0px));
                 flex-shrink: 0;
-                aspect-ratio: auto;
-                border-radius: 0;
                 border-bottom: 1px solid #d4d6d7;
-                box-shadow: none;
-            }
-
-            .about-photo-box img {
-                object-fit: cover;
-                object-position: center 30%;
             }
 
             .team-grid {
@@ -886,14 +911,18 @@
 
         <ul class="team-grid" aria-label="Team members">
             <li>
-                <article class="team-member" aria-labelledby="gio-heading">
+                <article class="team-member team-member-with-bio" aria-labelledby="gio-heading">
                     <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Gio"><span aria-hidden="true">G</span></div>
                     <div class="team-member-copy">
                         <h3 id="gio-heading">Gio</h3>
                         <p>Lead Videographer</p>
+                        <p class="team-bio-preview">I’m Giodanni Dattilio, a Delray Beach-based videographer passionate about bringing stories to life through cinematic visuals and creative storytelling.</p>
                         <details class="bio-details">
-                            <summary><span class="expand-label">Read introduction</span><span class="collapse-label">Show less</span></summary>
-                            <div class="bio-rest"><p>Gio's introduction is coming soon.</p></div>
+                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest">
+                                <p>I’m Giodanni Dattilio, a Delray Beach-based videographer passionate about bringing stories to life through cinematic visuals and creative storytelling. Specializing in brand campaigns, event recaps, and engaging content, I love transforming my clients’ visions into impactful visuals that connect with audiences and leave a lasting impression.</p>
+                                <p>From developing unique creative concepts to capturing the moments that make people want to be there, my goal is to create content that tells a story, builds a brand, and most importantly, creates FOMO. I believe every brand has a story worth telling, and I’m here to bring that vision to life through intentional, creative, and unforgettable video content.</p>
+                            </div>
                         </details>
                     </div>
                 </article>
@@ -908,6 +937,23 @@
                         <details class="bio-details">
                             <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
                             <div class="bio-rest"><p>Hi! I’m Gaby, a Miami based photographer, &amp; videographer. I specialize in bringing creative visions to life through photography and film. My experience ranges from fashion to music to brand campaigns, entertainment, and live events. I’ve worked with handfuls of artists, business owners, and creatives. I love being able to turn ideas into something meaningful, and I’m always looking for new ways to grow creatively, collaborate with others, and bring a unique perspective to every project I work on!</p></div>
+                        </details>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="team-member team-member-with-bio" aria-labelledby="dean-heading">
+                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Dean Sadler"><span aria-hidden="true">D</span></div>
+                    <div class="team-member-copy">
+                        <h3 id="dean-heading">Dean</h3>
+                        <p class="team-bio-preview">I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
+                        <details class="bio-details">
+                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
+                            <div class="bio-rest">
+                                <p>I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
+                                <p>I’ve worked with brands including Nike, Dior, Calvin Klein, and David Yurman, with experience spanning photography, creative direction, and production.</p>
+                                <p>My focus is on creating imagery that turns brand experiences into cultural moments, builds FOMO, and extends the impact of an event long after it’s over. Content that not only captures the experience, but helps brands build momentum, reach new audiences, and drive excitement for what’s next.</p>
+                            </div>
                         </details>
                     </div>
                 </article>
@@ -935,23 +981,6 @@
                         <details class="bio-details">
                             <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
                             <div class="bio-rest"><p>I’m Donovan, I started my creative journey behind the camera, working in videography before finding my stride in video editing. Over the years, I’ve worked with a variety of brands, YouTubers, and influencers, editing everything from social media content to long-form videos. I enjoy the creative process of bringing ideas to life and finding the right way to tell a story through video.</p></div>
-                        </details>
-                    </div>
-                </article>
-            </li>
-            <li>
-                <article class="team-member team-member-with-bio" aria-labelledby="dean-heading">
-                    <div class="team-photo-placeholder" role="img" aria-label="Photo placeholder for Dean Sadler"><span aria-hidden="true">D</span></div>
-                    <div class="team-member-copy">
-                        <h3 id="dean-heading">Dean</h3>
-                        <p class="team-bio-preview">I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
-                        <details class="bio-details">
-                            <summary><span class="expand-label">Read full bio</span><span class="collapse-label">Show less</span></summary>
-                            <div class="bio-rest">
-                                <p>I’m Dean Sadler, a Miami-based photographer and creative producer specializing in commercial photography, experiential marketing, branded events, and lifestyle content.</p>
-                                <p>I’ve worked with brands including Nike, Dior, Calvin Klein, and David Yurman, with experience spanning photography, creative direction, and production.</p>
-                                <p>My focus is on creating imagery that turns brand experiences into cultural moments, builds FOMO, and extends the impact of an event long after it’s over. Content that not only captures the experience, but helps brands build momentum, reach new audiences, and drive excitement for what’s next.</p>
-                            </div>
                         </details>
                     </div>
                 </article>
@@ -985,6 +1014,46 @@
         sizeMobilePortrait();
         window.addEventListener('resize', sizeMobilePortrait);
         document.fonts.ready.then(sizeMobilePortrait);
+
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        document.querySelectorAll('#meet-team .bio-details').forEach(details => {
+            const card = details.closest('.about-me-grid, .team-member');
+            const summary = details.querySelector('summary');
+            let animation;
+            let targetOpen = details.open;
+
+            summary.addEventListener('click', event => {
+                if (reducedMotion.matches && !animation) return;
+                event.preventDefault();
+
+                const startHeight = card.getBoundingClientRect().height;
+                animation?.cancel();
+                targetOpen = !targetOpen;
+                details.open = targetOpen;
+                const endHeight = card.getBoundingClientRect().height;
+
+                if (reducedMotion.matches || Math.abs(startHeight - endHeight) < 1) {
+                    animation = null;
+                    return;
+                }
+
+                // Keep the full bio visible as the card closes so its content slides away.
+                details.open = true;
+                animation = card.animate(
+                    { height: [`${startHeight}px`, `${endHeight}px`] },
+                    { duration: 360, easing: 'ease-in-out' }
+                );
+                animation.onfinish = () => {
+                    details.open = targetOpen;
+                    animation = null;
+                };
+            });
+
+            details.addEventListener('toggle', () => {
+                if (!animation) targetOpen = details.open;
+            });
+        });
 
         const btn = document.getElementById('hamburgerBtn');
         const menu = document.getElementById('mobileMenu');

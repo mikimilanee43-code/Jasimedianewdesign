@@ -243,6 +243,96 @@
             text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
 
+        .home-intro {
+            display: none;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .play-home-intro {
+                --home-intro-duration: 7.137s;
+            }
+
+            .play-home-intro .home-intro {
+                position: fixed;
+                inset: 0;
+                z-index: 200;
+                display: block;
+                pointer-events: none;
+            }
+
+            .home-intro::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: #080808;
+                animation: home-intro-curtain var(--home-intro-duration) cubic-bezier(0.65, 0, 0.25, 1) both;
+            }
+
+            .home-intro-shutter {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            .home-intro-blade {
+                transform-box: view-box;
+                transform-origin: 0 0;
+                animation: home-shutter-open 2.067s cubic-bezier(0.5, 0.05, 0.45, 0.95) both;
+            }
+
+            .home-intro-wordmark {
+                position: absolute;
+                left: var(--title-x);
+                top: var(--title-y);
+                width: var(--title-width);
+                color: #fff;
+                font: 700 var(--title-size, 42px) / normal 'Inter Tight', Helvetica, Arial, sans-serif;
+                text-align: center;
+                white-space: nowrap;
+                text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+                animation: home-intro-wordmark var(--home-intro-duration) cubic-bezier(0.25, 0.65, 0.25, 1) both;
+            }
+
+            .home-intro-letters {
+                display: block;
+                font: inherit;
+                visibility: hidden;
+            }
+
+            .play-home-intro .hero-video-text h1 {
+                opacity: 0;
+            }
+
+            .play-home-intro .hero-video-text p {
+                animation: home-hero-reveal var(--home-intro-duration) ease-out both;
+            }
+
+            @keyframes home-shutter-open {
+                0%, 9% { transform: translateY(-160px) rotate(0deg) translateY(160px); }
+                100% { transform: translateY(-160px) rotate(-50deg) translateY(160px); }
+            }
+
+            @keyframes home-intro-wordmark {
+                0%, 72.17% { transform: translate(var(--intro-x), var(--intro-y)) scale(0.8); }
+                77.74% { transform: translate(var(--intro-x), var(--intro-y)) scale(calc(var(--intro-scale) * 1.14)); }
+                83.30% { transform: translate(var(--intro-x), var(--intro-y)) scale(var(--intro-scale)); }
+                100% { transform: none; }
+            }
+
+            @keyframes home-intro-curtain {
+                0%, 83.30% { clip-path: inset(0); }
+                100% { clip-path: inset(0 0 100%); }
+            }
+
+            @keyframes home-hero-reveal {
+                0%, 89.80% { opacity: 0; transform: translateY(10px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+        }
+
         .meet-team-section {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -589,8 +679,45 @@
             letter-spacing: 0;
         }
     </style>
+    <script>
+        if ((!location.hash || location.hash === '#home') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            try {
+                if (!sessionStorage.getItem('jasimedia-home-intro')) {
+                    document.documentElement.classList.add('play-home-intro');
+                    sessionStorage.setItem('jasimedia-home-intro', 'seen');
+                }
+            } catch {
+                document.documentElement.classList.add('play-home-intro');
+            }
+        }
+    </script>
 </head>
 <body>
+    <div class="home-intro" aria-hidden="true">
+        <svg class="home-intro-shutter" viewBox="0 0 140 140" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <defs>
+                <linearGradient id="home-iris-blade-shading" gradientUnits="userSpaceOnUse" x1="-5" y1="15" x2="105" y2="0">
+                    <stop stop-color="#343434"/>
+                    <stop offset="1" stop-color="#1c1c1c"/>
+                </linearGradient>
+                <path id="home-iris-blade" d="M -169 -260 Q 169 0 -169 260 H 480 V -260 Z"
+                    fill="url(#home-iris-blade-shading)" stroke="#181818" stroke-width="0.35"/>
+            </defs>
+            <!-- The blade mounts stay fixed. Each blade pivots around its own off-center hinge. -->
+            <g transform="translate(70 70)">
+                <g><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(45)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(90)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(135)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(180)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(225)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(270)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+                <g transform="rotate(315)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
+            </g>
+        </svg>
+        <span class="home-intro-wordmark"><span class="home-intro-letters">JASIMEDIA</span></span>
+    </div>
+
     <header>
         <a class="logo logo-wordmark" href="#home" aria-label="JASIMEDIA home">JASIMEDIA</a>
 
@@ -692,6 +819,60 @@
     </footer>
 
     <script>
+        if (document.documentElement.classList.contains('play-home-intro')) {
+            const intro = document.querySelector('.home-intro');
+            const wordmark = intro.querySelector('.home-intro-wordmark');
+            const letters = wordmark.querySelector('.home-intro-letters');
+            const title = document.querySelector('.hero-video-text h1');
+            const letterCount = title.textContent.length;
+            const firstLetterAt = 2187;
+            const letterInterval = 350;
+            const typingDuration = firstLetterAt + (letterCount - 1) * letterInterval;
+
+            function positionIntroWordmark() {
+                const { left, top, right, width, height } = title.getBoundingClientRect();
+                intro.style.setProperty('--title-x', `${left}px`);
+                intro.style.setProperty('--title-y', `${top}px`);
+                intro.style.setProperty('--title-width', `${width}px`);
+                intro.style.setProperty('--title-size', getComputedStyle(title).fontSize);
+                intro.style.setProperty('--intro-x', `${(innerWidth - width) / 2 - left}px`);
+                intro.style.setProperty('--intro-y', `${(innerHeight - height) / 2 - top}px`);
+                intro.style.setProperty('--intro-scale', Math.min(1.85, innerWidth * 0.84 / width));
+
+                // Measure the proportional letters without splitting the rendered wordmark.
+                const range = document.createRange();
+                range.setStart(title.firstChild, 0);
+                for (let count = 1; count < letterCount; count++) {
+                    range.setEnd(title.firstChild, count);
+                    intro.style.setProperty(`--type-cut-${count}`, `${right - range.getBoundingClientRect().right}px`);
+                }
+            }
+
+            positionIntroWordmark();
+            const typingFrames = [{ offset: 0, opacity: 0, easing: 'step-end' }];
+            for (let index = 0; index < letterCount; index++) {
+                typingFrames.push({
+                    offset: (firstLetterAt + index * letterInterval) / typingDuration,
+                    opacity: 1,
+                    clipPath: index === letterCount - 1 ? 'none' : `inset(-0.25em var(--type-cut-${index + 1}) -0.25em -0.25em)`,
+                    easing: 'step-end'
+                });
+            }
+            letters.animate(typingFrames, { duration: typingDuration, fill: 'both' });
+            letters.style.visibility = 'visible';
+
+            window.addEventListener('resize', positionIntroWordmark);
+            window.addEventListener('scroll', positionIntroWordmark, { passive: true });
+            document.fonts.ready.then(positionIntroWordmark);
+
+            wordmark.addEventListener('animationend', event => {
+                if (event.animationName !== 'home-intro-wordmark') return;
+                document.documentElement.classList.remove('play-home-intro');
+                window.removeEventListener('resize', positionIntroWordmark);
+                window.removeEventListener('scroll', positionIntroWordmark);
+            });
+        }
+
         const btn = document.getElementById('hamburgerBtn');
         const menu = document.getElementById('mobileMenu');
 
