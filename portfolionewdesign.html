@@ -1028,12 +1028,7 @@
         .event-photo-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            align-content: start;
             gap: 16px;
-        }
-
-        .event-photo-grid.is-resizing {
-            overflow: clip;
         }
 
         .studio-oma-gallery .event-gallery-inner {
@@ -2894,39 +2889,16 @@
         document.querySelectorAll('.event-more-toggle').forEach(button => {
             const grid = document.getElementById(button.getAttribute('aria-controls'));
             const extraTiles = grid.querySelectorAll('[data-event-extra]');
-            let resize;
 
             button.addEventListener('click', () => {
                 const expanded = button.getAttribute('aria-expanded') === 'false';
-                const startHeight = grid.getBoundingClientRect().height;
-                resize?.cancel();
-                resize = null;
-                extraTiles.forEach(tile => {
-                    tile.hidden = !expanded;
-                    tile.inert = !expanded;
-                    if (expanded) loadEventThumbnail(tile);
-                });
+                extraTiles.forEach(tile => { tile.hidden = !expanded; });
                 button.setAttribute('aria-expanded', String(expanded));
                 button.textContent = expanded ? 'Less' : 'More';
-
-                const endHeight = grid.getBoundingClientRect().height;
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || startHeight === endHeight) {
-                    grid.classList.remove('is-resizing');
-                    return;
+                if (expanded) {
+                    extraTiles.forEach(loadEventThumbnail);
+                    extraTiles[0].scrollIntoView({ block: 'nearest' });
                 }
-
-                // Clip the extra rows during the slide so the button moves with the grid edge.
-                extraTiles.forEach(tile => { tile.hidden = false; });
-                grid.classList.add('is-resizing');
-                resize = grid.animate(
-                    { height: [`${startHeight}px`, `${endHeight}px`] },
-                    { duration: 480, easing: 'ease-in-out' }
-                );
-                resize.onfinish = () => {
-                    extraTiles.forEach(tile => { tile.hidden = !expanded; });
-                    grid.classList.remove('is-resizing');
-                    resize = null;
-                };
             });
         });
 
