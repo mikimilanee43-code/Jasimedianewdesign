@@ -2510,7 +2510,7 @@
         const getSlideNumber = index => String(index + 1).padStart(2, '0');
         const getVideoSource = slide => slide.startAt ? `${slide.src}#t=${slide.startAt}` : slide.src;
         const getVideoPoster = slide => slide.poster || (/\.webm$/i.test(slide.src)
-            ? `portfolio-posters/${slide.src.replace(/\.webm$/i, '.webp')}`
+            ? slide.src.replace(/\.webm$/i, '.webp')
             : '');
         const isVideoEmbed = src => /^https?:\/\/(?:player\.vimeo\.com|(?:www\.)?youtube(?:-nocookie)?\.com)\//i.test(src);
 
