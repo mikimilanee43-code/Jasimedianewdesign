@@ -321,7 +321,19 @@
             border-radius: 8px;
             overflow: hidden;
         }
+        .testimonial-viewport {
+            position: relative;
+            overflow: hidden;
+            overflow: clip;
+            touch-action: pan-y pinch-zoom;
+        }
         .testimonial-slide[hidden] { display: none; }
+        .testimonial-slide.testimonial-layer {
+            display: block;
+            position: absolute;
+            inset: 0 0 auto;
+            pointer-events: none;
+        }
         .testimonial-photo {
             height: 240px;
             display: flex;
@@ -633,6 +645,7 @@
         <section class="testimonial-column" aria-labelledby="people-heading">
             <h2 class="column-label" id="people-heading">People</h2>
             <div class="testimonial-card" id="people-testimonials" aria-roledescription="carousel" aria-label="People testimonials">
+                <div class="testimonial-viewport">
                 <article class="testimonial-slide" aria-labelledby="mark-name">
                     <img class="testimonial-photo" src="Mark%20Henry.webp" alt="Mark Henry" loading="lazy">
                     <div class="testimonial-copy">
@@ -659,6 +672,7 @@
                         <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="kai-quote">Read more</button>
                     </div>
                 </article>
+                </div>
                 <div class="testimonial-controls">
                     <div class="testimonial-dots" aria-label="Choose a person testimonial">
                         <button type="button" class="testimonial-dot" aria-label="Show Mark Henry testimonial" aria-current="true" data-slide="0"></button>
@@ -678,6 +692,7 @@
         <section class="testimonial-column" aria-labelledby="brands-heading">
             <h2 class="column-label" id="brands-heading">Companies &amp; Brands</h2>
             <div class="testimonial-card" id="company-testimonials" aria-roledescription="carousel" aria-label="Companies and brands testimonials">
+                <div class="testimonial-viewport">
                 <article class="testimonial-slide" aria-labelledby="deniz-name">
                     <img class="testimonial-photo" src="Broken%20Sound%20Deniz.webp" alt="Deniz with a colleague" loading="lazy">
                     <div class="testimonial-copy">
@@ -723,6 +738,7 @@
                         <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="andrew-quote">Read more</button>
                     </div>
                 </article>
+                </div>
                 <div class="testimonial-controls">
                     <div class="testimonial-dots" aria-label="Choose a testimonial">
                         <button type="button" class="testimonial-dot" aria-label="Show Deniz testimonial" aria-current="true" data-slide="0"></button>
@@ -801,6 +817,7 @@
         }
 
         function setupTestimonialCarousel(card) {
+            const viewport = card.querySelector('.testimonial-viewport');
             const slides = Array.from(card.querySelectorAll('.testimonial-slide'));
             const dots = Array.from(card.querySelectorAll('[data-slide]'));
             const count = card.querySelector('.slide-count');
@@ -812,9 +829,11 @@
             let inView = false;
             let hovered = false;
             let currentIndex = 0;
+            let swipe = null;
+            let animations = [];
 
             function canRotate() {
-                return rotationEnabled && inView && !document.hidden && !hovered &&
+                return rotationEnabled && inView && !document.hidden && !hovered && !swipe &&
                     !card.querySelector(':focus-visible:not(.testimonial-rotation)') &&
                     !slides[currentIndex].querySelector('.quote-text.expanded');
             }
@@ -835,8 +854,55 @@
                 rotationButton.title = label;
             }
 
-            function showSlide(index, automatic = false) {
-                currentIndex = (index + slides.length) % slides.length;
+            function slideIndex(index) {
+                return (index + slides.length) % slides.length;
+            }
+
+            function translate(offset) {
+                return `translateX(${offset}%)`;
+            }
+
+            function prepareLayer(slide) {
+                slide.inert = true;
+                slide.setAttribute('aria-hidden', 'true');
+                slide.classList.add('testimonial-layer');
+            }
+
+            function clearSlideMotion() {
+                animations.forEach(animation => animation.cancel());
+                animations = [];
+                slides.forEach(slide => {
+                    slide.style.transform = '';
+                    slide.classList.remove('testimonial-layer');
+                    slide.removeAttribute('aria-hidden');
+                    slide.inert = false;
+                });
+            }
+
+            function animateSlides(movements) {
+                animations = movements.map(([slide, from, to]) => slide.animate(
+                    [{ transform: translate(from) }, { transform: translate(to) }],
+                    { duration: 360, easing: 'cubic-bezier(.22, .7, .25, 1)', fill: 'both' }
+                ));
+                animations[0].onfinish = clearSlideMotion;
+            }
+
+            function showSlide(index, automatic = false, offset = 0) {
+                const nextIndex = slideIndex(index);
+                if (nextIndex === currentIndex) {
+                    scheduleRotation();
+                    return;
+                }
+
+                const direction = Math.sign(index - currentIndex);
+                const outgoing = slides[currentIndex];
+                const incoming = slides[nextIndex];
+                if (outgoing.contains(document.activeElement)) {
+                    dots[nextIndex].focus({ preventScroll: true });
+                }
+                swipe = null;
+                clearSlideMotion();
+                currentIndex = nextIndex;
                 slides.forEach((slide, i) => {
                     slide.hidden = i !== currentIndex;
                     const quote = slide.querySelector('.quote-text');
@@ -852,8 +918,83 @@
                 count.setAttribute('aria-live', automatic ? 'off' : 'polite');
                 count.textContent = (currentIndex + 1) + ' / ' + slides.length;
                 updateQuoteToggles();
+                if (!reducedMotion.matches) {
+                    prepareLayer(outgoing);
+                    animateSlides([
+                        [outgoing, offset, -direction * 100],
+                        [incoming, offset + direction * 100, 0]
+                    ]);
+                }
                 scheduleRotation();
             }
+
+            viewport.addEventListener('pointerdown', event => {
+                if (!event.isPrimary || event.pointerType !== 'touch' || animations.length ||
+                    event.target.closest('button')) return;
+
+                swipe = {
+                    id: event.pointerId,
+                    x: event.clientX,
+                    y: event.clientY,
+                    width: viewport.clientWidth,
+                    horizontal: false,
+                    offset: 0,
+                    neighbor: null
+                };
+                scheduleRotation();
+            });
+
+            viewport.addEventListener('pointermove', event => {
+                if (swipe?.id !== event.pointerId) return;
+
+                const x = event.clientX - swipe.x;
+                const y = event.clientY - swipe.y;
+                if (!swipe.horizontal) {
+                    if (Math.abs(x) < 10 || Math.abs(x) <= Math.abs(y)) return;
+                    swipe.horizontal = true;
+                    viewport.setPointerCapture(event.pointerId);
+                }
+
+                swipe.offset = Math.max(-100, Math.min(100, x / swipe.width * 100));
+                if (reducedMotion.matches) return;
+                const direction = x > 0 ? -1 : 1;
+                const neighbor = slides[slideIndex(currentIndex + direction)];
+                if (swipe.neighbor !== neighbor) {
+                    clearSlideMotion();
+                    prepareLayer(neighbor);
+                    swipe.neighbor = neighbor;
+                }
+                slides[currentIndex].style.transform = translate(swipe.offset);
+                neighbor.style.transform = translate(swipe.offset + direction * 100);
+            });
+
+            function finishSwipe(event) {
+                if (swipe?.id !== event.pointerId) return;
+                if (event.type === 'lostpointercapture' && event.target !== viewport) return;
+
+                const { offset, width, neighbor, horizontal, x } = swipe;
+                swipe = null;
+                const direction = offset > 0 ? -1 : 1;
+                const threshold = Math.max(30, Math.min(70, width * 0.16));
+                const distance = event.clientX - x;
+                if (event.type === 'pointerup' && horizontal && Math.abs(distance) >= threshold) {
+                    showSlide(currentIndex - Math.sign(distance), false, offset);
+                } else {
+                    if (neighbor && !reducedMotion.matches) {
+                        animateSlides([
+                            [slides[currentIndex], offset, 0],
+                            [neighbor, offset + direction * 100, direction * 100]
+                        ]);
+                    } else {
+                        clearSlideMotion();
+                    }
+                    scheduleRotation();
+                }
+            }
+
+            viewport.addEventListener('pointerup', finishSwipe);
+            viewport.addEventListener('pointercancel', finishSwipe);
+            viewport.addEventListener('lostpointercapture', finishSwipe);
 
             card.querySelectorAll('.quote-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
