@@ -359,6 +359,26 @@
             .testimonial-slide[aria-labelledby="kai-name"] { --desktop-photo-position: center top; }
             .testimonial-slide[aria-labelledby="andrew-name"] { --desktop-photo-position: 65% 28%; }
         }
+        .christina-portrait img { object-position: center 15%; }
+        @media (min-width: 640px) and (max-width: 900px) {
+            .christina-portrait {
+                position: relative;
+                overflow: hidden;
+                isolation: isolate;
+            }
+            .christina-portrait::before {
+                content: '';
+                position: absolute;
+                inset: -24px;
+                z-index: -1;
+                background: url('Christina%20Bueno.webp') center 15% / cover;
+                filter: blur(24px) brightness(.65);
+            }
+            .christina-portrait img {
+                max-width: 575px;
+                mask-image: linear-gradient(to right, transparent, black 26px, black calc(100% - 26px), transparent);
+            }
+        }
         .testimonial-copy { padding: 28px 32px 0; }
         .testimonial-heading { min-height: 104px; }
         .testimonial-card h2 {
@@ -706,21 +726,20 @@
                         <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="deniz-quote">Read more</button>
                     </div>
                 </article>
-                <article class="testimonial-slide" aria-labelledby="chrissy-name" hidden>
-                    <div class="testimonial-photo" role="img" aria-label="Photo placeholder for Chrissy Bueno">
-                        <span aria-hidden="true">CB</span>
-                        <small aria-hidden="true">Photo coming soon</small>
+                <article class="testimonial-slide" aria-labelledby="christina-name" hidden>
+                    <div class="testimonial-photo christina-portrait">
+                        <img class="testimonial-photo" src="Christina%20Bueno.webp" alt="Christina Bueno" loading="lazy">
                     </div>
                     <div class="testimonial-copy">
                         <div class="testimonial-heading">
-            <h2 id="chrissy-name">Chrissy Bueno</h2>
+            <h2 id="christina-name">Christina Bueno</h2>
             <p class="testimonial-role">Account Director | Episode 1 Agency</p>
             <p class="testimonial-brands"><em>Espolòn &amp; Nike</em></p>
                         </div>
-            <blockquote class="quote-text" id="chrissy-quote">
+            <blockquote class="quote-text" id="christina-quote">
                 <p>“I’ve had the pleasure of working with Jas across several programs, and he is truly such a talented artist and an incredible creative partner. Beyond consistently delivering beautiful, high-quality photo and video work, he brings the best energy to every shoot and is an absolute pleasure to have on site. He’s collaborative, flexible, and always willing to jump in and do whatever it takes to get the job done, even in the fast-moving environment of live events. I’ve always been impressed by his ability to capture the energy and spirit of an experience while still delivering against the needs of the brand. I would recommend him in a heartbeat and always look forward to the opportunity to work together again.”</p>
             </blockquote>
-                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="chrissy-quote">Read more</button>
+                        <button class="quote-toggle" type="button" aria-expanded="false" aria-controls="christina-quote">Read more</button>
                     </div>
                 </article>
                 <article class="testimonial-slide" aria-labelledby="andrew-name" hidden>
@@ -742,7 +761,7 @@
                 <div class="testimonial-controls">
                     <div class="testimonial-dots" aria-label="Choose a testimonial">
                         <button type="button" class="testimonial-dot" aria-label="Show Deniz testimonial" aria-current="true" data-slide="0"></button>
-                        <button type="button" class="testimonial-dot" aria-label="Show Chrissy Bueno testimonial" data-slide="1"></button>
+                        <button type="button" class="testimonial-dot" aria-label="Show Christina Bueno testimonial" data-slide="1"></button>
                         <button type="button" class="testimonial-dot" aria-label="Show Andrew Stallings testimonial" data-slide="2"></button>
                     </div>
                     <div class="testimonial-progress">
