@@ -731,204 +731,358 @@
           </g>
         </svg>
         <script>
-        (() => {
-          "use strict";
+/* JASIMEDIA shutter renderer. No dependencies, asset downloads, or video changes.
+ * Geometry: original nine blades; circular ownership B[i] minus B[i+1].
+ * Desktop retains SVG. iOS uses a single analytic WebGL canvas when available.
+ * A WebGL failure falls back to SVG at the same animation time.
+ */
+(function (global) {
+  'use strict';
+  const NS = 'http://www.w3.org/2000/svg';
+  const COUNT = 9, DURATION = 2067, HOLD = 0.09;
+  const PATH = 'M -169 -260 Q 169 0 -169 260 H -20 Q 318 0 -20 -260 Z';
+  const media = () => matchMedia('(prefers-reduced-motion: reduce)');
+  const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-          const BLADE_COUNT = 9; // Supported: 9, 10, 12, 14.
-          const DURATION = 2067;
-          const HOLD = 0.09;
-          const ROTATION = -50;
+  function node(tag, attrs, parent) {
+    const n = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    parent.appendChild(n);
+    return n;
+  }
+  function coordinate(u, a, b) {
+    const v = 1 - u;
+    return 3*v*v*u*a + 3*v*u*u*b + u*u*u;
+  }
+  function ease(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 24; i++) {
+      const u = (lo + hi)/2;
+      if (coordinate(u, .5, .45) < t) lo = u; else hi = u;
+    }
+    return coordinate((lo + hi)/2, .05, .95);
+  }
+  function openingAt(ms) { return ease((ms/DURATION - HOLD)/(1-HOLD)); }
 
-          const svg = document.getElementById("home-intro-shutter");
-          const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          );
+  function svgRenderer(svg) {
+    const defs = svg.querySelector('defs');
+    const underlay = svg.querySelector('#home-iris-underlay');
+    const surfaces = svg.querySelector('#home-iris-surfaces');
+    const sources = [], generated = [];
+    for (let i = 0; i < COUNT; i++) {
+      const pose = node('g', {id: `home-iris-pose-${i}`}, defs);
+      node('use', {href: '#home-iris-blade'}, pose);
+      sources.push(pose); generated.push(pose);
+    }
+    for (let i = 0; i < COUNT; i++) {
+      const mask = node('mask', {
+        id: `home-iris-visible-${i}`, maskUnits: 'userSpaceOnUse',
+        maskContentUnits: 'userSpaceOnUse', x: -100, y: -100,
+        width: 200, height: 200, style: 'mask-type:luminance'
+      }, defs);
+      node('rect', {x:-100, y:-100, width:200, height:200, fill:'white'}, mask);
+      node('use', {href:`#home-iris-pose-${(i+1)%COUNT}`, fill:'black'}, mask);
+      generated.push(mask);
+      node('use', {href:`#home-iris-pose-${i}`}, underlay);
+      const group = node('g', {mask:`url(#home-iris-visible-${i})`}, surfaces);
+      node('use', {href:`#home-iris-pose-${i}`, class:'home-intro-blade-surface'}, group);
+    }
+    return {
+      mode: 'svg', mutationsPerDraw: 9,
+      render(p) {
+        for (let i=0; i<COUNT; i++) sources[i].setAttribute('transform',
+          `rotate(${i*40}) translate(0 -160) rotate(${-50*p}) translate(0 160)`);
+      },
+      show() { svg.removeAttribute('hidden'); },
+      hide() { svg.setAttribute('hidden', ''); },
+      size() { return {cssWidth:svg.clientWidth, cssHeight:svg.clientHeight}; },
+      async capture() {
+        const rect=svg.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+        const width=Math.round(rect.width*dpr),height=Math.round(rect.height*dpr);
+        const clone=svg.cloneNode(true);
+        clone.setAttribute('xmlns',NS);clone.setAttribute('width',width);clone.setAttribute('height',height);
+        clone.removeAttribute('hidden');clone.removeAttribute('class');
+        clone.querySelectorAll('.home-intro-blade-surface').forEach(n=>{
+          n.setAttribute('fill','url(#home-iris-blade-shading)');n.setAttribute('stroke','#181818');
+          n.setAttribute('stroke-width','.22');n.setAttribute('stroke-linejoin','round');
+        });
+        const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml'}));
+        try {
+          const image=new Image();image.src=url;await image.decode();
+          const copy=document.createElement('canvas');copy.width=width;copy.height=height;
+          const ctx=copy.getContext('2d');ctx.drawImage(image,0,0);
+          return ctx.getImageData(0,0,width,height);
+        } finally {URL.revokeObjectURL(url);}
+      },
+      destroy() {
+        svg.setAttribute('hidden', '');
+        generated.forEach(n => n.remove());
+        underlay.replaceChildren(); surfaces.replaceChildren();
+      }
+    };
+  }
 
-          // Leave the homepage visible when reduced motion is enabled.
-          if (!svg || reducedMotion.matches || !document.documentElement.classList.contains("play-home-intro")) return;
+  // Exact quadratic boundaries of the supplied path:
+  // -260 <= y <= 260; -169*y*y/67600 <= x <= 149-169*y*y/67600.
+  // The shader transforms each pixel into blade-local coordinates, then
+  // composites the same underlay, nine gradient surfaces, strokes and masks.
+  // There are no SVG masks/textures/clip paths in this rendering path.
+  function fragmentSource() {
+    let blades = '', union = '1.0', composite = '';
+    for (let i=0; i<COUNT; i++) {
+      const a = i*2*Math.PI/COUNT;
+      const c = Math.cos(a).toFixed(16), s = Math.sin(a).toFixed(16);
+      blades += `vec2 r${i}=vec2(${c}*p.x+${s}*p.y,-(${s})*p.x+${c}*p.y);\n`;
+      blades += `vec2 q${i}=vec2(u_turn.x*r${i}.x-u_turn.y*(r${i}.y+160.0),u_turn.y*r${i}.x+u_turn.x*(r${i}.y+160.0)-160.0);\n`;
+      blades += `vec3 b${i}=blade(q${i},pixel);\n`;
+      union += `*(1.0-b${i}.y)`;
+      composite += `{
+        float maskAlpha=1.0-b${(i+1)%COUNT}.y;
+        float fillPart=b${i}.y*(1.0-b${i}.z);
+        float alpha=(b${i}.z+fillPart)*maskAlpha;
+        float shade=(metal*b${i}.z+b${i}.x*fillPart)*maskAlpha;
+        color=vec4(vec3(shade),alpha)+color*(1.0-alpha);
+      }\n`;
+    }
+    return `precision highp float;
+      uniform vec2 u_resolution;
+      uniform vec2 u_turn;
+      const float k=169.0/67600.0;
+      const float metal=24.0/255.0;
+      vec3 blade(vec2 q,float pixel) {
+        float curve=k*q.y*q.y;
+        float normal=sqrt(1.0+4.0*k*k*q.y*q.y);
+        float sd=min(min(q.x+curve,149.0-curve-q.x)/normal,260.0-abs(q.y));
+        float coverage=clamp(sd/pixel+0.5,0.0,1.0);
+        // Original 0.22-unit stroke, centered on the curve.
+        float stroke=clamp((0.11-abs(sd))/pixel+0.5,0.0,1.0);
+        float t=clamp(dot(q-vec2(-5.0,15.0),vec2(110.0,-15.0))/12325.0,0.0,1.0);
+        return vec3(mix(52.0/255.0,28.0/255.0,t),coverage,stroke);
+      }
+      void main() {
+        float scale=max(u_resolution.x,u_resolution.y)/140.0;
+        float pixel=1.0/scale;
+        vec2 p=(vec2(gl_FragCoord.x,u_resolution.y-gl_FragCoord.y)-0.5*u_resolution)/scale;
+        ${blades}
+        float unionAlpha=1.0-(${union});
+        vec4 color=vec4(vec3(metal*unionAlpha),unionAlpha);
+        ${composite}
+        gl_FragColor=color;
+      }`;
+  }
 
-          const NS = "http://www.w3.org/2000/svg";
-          const defs = svg.querySelector("defs");
-          const underlay = svg.querySelector("#home-iris-underlay");
-          const surfaces = svg.querySelector("#home-iris-surfaces");
-          const sources = [];
-
-          function createElement(tag, attributes, parent) {
-            const element = document.createElementNS(NS, tag);
-
-            for (const [name, value] of Object.entries(attributes)) {
-              element.setAttribute(name, value);
-            }
-
-            parent.appendChild(element);
-            return element;
+  function gpuRenderer(svg, onLost) {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'home-intro-shutter';
+    canvas.setAttribute('aria-hidden','true');
+    canvas.style.cssText = 'position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;visibility:hidden';
+    const gl = canvas.getContext('webgl', {
+      alpha:true, premultipliedAlpha:true, antialias:false,
+      depth:false, stencil:false, preserveDrawingBuffer:false
+    });
+    if (!gl) throw new Error('WebGL is unavailable');
+    let program, buffer, observer, destroyed=false, dirty=true, lastOpening=0;
+    const shaders=[];
+    function destroy() {
+      if (destroyed) return;
+      destroyed=true;
+      observer?.disconnect();
+      window.removeEventListener('resize', resize);
+      canvas.removeEventListener('webglcontextlost', lost);
+      if (!gl.isContextLost()) {
+        if (program) gl.deleteProgram(program);
+        if (buffer) gl.deleteBuffer(buffer);
+        shaders.forEach(shader=>gl.deleteShader(shader));
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+      }
+      canvas.remove();
+    }
+    function lost(event) {
+      event.preventDefault();
+      if (!destroyed) onLost();
+    }
+    function resize() {
+      dirty=true;
+      // ResizeObserver runs outside the normal animation loop; redraw a paused
+      // diagnostic frame too. No layout reads occur on ordinary animation frames.
+      if (renderer && !destroyed && !gl.isContextLost()) renderer.render(lastOpening);
+    }
+    let renderer;
+    try {
+      if (!gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER,gl.HIGH_FLOAT).precision)
+        throw new Error('High precision fragment shaders are unavailable');
+      function compile(type, text) {
+        const shader=gl.createShader(type); shaders.push(shader);
+        gl.shaderSource(shader,text); gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS))
+          throw new Error(gl.getShaderInfoLog(shader));
+        return shader;
+      }
+      program=gl.createProgram();
+      gl.attachShader(program,compile(gl.VERTEX_SHADER,
+        'attribute vec2 a_position; void main(){gl_Position=vec4(a_position,0.0,1.0);}'));
+      gl.attachShader(program,compile(gl.FRAGMENT_SHADER,fragmentSource()));
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+      gl.useProgram(program);
+      buffer=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+      const position=gl.getAttribLocation(program,'a_position');
+      gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
+      const resolution=gl.getUniformLocation(program,'u_resolution');
+      const turn=gl.getUniformLocation(program,'u_turn');
+      // The shader already emits premultiplied alpha; no blend pass is needed.
+      gl.disable(gl.BLEND); gl.disable(gl.DEPTH_TEST); gl.disable(gl.DITHER);
+      svg.before(canvas);
+      canvas.addEventListener('webglcontextlost',lost);
+      renderer={
+        mode:'gpu', mutationsPerDraw:0,
+        render(p) {
+          lastOpening=p;
+          if (gl.isContextLost()) return;
+          if (dirty) {
+            const rect=canvas.getBoundingClientRect();
+            const dpr=window.devicePixelRatio || 1;
+            canvas.width=Math.max(1,Math.round(rect.width*dpr));
+            canvas.height=Math.max(1,Math.round(rect.height*dpr));
+            gl.viewport(0,0,canvas.width,canvas.height);
+            gl.uniform2f(resolution,canvas.width,canvas.height);
+            dirty=false;
           }
+          const a=p*50*Math.PI/180;
+          gl.uniform2f(turn,Math.cos(a),Math.sin(a));
+          gl.drawArrays(gl.TRIANGLES,0,3);
+        },
+        show() { canvas.style.visibility='visible'; },
+        hide() { canvas.style.visibility='hidden'; },
+        size() { return {width:canvas.width,height:canvas.height,dpr:window.devicePixelRatio||1}; },
+        capture() {
+          // Diagnostic only: synchronous redraw before reading the nonpersistent buffer.
+          renderer.render(lastOpening);
+          const copy=document.createElement('canvas');copy.width=canvas.width;copy.height=canvas.height;
+          const ctx=copy.getContext('2d');ctx.drawImage(canvas,0,0);
+          return ctx.getImageData(0,0,copy.width,copy.height);
+        },
+        destroy
+      };
+      if ('ResizeObserver' in window) {
+        observer=new ResizeObserver(resize);
+        observer.observe(svg.parentElement);
+      }
+      window.addEventListener('resize',resize,{passive:true});
+      return renderer;
+    } catch (error) { destroy(); throw error; }
+  }
 
-          // Each blade has one shared transformed source.
-          // Its surface, mask, and underlay always move together.
-          for (let i = 0; i < BLADE_COUNT; i++) {
-            const source = createElement(
-              "g",
-              { id: `home-iris-pose-${i}` },
-              defs
-            );
+  function create(svg, options={}) {
+    const preference=options.renderer || 'auto';
+    const instrument=!!options.instrument;
+    const reduce=media();
+    let renderer, frame=0, start=0, playing=false, disposed=false, opening=0, lastDraw=-1;
+    let times=[], costs=[], drawCount=0, domWrites=0, previous=0, fallback=null;
+    let stats={};
+    const setupStart=performance.now();
+    function fallbackToSVG(reason) {
+      const old=renderer;
+      renderer=svgRenderer(svg);
+      renderer.render(opening); renderer.show();
+      old?.destroy(); lastDraw=opening;
+      fallback=String(reason);
+    }
+    if (preference==='gpu' || (preference==='auto' && isIOS())) {
+      try { renderer=gpuRenderer(svg,()=>fallbackToSVG('WebGL context lost')); }
+      catch (error) { fallbackToSVG(error.message); }
+    } else renderer=svgRenderer(svg);
+    const setupMs=performance.now()-setupStart;
+    function render(p, force=false) {
+      opening=p;
+      if (!force && p===lastDraw && !options.baselineEveryFrame) return; // No repaint during the initial hold.
+      const before=instrument ? performance.now() : 0;
+      renderer.render(p); lastDraw=p;
+      if (instrument) { costs.push(performance.now()-before); drawCount++; domWrites+=renderer.mutationsPerDraw; }
+    }
+    function summarize() {
+      const percentile=(values,q)=>{
+        if (!values.length) return 0;
+        const ordered=values.slice().sort((a,b)=>a-b);
+        return ordered[Math.min(ordered.length-1,Math.floor(ordered.length*q))];
+      };
+      return {
+        renderer:renderer.mode, fallback, setupMs, durationMs:DURATION,
+        elapsedMs:performance.now()-start, callbacks:times.length, drawCount, domWrites,
+        p50FrameMs:percentile(times,.5), p95FrameMs:percentile(times,.95),
+        intervalsOver25ms:times.filter(t=>t>25).length,
+        estimatedMissed60HzSlots:times.reduce((n,t)=>n+Math.max(0,Math.round(t/(1000/60))-1),0),
+        p95SubmissionMs:percentile(costs,.95), backing:renderer.size(),
+        visibility:document.visibilityState,
+        note:'rAF intervals and CPU draw submission; not GPU completion time or Safari paint profiling.'
+      };
+    }
+    function finish(reason='complete') {
+      playing=false; cancelAnimationFrame(frame); frame=0;
+      stats=instrument ? {...summarize(),reason} : {renderer:renderer.mode,reason};
+      renderer.hide();
+      options.onComplete?.(stats);
+    }
+    function tick(now) {
+      if (!playing || disposed) return;
+      if (instrument) { if (previous) times.push(now-previous); previous=now; }
+      const elapsed=Math.max(0,now-start);
+      render(openingAt(elapsed));
+      if (elapsed>=DURATION) finish();
+      else frame=requestAnimationFrame(tick);
+    }
+    function play() {
+      if (disposed) return;
+      cancelAnimationFrame(frame);
+      if (reduce.matches) { finish('reduced-motion'); return; }
+      times=[]; costs=[]; previous=0; drawCount=0; domWrites=0;
+      render(0,true); renderer.show();
+      start=performance.now(); playing=true;
+      frame=requestAnimationFrame(tick);
+    }
+    function seek(p) {
+      if (disposed || !Number.isFinite(p)) return;
+      cancelAnimationFrame(frame); playing=false;
+      if (reduce.matches) { renderer.hide(); return; }
+      render(Math.max(0,Math.min(1,p)),true); renderer.show();
+    }
+    function motionChanged(event) { if (event.matches) finish('reduced-motion'); }
+    reduce.addEventListener('change',motionChanged);
+    return {
+      play, seek,
+      capture() {
+        if (!instrument) throw new Error('Frame capture is available only in diagnostic mode.');
+        return renderer.capture();
+      },
+      get mode(){return renderer.mode;}, get stats(){return stats;},
+      destroy() {
+        if (disposed) return;
+        disposed=true; playing=false; cancelAnimationFrame(frame);
+        reduce.removeEventListener('change',motionChanged); renderer.destroy();
+      }
+    };
+  }
+  global.JasimediaShutter={create,openingAt,fragmentSource,path:PATH};
+})(window);
 
-            createElement(
-              "use",
-              { href: "#home-iris-blade" },
-              source
-            );
 
-            sources.push(source);
-          }
-
-          for (let i = 0; i < BLADE_COUNT; i++) {
-            const next = (i + 1) % BLADE_COUNT;
-
-            // Visible blade = current blade minus its next neighbor.
-            // The final blade follows exactly the same circular rule.
-            const mask = createElement(
-              "mask",
-              {
-                id: `home-iris-visible-${i}`,
-                maskUnits: "userSpaceOnUse",
-                maskContentUnits: "userSpaceOnUse",
-                x: -100,
-                y: -100,
-                width: 200,
-                height: 200,
-                style: "mask-type: luminance"
-              },
-              defs
-            );
-
-            createElement(
-              "rect",
-              {
-                x: -100,
-                y: -100,
-                width: 200,
-                height: 200,
-                fill: "white"
-              },
-              mask
-            );
-
-            createElement(
-              "use",
-              {
-                href: `#home-iris-pose-${next}`,
-                fill: "black"
-              },
-              mask
-            );
-
-            // Fills antialiasing hairlines between metal surfaces.
-            // This follows the blades and never fills the aperture.
-            createElement(
-              "use",
-              { href: `#home-iris-pose-${i}` },
-              underlay
-            );
-
-            const surface = createElement(
-              "g",
-              { mask: `url(#home-iris-visible-${i})` },
-              surfaces
-            );
-
-            createElement(
-              "use",
-              {
-                href: `#home-iris-pose-${i}`,
-                class: "home-intro-blade-surface"
-              },
-              surface
-            );
-          }
-
-          function render(opening) {
-            const angle = ROTATION * opening;
-
-            sources.forEach((source, i) => {
-              source.setAttribute(
-                "transform",
-                `rotate(${i * 360 / BLADE_COUNT})
-                 translate(0 -160)
-                 rotate(${angle})
-                 translate(0 160)`
-              );
-            });
-          }
-
-          function bezierCoordinate(u, a, b) {
-            const v = 1 - u;
-            return 3 * v * v * u * a + 3 * v * u * u * b + u * u * u;
-          }
-
-          // Matches cubic-bezier(0.5, 0.05, 0.45, 0.95).
-          function ease(t) {
-            if (t <= 0) return 0;
-            if (t >= 1) return 1;
-
-            let low = 0;
-            let high = 1;
-
-            for (let i = 0; i < 24; i++) {
-              const u = (low + high) / 2;
-
-              if (bezierCoordinate(u, 0.5, 0.45) < t) {
-                low = u;
-              } else {
-                high = u;
-              }
-            }
-
-            return bezierCoordinate((low + high) / 2, 0.05, 0.95);
-          }
-
-          let animationFrame = 0;
-          let stopped = false;
-
-          function finish() {
-            stopped = true;
-            cancelAnimationFrame(animationFrame);
-            svg.setAttribute("hidden", "");
-            reducedMotion.removeEventListener("change", handleMotionChange);
-          }
-
-          function handleMotionChange(event) {
-            if (event.matches) finish();
-          }
-
-          reducedMotion.addEventListener("change", handleMotionChange);
-
-          render(0);
-          svg.removeAttribute("hidden");
-
-          const start = performance.now();
-
-          function animate(now) {
-            if (stopped) return;
-
-            const progress = Math.min((now - start) / DURATION, 1);
-
-            // Preserve the original 0–9% hold.
-            // Apply easing to the remaining 9–100% interval.
-            const opening = ease((progress - HOLD) / (1 - HOLD));
-
-            render(opening);
-
-            if (progress < 1) {
-              animationFrame = requestAnimationFrame(animate);
-            } else {
-              finish();
-            }
-          }
-
-          animationFrame = requestAnimationFrame(animate);
-        })();
-        </script>
+(() => {
+  const svg=document.getElementById('home-intro-shutter');
+  if (!svg || matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !document.documentElement.classList.contains('play-home-intro')) return;
+  // The existing 4.4-second wordmark/curtain sequence remains independent.
+  // Do not remove play-home-intro here; its original animationend handler does that.
+  const shutter=JasimediaShutter.create(svg,{
+    renderer:'auto',
+    onComplete(){ shutter.destroy(); }
+  });
+  shutter.play();
+})();
+</script>
         <span class="home-intro-wordmark">JASIMEDIA</span>
     </div>
 
