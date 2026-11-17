@@ -882,7 +882,7 @@
             function animateSlides(movements) {
                 animations = movements.map(([slide, from, to]) => slide.animate(
                     [{ transform: translate(from) }, { transform: translate(to) }],
-                    { duration: 360, easing: 'cubic-bezier(.22, .7, .25, 1)', fill: 'both' }
+                    { duration: 1250, easing: 'cubic-bezier(.22, .7, .25, 1)', fill: 'both' }
                 ));
                 animations[0].onfinish = clearSlideMotion;
             }
