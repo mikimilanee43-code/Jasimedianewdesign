@@ -269,18 +269,24 @@
             }
 
             .home-intro-shutter {
-                position: absolute;
-                inset: 0;
-                z-index: 1;
-                width: 100%;
-                height: 100%;
-                display: block;
+              position: absolute;
+              inset: 0;
+              z-index: 1;
+              width: 100%;
+              height: 100%;
+              display: block;
+              pointer-events: none;
             }
 
-            .home-intro-blade {
-                transform-box: view-box;
-                transform-origin: 0 0;
-                animation: home-shutter-open 2.067s cubic-bezier(0.5, 0.05, 0.45, 0.95) both;
+            .home-intro-shutter[hidden] {
+              display: none;
+            }
+
+            .home-intro-blade-surface {
+              fill: url(#home-iris-blade-shading);
+              stroke: #181818;
+              stroke-width: 0.22;
+              stroke-linejoin: round;
             }
 
             .home-intro-wordmark {
@@ -302,11 +308,6 @@
 
             .play-home-intro .hero-video-text p {
                 animation: home-hero-reveal var(--home-intro-duration) ease-out both;
-            }
-
-            @keyframes home-shutter-open {
-                0%, 9% { transform: translateY(-160px) rotate(0deg) translateY(160px); }
-                100% { transform: translateY(-160px) rotate(-50deg) translateY(160px); }
             }
 
             @keyframes home-intro-wordmark {
@@ -695,27 +696,239 @@
 </head>
 <body>
     <div class="home-intro" aria-hidden="true">
-        <svg class="home-intro-shutter" viewBox="0 0 140 140" preserveAspectRatio="xMidYMid slice" focusable="false">
-            <defs>
-                <linearGradient id="home-iris-blade-shading" gradientUnits="userSpaceOnUse" x1="-5" y1="15" x2="105" y2="0">
-                    <stop stop-color="#343434"/>
-                    <stop offset="1" stop-color="#1c1c1c"/>
-                </linearGradient>
-                <path id="home-iris-blade" d="M -169 -260 Q 169 0 -169 260 H 480 V -260 Z"
-                    fill="url(#home-iris-blade-shading)" stroke="#181818" stroke-width="0.35"/>
-            </defs>
-            <!-- The blade mounts stay fixed. Each blade pivots around its own off-center hinge. -->
-            <g transform="translate(70 70)">
-                <g><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(45)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(90)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(135)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(180)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(225)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(270)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-                <g transform="rotate(315)"><use class="home-intro-blade" href="#home-iris-blade"/></g>
-            </g>
+        <svg
+          id="home-intro-shutter"
+          class="home-intro-shutter"
+          viewBox="0 0 140 140"
+          preserveAspectRatio="xMidYMid slice"
+          focusable="false"
+          aria-hidden="true"
+          hidden
+        >
+          <defs>
+            <linearGradient
+              id="home-iris-blade-shading"
+              gradientUnits="userSpaceOnUse"
+              x1="-5"
+              y1="15"
+              x2="105"
+              y2="0"
+            >
+              <stop stop-color="#343434" />
+              <stop offset="1" stop-color="#1c1c1c" />
+            </linearGradient>
+
+            <!-- Curved blade shared by all nine pivots. -->
+            <path
+              id="home-iris-blade"
+              d="M -169 -260 Q 169 0 -169 260 H -20 Q 318 0 -20 -260 Z"
+            />
+          </defs>
+
+          <g transform="translate(70 70)">
+            <g id="home-iris-underlay" fill="#181818"></g>
+            <g id="home-iris-surfaces"></g>
+          </g>
         </svg>
+        <script>
+        (() => {
+          "use strict";
+
+          const BLADE_COUNT = 9; // Supported: 9, 10, 12, 14.
+          const DURATION = 2067;
+          const HOLD = 0.09;
+          const ROTATION = -50;
+
+          const svg = document.getElementById("home-intro-shutter");
+          const reducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          );
+
+          // Leave the homepage visible when reduced motion is enabled.
+          if (!svg || reducedMotion.matches || !document.documentElement.classList.contains("play-home-intro")) return;
+
+          const NS = "http://www.w3.org/2000/svg";
+          const defs = svg.querySelector("defs");
+          const underlay = svg.querySelector("#home-iris-underlay");
+          const surfaces = svg.querySelector("#home-iris-surfaces");
+          const sources = [];
+
+          function createElement(tag, attributes, parent) {
+            const element = document.createElementNS(NS, tag);
+
+            for (const [name, value] of Object.entries(attributes)) {
+              element.setAttribute(name, value);
+            }
+
+            parent.appendChild(element);
+            return element;
+          }
+
+          // Each blade has one shared transformed source.
+          // Its surface, mask, and underlay always move together.
+          for (let i = 0; i < BLADE_COUNT; i++) {
+            const source = createElement(
+              "g",
+              { id: `home-iris-pose-${i}` },
+              defs
+            );
+
+            createElement(
+              "use",
+              { href: "#home-iris-blade" },
+              source
+            );
+
+            sources.push(source);
+          }
+
+          for (let i = 0; i < BLADE_COUNT; i++) {
+            const next = (i + 1) % BLADE_COUNT;
+
+            // Visible blade = current blade minus its next neighbor.
+            // The final blade follows exactly the same circular rule.
+            const mask = createElement(
+              "mask",
+              {
+                id: `home-iris-visible-${i}`,
+                maskUnits: "userSpaceOnUse",
+                maskContentUnits: "userSpaceOnUse",
+                x: -100,
+                y: -100,
+                width: 200,
+                height: 200,
+                style: "mask-type: luminance"
+              },
+              defs
+            );
+
+            createElement(
+              "rect",
+              {
+                x: -100,
+                y: -100,
+                width: 200,
+                height: 200,
+                fill: "white"
+              },
+              mask
+            );
+
+            createElement(
+              "use",
+              {
+                href: `#home-iris-pose-${next}`,
+                fill: "black"
+              },
+              mask
+            );
+
+            // Fills antialiasing hairlines between metal surfaces.
+            // This follows the blades and never fills the aperture.
+            createElement(
+              "use",
+              { href: `#home-iris-pose-${i}` },
+              underlay
+            );
+
+            const surface = createElement(
+              "g",
+              { mask: `url(#home-iris-visible-${i})` },
+              surfaces
+            );
+
+            createElement(
+              "use",
+              {
+                href: `#home-iris-pose-${i}`,
+                class: "home-intro-blade-surface"
+              },
+              surface
+            );
+          }
+
+          function render(opening) {
+            const angle = ROTATION * opening;
+
+            sources.forEach((source, i) => {
+              source.setAttribute(
+                "transform",
+                `rotate(${i * 360 / BLADE_COUNT})
+                 translate(0 -160)
+                 rotate(${angle})
+                 translate(0 160)`
+              );
+            });
+          }
+
+          function bezierCoordinate(u, a, b) {
+            const v = 1 - u;
+            return 3 * v * v * u * a + 3 * v * u * u * b + u * u * u;
+          }
+
+          // Matches cubic-bezier(0.5, 0.05, 0.45, 0.95).
+          function ease(t) {
+            if (t <= 0) return 0;
+            if (t >= 1) return 1;
+
+            let low = 0;
+            let high = 1;
+
+            for (let i = 0; i < 24; i++) {
+              const u = (low + high) / 2;
+
+              if (bezierCoordinate(u, 0.5, 0.45) < t) {
+                low = u;
+              } else {
+                high = u;
+              }
+            }
+
+            return bezierCoordinate((low + high) / 2, 0.05, 0.95);
+          }
+
+          let animationFrame = 0;
+          let stopped = false;
+
+          function finish() {
+            stopped = true;
+            cancelAnimationFrame(animationFrame);
+            svg.setAttribute("hidden", "");
+            reducedMotion.removeEventListener("change", handleMotionChange);
+          }
+
+          function handleMotionChange(event) {
+            if (event.matches) finish();
+          }
+
+          reducedMotion.addEventListener("change", handleMotionChange);
+
+          render(0);
+          svg.removeAttribute("hidden");
+
+          const start = performance.now();
+
+          function animate(now) {
+            if (stopped) return;
+
+            const progress = Math.min((now - start) / DURATION, 1);
+
+            // Preserve the original 0–9% hold.
+            // Apply easing to the remaining 9–100% interval.
+            const opening = ease((progress - HOLD) / (1 - HOLD));
+
+            render(opening);
+
+            if (progress < 1) {
+              animationFrame = requestAnimationFrame(animate);
+            } else {
+              finish();
+            }
+          }
+
+          animationFrame = requestAnimationFrame(animate);
+        })();
+        </script>
         <span class="home-intro-wordmark">JASIMEDIA</span>
     </div>
 
